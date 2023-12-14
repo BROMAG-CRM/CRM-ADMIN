@@ -35,9 +35,7 @@ function AdminNavbar() {
   const nameMenu = (
     <Menu>
       <Menu.Item key="1" icon={<UserOutlined />}>
-        <a href="tel:+9150289762" className="text-[10px] lg:text-[14px]">
-          {get(user, "name", "")}
-        </a>
+      {get(user, "name", "")}
       </Menu.Item>
     </Menu>
   );

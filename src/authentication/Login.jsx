@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Input, notification } from "antd";
 const url = import.meta.env.VITE_REACT_APP_URL;
 import axios from "axios"
@@ -24,13 +24,17 @@ function Login() {
        fetchData();
        setData(get(result, "data.message", []));
        notification.success({ message: "lets continue" });
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      if (err.response.data.message === "User not found") {
+        notification.error({ message: err.response.data.message });
+      }else if ((err.response.data.message === "Incorrect password")) {
+        notification.error({ message: err.response.data.message });
+      }
     }
   };
 
 
-  const fetchData = async (req, res) => {
+  const fetchData = async () => {
     const token = localStorage.getItem("token");
     try {
       const result = await axios.get(
@@ -46,7 +50,7 @@ function Login() {
     } catch (err) {
         if (err.response.data.message === "User not found") {
             notification.error({ message: err.response.data.message });
-          }else if ((err.response.data.message = "Incorrect password")) {
+          }else if ((err.response.data.message === "Incorrect password")) {
             notification.error({ message: err.response.data.message });
           }
     }

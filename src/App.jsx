@@ -1,13 +1,12 @@
 import "./App.css";
 import { createBrowserRouter,createRoutesFromElements,Route,RouterProvider,} from "react-router-dom"
-import { useSelector } from "react-redux";
 
   import RootLayout from "./layouts/RootLayout";
-  import Dashboard from "./components/Dashboard"
   import Login from "./authentication/Login"
+  import { useSelector } from "react-redux";
 
-
-//components  
+//components 
+import Dashboard from "./components/Dashboard"
 import UsersList from "./components/UsersList"
 import MyCampaigns from "./components/MyCampaigns";
 import AssignedCampaigns from "./components/AssignedCampaigns";
@@ -22,6 +21,11 @@ import LegalManagement from "./components/LegalManagement";
 import TeleMarketing from "./components/TeleMarketing";
 import TeleSales from "./components/TeleSales";
 import LeadGeneration from "./components/LeadGeneration";
+import Loader from "./components/Loader";
+import ConnectedLeads from "./components/ConnectedLeads";
+import NotConnectedLeads from "./components/NotConnectedLeads";
+
+
 
 const router=createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +46,9 @@ const router=createBrowserRouter(
       <Route path="leads" element={<MyLeads />} />
       <Route path="new_leads" element={<NewLeadsList />} />
       <Route path="followup_leads" element={<FollowUpLeads />} />
+      <Route path="loader" element={<Loader/>} />
+      <Route path="connected_leads" element={<ConnectedLeads/>} />
+      <Route path="notconnected_leads" element={<NotConnectedLeads/>} />
 
 
     </Route>
@@ -51,24 +58,29 @@ const router=createBrowserRouter(
 
 
 
+
+
 function DashboardOrUserLeadGeneration() {
   const user = useSelector((state) => state.user.user);
 
-  if (user && user.name && user.name.toLowerCase().startsWith("admin@")) {
-    console.log("jooooooooooo");
+  if (!user) {
+    return <Loader />;
+  }
+
+  if (user.name && user.name.toLowerCase().startsWith('admin@')) {
+    console.log('Admin logged in');
     return <Dashboard />;
   }
 
-  console.log("jeeeeeeeeeeee");
+  console.log('Regular user logged in');
   return <UserLeadGeneration />;
 }
 
 
 function App() {
   return(
-    <div>
-      <RouterProvider router={router}/>
-    </div>
+    <RouterProvider router={router}/>  
+
   )
 }
 

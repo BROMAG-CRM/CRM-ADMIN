@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 import image from "../assets/logo1.png"
 
-function Dashboard() {
+function Loader() {
   return (
-    <div className="pl-[10vw]  pt-7 w-screen">
+    <div className="pl-[12vw]  pt-7 w-screen">
       <div className="pl-3 w-[80vw]">
         <div className="pt-10"></div>
     <div className='w-screen h-[100vh] flex justify-center items-center'>
@@ -14,4 +14,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard
+export default Loader;

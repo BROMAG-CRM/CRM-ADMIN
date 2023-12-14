@@ -38,7 +38,7 @@ const response = await axios.get(`${url}/getusers`, {
 
 
 
-  const Partnershipcolumns = [
+  const columnsData = [
     {
       title: <h1>User Name</h1>,
       dataIndex: "name",
@@ -179,7 +179,7 @@ const response = await axios.get(`${url}/getusers`, {
     return (
       <Modal
         title="Edit User"
-        visible={visible}
+        open={visible}
         onCancel={onCancel}
         footer={[
           <Button key="cancel" onClick={onCancel}>
@@ -228,8 +228,9 @@ const response = await axios.get(`${url}/getusers`, {
       <div className="pl-6 w-[80vw]">
         <div className="pt-10">
           <Table
-            columns={Partnershipcolumns.map(column => ({
+            columns={columnsData.map(column => ({
               ...column,
+              key:columnsData.key,
               onCell: (record) => ({
                 record,
                 editable: column.editable,
