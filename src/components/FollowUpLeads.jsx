@@ -1,10 +1,11 @@
-import { Table,Input} from "antd";
+import { Table,Select, Button, Modal, Form, Input} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 import FollowUpModal from "./FollowUpModal";
+const { Option } = Select;
 
 
 
@@ -16,11 +17,17 @@ function FollowUpLeads() {
   const [followUpModalVisible, setFollowUpModalVisible] = useState(false);
   const [selectedFollowUpDate, setSelectedFollowUpDate] = useState(null);
   const [selectedFollowUpTime, setSelectedFollowUpTime] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [form] = Form.useForm();
+  const [statusId,setStatusId] = useState()
+  const [statusValue,setStatusValue] = useState()
+  const [updated,setupdated] = useState(false)
 
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getnewleadsdata`, {
+const response = await axios.get(`${url}/getfollowupleadsdata`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -34,18 +41,28 @@ const response = await axios.get(`${url}/getnewleadsdata`, {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [updated]);
 
-  const handleStatusChange = (value, record) => {
+
+// status function
+  const handleStatusChange = async(value, record) => {
+
     if (value === "follow-up") {
+      setStatusValue(value)
+      setStatusId(record._id)
       setActiveRow(record.key);
       setFollowUpModalVisible(true);
     } else {
+      await axios.post(`${url}/updateleadstatus`,{value:value,id:record._id}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       setActiveRow(null);
       setFollowUpModalVisible(false);
+      setupdated(!updated)
     }
-  };
-
+  }
 
   const handleFollowUpDateChange = (date) => {
     setSelectedFollowUpDate(date);
@@ -55,51 +72,88 @@ const response = await axios.get(`${url}/getnewleadsdata`, {
     setSelectedFollowUpTime(time);
   };
 
-  const handleFollowUpModalClose = () => {
-    setActiveRow(null);
-    setFollowUpModalVisible(false);
-    console.log("Selected Date:", selectedFollowUpDate.format("YYYY-MM-DD"));
-    console.log("Selected Time:", selectedFollowUpTime.format("HH:mm"));
+  const handleFollowUpModalClose = async () => {
+    try {
+      console.log("modal closed");
+      setActiveRow(null);
+      setFollowUpModalVisible(false);
+  
+      if (selectedFollowUpDate && selectedFollowUpTime) {
+
+        console.log("modal closed with date & time");
+
+        const date = selectedFollowUpDate.format("YYYY-MM-DD");
+        const time = selectedFollowUpTime.format("HH:mm");
+  
+        await axios.post(
+          `${url}/followupdetails`,
+          { time: time, date: date, id: statusId, value: statusValue },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setupdated(!updated)
+        console.log("Follow-up details posted successfully!");
+      } else {
+        console.log("selectedFollowUpDate or selectedFollowUpTime is null or undefined.");
+      }
+    } catch (err) {
+      console.error("Error during follow-up details posting:", err);
+    }
+  };
+  
+
+
+//feature function
+const handleButtonClick = (record) => {
+  setSelectedRowData(record);
+  setModalVisible(true);
 };
 
+const handleModalClose = () => {
+  setModalVisible(false);
+  form.resetFields();
+};
 
-const handleDescriptionChange = async (value, data) => {
-  try {
-    const response = await axios.post(
-      `${url}/updatedescription`,
-      { value, id: data._id }, 
+const handleAddFeature = async() => {
+  form.validateFields().then(async(values) => {
+
+    form.resetFields(['featureName', 'featureDescription']);
+    handleModalClose();
+
+    console.log(values);
+     await axios.post(
+      `${url}/addfeature`,
+      {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-  } catch (err) {
-    console.log(err);
-  }
+  });
 };
 
 
-
-
-  
   const columnsData = [
     {
         title: <h1>FollowUp Date</h1>,
-        dataIndex: "designation",
-        key: "designation",
+        dataIndex: "followupDate",
+        key: "followupDate",
         align: "center",
         render: (data) => {
-          return <p>12/12/12</p>;
+          return <p>{data}</p>;
         },
       },
       {
         title: <h1>FollowUp Time</h1>,
-        dataIndex: "designation",
-        key: "designation",
+        dataIndex: "followupTime",
+        key: "followupTime",
         align: "center",
         render: (data) => {
-          return <p>00:00</p>;
+          return <p>{data}</p>;
         },
       },
     {
@@ -165,33 +219,44 @@ const handleDescriptionChange = async (value, data) => {
       },
     },
     {
+      title: <h1>Add Features</h1>,
+      dataIndex: "features",
+      key: "features",
+      align: "center",
+      render: (data, record) => (
+        <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
+          Add
+        </Button>
+      ),
+    },    
+    {
       title: <h1>Status</h1>,
       dataIndex: "status",
       key: "status",
       align: "center",
       render: (data, record) => (
         <>
-          <select
+          <Select
+            placeholder="Update Status"
             value={data}
-            onChange={(e) => handleStatusChange(e.target.value, record)}
+            onChange={(value) => handleStatusChange(value, record)}
           >
-            <option value=""></option>
-            <option value="follow-up">Follow-up</option>
-            <option value="connected">Connected</option>
-            <option value="not-connected">Not Connected</option>
-          </select>
+            <Option value="follow-up">Follow-up</Option>
+            <Option value="connected">Connected</Option>
+            <Option value="not-connected">Not Connected</Option>
+          </Select>
         </>
       ),
     },
     {
-        title: <h1>Description</h1>,
-        dataIndex: "designation",
-        key: "designation",
-        align: "center",
-        render: (data) => {
-          return <p>description</p>;
-        },
+      title: <h1>Description</h1>,
+      dataIndex: "leadDescription",
+      key: "leadDescription",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
       },
+    },
   ];
 
   return (
@@ -204,6 +269,7 @@ const handleDescriptionChange = async (value, data) => {
           <Table
             columns={columnsData.map((column) => ({
               ...column,
+              key:columnsData.key,
               onCell: (record) => ({
                 record,
                 editable: column.editable,
@@ -218,6 +284,41 @@ const handleDescriptionChange = async (value, data) => {
           />
         </div>
       </div>
+
+      <Modal
+        title="Add New Feature"
+        open={modalVisible}
+        onCancel={handleModalClose}
+        footer={[
+          <Button key="cancel" onClick={handleModalClose}>
+            Cancel
+          </Button>,
+          <Button key="addFeature" type="primary" style={{ backgroundColor: "green" }} onClick={handleAddFeature}>
+            Add Feature
+          </Button>,
+        ]}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item label="Feature" name="feature" rules={[{ required: true, message: 'Please select a feature' }]}>
+            <Select placeholder="Select a feature description">
+              <Option value="Online Order">Online Order</Option>
+              <Option value="Dining">Dining</Option>
+              <Option value="Call for Order">Call for Order</Option>
+              <Option value="Take Away">Take Away</Option>
+              <Option value="Content Banner">Content Banner</Option>
+              <Option value="Top Notch">Top Notch</Option>
+              <Option value="Vegetarian">Vegetarian</Option>
+              <Option value="Non Vegetarian">Non Vegetarian</Option>
+              <Option value="Scratch Card">Scratch Card</Option>
+              <Option value="Food Review">Food Review</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="Feature Description" name="featureDescription" rules={[{ required: true, message: 'Please enter a feature description' }]}>
+            <Input.TextArea />
+          </Form.Item>
+        </Form>
+      </Modal>
+
 
       <FollowUpModal
         visible={followUpModalVisible}

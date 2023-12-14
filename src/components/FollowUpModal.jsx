@@ -22,25 +22,26 @@ const FollowUpModal = ({ visible, onClose, onDateChange, onTimeChange }) => {
 
   return (
     <Modal
-      title="Follow-up Details"
-      visible={visible}
-      onCancel={onClose}
-      onOk={onClose}
-      okButtonProps={{ style: customOkButtonStyles }}
-    >
-      <div>
-        <p>Date:</p>
-        <DatePicker onChange={onDateChange} />
-      </div>
-      <div>
-        <p>Time:</p>
-        <TimePicker
-          onChange={onTimeChange}
-          format="HH:mm"
-          dropdownClassName={customTimePickerStyles}
-        />
-      </div>
-    </Modal>
+  title="Follow-up Details"
+  open={visible}
+  onCancel={onClose}
+  onOk={onClose}
+  okButtonProps={{ style: customOkButtonStyles }}
+>
+  <div>
+    <p>Date:</p>
+    <DatePicker onChange={onDateChange} />
+  </div>
+  <div>
+    <p>Time:</p>
+    <TimePicker
+      onChange={onTimeChange}
+      format="HH:mm"
+      popupClassName={customTimePickerStyles} 
+    />
+  </div>
+</Modal>
+
   );
 };
 
