@@ -24,6 +24,10 @@ import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Loader";
 import ConnectedLeads from "./components/ConnectedLeads";
 import NotConnectedLeads from "./components/NotConnectedLeads";
+import MyTasks from "./components/MyTasks";
+import HotLeads from "./components/HotLeads";
+import WarmLeads from "./components/WarmLeads";
+import ColdLeads from "./components/ColdLeads";
 
 
 
@@ -49,6 +53,12 @@ const router=createBrowserRouter(
       <Route path="loader" element={<Loader/>} />
       <Route path="connected_leads" element={<ConnectedLeads/>} />
       <Route path="notconnected_leads" element={<NotConnectedLeads/>} />
+      <Route path="mytasks" element={<MyTasks/>} />
+      <Route path="hot_leads" element={<HotLeads/>} />
+      <Route path="warm_leads" element={<WarmLeads/>} />
+      <Route path="cold_leads" element={<ColdLeads/>} />
+      
+
 
 
     </Route>

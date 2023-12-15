@@ -60,9 +60,14 @@
     border-bottom: none !important;
 }
 
-:where(.css-dev-only-do-not-override-zcfrx9).ant-tabs >.ant-tabs-nav .ant-tabs-nav-wrap{
+.ant-tabs-nav .ant-tabs-nav-wrap{
     position: fixed !important;
     width: 100vw !important;
     z-index: 100 !important;
     background:white !important;
 }
+
+.ant-tabs .ant-tabs-top{
+    position: fixed !important;
+}
+

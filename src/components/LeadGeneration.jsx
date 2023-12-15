@@ -383,7 +383,7 @@ function LeadGeneration() {
       align: "center",
       render: (data) => {
         return (
-          <div className="flex flex-wrap gap-2 w-[15vw]">
+          <div className="wrap gaflex flex-p-2 w-[15vw]">
             {data.map((res, i) => {
               return (
                 <div className="flex gap-2" key={i}>
@@ -553,11 +553,17 @@ function LeadGeneration() {
             {data.length === 0 ? (
               <p>no</p>
             ) : data.length === 1 ? (
+              <div className="wrap gaflex flex-p-2 w-[10vw]">
               <Image src={data[0]} />
+              </div>
             ) : (
-              <div className="flex gap-2">
-                {data.map((res, i) => {
-                  return <Image src={data} key={i} width={50} />;
+              <div className="wrap gaflex flex-p-2 w-[10vw]">
+              {data.map((res, i) => {
+                  return (
+                    <div className="flex gap-2" key={i}>
+                  <Image src={data} key={i} width={50} />
+                  </div>
+                  )
                 })}
               </div>
             )}
@@ -906,11 +912,17 @@ function LeadGeneration() {
             {data.length === 0 ? (
               <p>no</p>
             ) : data.length === 1 ? (
+              <div className="wrap gaflex flex-p-2 w-[10vw]">
               <Image src={data[0]} />
+              </div>
             ) : (
-              <div className="flex gap-2">
-                {data.map((res, i) => {
-                  return <Image src={data} key={i} width={50} />;
+              <div className="wrap gaflex flex-p-2 w-[10vw]">
+              {data.map((res, i) => {
+                  return (
+                    <div className="flex gap-2" key={i}>
+                  <Image src={data} key={i} width={50} />
+                  </div>
+                  )
                 })}
               </div>
             )}

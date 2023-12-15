@@ -16,14 +16,19 @@ function UsersList() {
   const [updated,setUpdated] = useState(false)
 
 
-const fetchData = async () => {
+  const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getusers`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-});
-      setData(get(response, "data.data", []));
+      const response = await axios.get(`${url}/getusers`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const sortedData = get(response, "data.data", []).sort((a, b) =>
+        new Date(b.joiningDate) - new Date(a.joiningDate)
+      );
+
+      setData(sortedData);
     } catch (err) {
       console.log(err);
     }
@@ -72,7 +77,7 @@ const response = await axios.get(`${url}/getusers`, {
       key: "mobileNumber",
       align: "center",
       render: (data) => {
-        return <p>{data}</p>;
+        return <p>{data}</p>
       },
     },
     {
@@ -81,7 +86,17 @@ const response = await axios.get(`${url}/getusers`, {
       key: "password",
       align: "center",
       render: (data) => {
-        return <p>{data}</p>;
+        return <p>{data}</p>
+      },
+    },
+    {
+      title: <h1>Joining Date</h1>,
+      dataIndex: "joiningDate",
+      key: "joiningDate",
+      align: "center",
+      render: (data) => {
+        const formattedDate = new Date(data).toLocaleString();
+        return formattedDate
       },
     },
     {
@@ -228,17 +243,7 @@ const response = await axios.get(`${url}/getusers`, {
       <div className="pl-6 w-[80vw]">
         <div className="pt-10">
           <Table
-            columns={columnsData.map(column => ({
-              ...column,
-              key:columnsData.key,
-              onCell: (record) => ({
-                record,
-                editable: column.editable,
-                dataIndex: column.dataIndex,
-                title: column.title,
-                handleEdit: handleEdit,
-              }),
-            }))}
+            columns={columnsData}
             dataSource={
                data
             }

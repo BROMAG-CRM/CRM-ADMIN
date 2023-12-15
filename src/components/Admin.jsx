@@ -1,12 +1,14 @@
 import { Button, Form,Input, notification} from "antd";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_REACT_APP_URL;
 
 function Admin() {
   const [form] = Form.useForm();
   const userState = useSelector((state) => state?.user?.user?.state);
   const userId = useSelector((state) => state?.user?.user?.userId)
+  const navigate = useNavigate()
 
   
 
@@ -18,6 +20,7 @@ function Admin() {
       await axios.post(`${url}/createuser`, values);
       notification.success({ message: "User created successfully" });
       form.resetFields();
+      navigate("/users")
     } catch (e) {
       console.log(e);
       notification.error({ message: e.response.data.message });
@@ -62,11 +65,11 @@ function Admin() {
                   }
                   if (value.length < 10) {
                     return Promise.reject(
-                      "Mobile number can't be less than 5 digits"
+                      "Mobile number can't be less than 10 digits"
                     );
                   }
                   if (value.length > 10) {
-                    return Promise.reject("Mobile number more than 5 digits");
+                    return Promise.reject("Mobile number can't be more than 10 digits");
                   }
                   return Promise.resolve();
                 },
