@@ -1,23 +1,22 @@
-import { Button, Input, Table, Upload, message} from "antd";
+import { Table} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
-import { UploadOutlined } from '@ant-design/icons';
 
 
 
 
-
-
-function ConnectedLeads() {
+function ColdLeads() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
+ 
+
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/connectedleadsdata`, {
+const response = await axios.get(`${url}/coldleadsdata`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -50,11 +49,7 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
       key: "restaurantMobileNumber",
       align: "center",
       render: (data) => {
-        return (
-          <a href={`tel:${data}`} className="text-blue-500">
-            {data}
-          </a>
-        );
+        return <p>{data}</p>;
       },
     },
     {
@@ -90,11 +85,7 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
       key: "contactPersonNumber",
       align: "center",
       render: (data) => {
-        return (
-          <a href={`tel:${data}`} className="text-blue-500">
-            {data}
-          </a>
-        );
+        return <p>{data}</p>;
       },
     },
     {
@@ -106,46 +97,10 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
         return <p>{data}</p>;
       },
     },
-    {
-      title: <h1>Upload Call Record</h1>,
-      dataIndex: "uploadCallRecord",
-      key: "uploadCallRecord",
-      align: "center",
-      render: (_, record) => {
-        const props = {
-          action: `/your-upload-api-endpoint/${record.key}`, // Replace with your actual API endpoint
-          onChange(info) {
-            if (info.file.status !== 'uploading') {
-              console.log(info.file, info.fileList);
-            }
-            if (info.file.status === 'done') {
-              message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-              message.error(`${info.file.name} file upload failed.`);
-            }
-          },
-        };
-  
-        return (
-          <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          </Upload>
-        );
-      },
-    },
   ];
 
   return (
     <>
-
-<style>
-      {`
-        .no-hover:hover {
-          pointer-events: none;
-          cursor: default;
-        }
-      `}
-    </style>
 
 <div className="pl-[18vw]  pt-14 w-screen">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
@@ -156,7 +111,6 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
               ...column,
               key:columnsData.key,
               onCell: (record) => ({
-                className: 'no-hover',
                 record,
                 editable: column.editable,
                 dataIndex: column.dataIndex,
@@ -175,4 +129,4 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
   );
 }
 
-export default ConnectedLeads;
+export default ColdLeads;

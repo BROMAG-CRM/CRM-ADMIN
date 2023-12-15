@@ -122,7 +122,7 @@ function AdminNavbar() {
           </div>
         </div>
       ) : (
-        <div className={` fixed w-screen z-40 h-[40vh] md:h-[45vh] !bg-black`}>
+        <div className={`fixed w-screen z-40 h-[30vh] md:h-[45vh] !bg-black`}>
           <div className="flex flex-col md:flex-row pt-2 items-center  !justify-between md:px-20">
             <div className="flex justify-between  px-2">
               <div>
@@ -216,7 +216,7 @@ function AdminNavbar() {
             </div>
           </div>
           <div>
-            <h1 className="text-white text-2xl md:text-4xl text-center pt-10 md:pt-14">
+            <h1 className="text-white text-2xl md:text-4xl text-center pt-2 md:pt-14">
               Lead Generation Forms
             </h1>
             <p className="text-white text-center text-[14px] md:text-2xl tracking-wider pt-5 sm:text-sm">

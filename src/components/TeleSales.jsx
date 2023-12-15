@@ -11,7 +11,7 @@ function TeleSales() {
     "Call Logs",
     "Walk-in Leads",
   ];
-  const links = [];
+  const links = ["/mytasks"];
 
   return (
     <div className="pl-[18vw]  pt-7 w-screen">

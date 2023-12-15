@@ -60,6 +60,7 @@ function UserLeadGeneration() {
   const [loading,setLoading]=useState(false)
   const token = localStorage.getItem("token");
   const [location, setLocation] = useState(null);
+  const [fetchLocation,setFetchLocation] = useState(false)
 
 
 
@@ -411,23 +412,25 @@ function UserLeadGeneration() {
   
   const handleFinishLocation = async (val) => {
     try {
+      console.log("0");
+
       if (navigator.geolocation) {
+        console.log("1");
         navigator.geolocation.getCurrentPosition(
           async (position) => {
+            console.log("1.5");
             const { latitude, longitude } = position.coords;
             const locationName = await getLocationName(latitude, longitude);
-  
-            // Update the location state with the obtained values
+            console.log("1.7");
             setLocation({ latitude, longitude, locationName });
-  
-            // Continue with the rest of the logic only if location is not null
-            if (location) {
+              if (location) {
+              console.log("2");
               const id = localStorage.getItem("id");
               const formData = {
                 address: val,
                 location:location
               };
-  
+              console.log("3");
               console.log(formData);
   
               await axios.put(
@@ -439,7 +442,7 @@ function UserLeadGeneration() {
                   },
                 }
               );
-  
+              console.log("4");
               notification.success({
                 message: "Location data submitted successfully",
               });
@@ -480,7 +483,7 @@ function UserLeadGeneration() {
       key: "1",
       label: <div>Lead Generation</div>,
       children: (
-        <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
+        <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-0 md:py-5">
           <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1>
           <Form
             layout="vertical"
@@ -1542,9 +1545,8 @@ function UserLeadGeneration() {
             <Form.Item className="flex items-end justify-end">
             <Button
                 htmlType="submit"
-                className="bg-green-500 w-[100px] !text-white font-semibol"
-              >
-                Submit
+                className="bg-green-500 w-[170px] !text-white font-semibol"
+              >Submit
               </Button>
             </Form.Item>
           </Form>
@@ -1560,11 +1562,9 @@ function UserLeadGeneration() {
         <Tabs
           defaultActiveKey="1"
           items={items}
-          // className="lg:flex lg:items-center lg:justify-center mt-[45vh] "
-          className="mt-[40vh] md:mt-[45vh]"
+          className="mt-[30vh] md:mt-[45vh]"
         />
         </Spin>
-        
       </div>
     </div>
   );
