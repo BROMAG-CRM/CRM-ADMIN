@@ -18,7 +18,7 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 
-import { storage } from "../firebase/firebaseConfig";
+// import { storage } from "../firebase/firebaseConfig";
 
 import {
   getDownloadURL,
@@ -77,15 +77,28 @@ function UserLeadGeneration() {
 
 
 
-  const customRequest = async ({ file, onSuccess, onError }) => {
-    const storageRef = ref(storage, `table-images/${file.name}`);
+  const customRequest = async ({ file, onSuccess, onError, fieldName }) => {
 
     try {
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(`${url}/uploadimage`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const downloadURL = response.data.fileUrl;
+
       onSuccess();
-      message.success(`${file.name} file uploaded successfully`);
-      console.log("Download URL:", downloadURL);
+      if (response.status === 200) {
+        message.success(`${fieldName} file uploaded successfully`);
+      }
+
+
       setTableImages((prevUrls) => [...prevUrls, downloadURL]);
     } catch (error) {
       onError(error);
@@ -96,18 +109,19 @@ function UserLeadGeneration() {
 
   
   console.log(tableImages, "imahes");
-  const handleRemove = async (file) => {
-    const storageRef = ref(storage, `table-images/${file.name}`);
-    console.log("clickkk", file);
 
-    try {
-      await deleteObject(storageRef);
-      message.success(`${file.name} file removed successfully`);
-    } catch (error) {
-      message.error(`${file.name} file removal failed.`);
-      console.error("Error removing file from Firebase:", error);
-    }
-  };
+  // const handleRemove = async (file) => {
+  //   const storageRef = ref(storage, `table-images/${file.name}`);
+  //   console.log("clickkk", file);
+
+  //   try {
+  //     await deleteObject(storageRef);
+  //     message.success(`${file.name} file removed successfully`);
+  //   } catch (error) {
+  //     message.error(`${file.name} file removal failed.`);
+  //     console.error("Error removing file from Firebase:", error);
+  //   }
+  // };
 
   const handleChangeLead = ({ fileList, file }) => {
     const urls = fileList.map((file) => file.url).filter(Boolean);
@@ -121,14 +135,25 @@ function UserLeadGeneration() {
 
 
   const customRequestLead = async ({ file, onSuccess, onError, fieldName }) => {
-    const storageRef = ref(storage, `lead-images/${fieldName}/${file.name}`);
-
     try {
-      const uploadFile = file.originFileObj || file;
-      const snapshot = await uploadBytes(storageRef, uploadFile);
-      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(`${url}/uploadimage`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const downloadURL = response.data.fileUrl;
+
       onSuccess();
-      message.success(`${fieldName} file uploaded successfully`);
+
+      if (response.status === 200) {
+        message.success(`${fieldName} file uploaded successfully`);
+      }
 
       setImageUrls((prevUrls) => ({
         ...prevUrls,
@@ -137,7 +162,7 @@ function UserLeadGeneration() {
     } catch (error) {
       onError(error);
       message.error(`${fieldName} file upload failed.`);
-      console.error("Error uploading file to Firebase:", error);
+      console.error("Error uploading file:", error);
     }
   };
 
@@ -145,23 +170,24 @@ function UserLeadGeneration() {
 
 
 
+  // const handleRemoveLead = async ({ file, fieldName }) => {
+  //   const storageRef = ref(storage, `lead-images/${fieldName}/${file.name}`);
 
-  const handleRemoveLead = async ({ file, fieldName }) => {
-    const storageRef = ref(storage, `lead-images/${fieldName}/${file.name}`);
+  //   try {
+  //     await deleteObject(storageRef);
+  //     setImageUrls((prevImageUrls) => ({
+  //       ...prevImageUrls,
+  //       [fieldName]: null,
+  //     }));
 
-    try {
-      await deleteObject(storageRef);
-      setImageUrls((prevImageUrls) => ({
-        ...prevImageUrls,
-        [fieldName]: null,
-      }));
+  //     message.success(`${file.name} file removed successfully`);
+  //   } catch (error) {
+  //     console.error(`${file.name} file removal failed.`, error);
+  //     message.error(`${file.name} file removal failed.`);
+  //   }
+  // };
 
-      message.success(`${file.name} file removed successfully`);
-    } catch (error) {
-      console.error(`${file.name} file removal failed.`, error);
-      message.error(`${file.name} file removal failed.`);
-    }
-  };
+
 
   const normFile = (e, fieldName) => {
     const fileList = e && e.fileList ? e.fileList : e || [];
@@ -384,15 +410,28 @@ function UserLeadGeneration() {
     return e && e.fileList;
   };
 
-  const customRequestTrade = async ({ file, onSuccess, onError }) => {
-    const storageRef = ref(storage, `trade-images/${file.name}`);
+  const customRequestTrade = async ({ file, onSuccess, onError, fieldName }) => {
+   
 
     try {
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+
+      const response = await axios.post(`${url}/uploadimage`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const downloadURL = response.data.fileUrl;
+
       onSuccess();
-      message.success(`${file.name} file uploaded successfully`);
-      console.log("Download URL:", downloadURL);
+      if (response.status === 200) {
+        message.success(`${fieldName} file uploaded successfully`);
+      }
       setTradeImages((prevUrls) => [...prevUrls, downloadURL]);
       setFileList((prevList) => [
         ...prevList,
@@ -475,21 +514,21 @@ function UserLeadGeneration() {
   
   
 
-  const onRemoveTrade = async (file) => {
-    const storageRef = ref(storage, `trade-images/${file.name}`);
+  // const onRemoveTrade = async (file) => {
+  //   const storageRef = ref(storage, `trade-images/${file.name}`);
 
-    try {
-      await deleteObject(storageRef);
-      message.success(`${file.name} file removed successfully`);
+  //   try {
+  //     await deleteObject(storageRef);
+  //     message.success(`${file.name} file removed successfully`);
 
-      setFileList((prevList) =>
-        prevList.filter((item) => item.uid !== file.uid)
-      );
-    } catch (error) {
-      message.error(`${file.name} file removal failed.`);
-      console.error("Error removing file from Firebase:", error);
-    }
-  };
+  //     setFileList((prevList) =>
+  //       prevList.filter((item) => item.uid !== file.uid)
+  //     );
+  //   } catch (error) {
+  //     message.error(`${file.name} file removal failed.`);
+  //     console.error("Error removing file from Firebase:", error);
+  //   }
+  // };
 
   const items = [
     {
@@ -587,7 +626,6 @@ function UserLeadGeneration() {
                     : "block"
                 }`}
               >
-                
                 <Upload
                   name="cinNo"
                   listType="picture-card"
@@ -605,9 +643,9 @@ function UserLeadGeneration() {
                   }
                   accept="image/*"
                   onChange={handleChangeLead}
-                  onRemove={(file) =>
-                    handleRemoveLead({ file, fieldName: "cinNo" })
-                  }
+                  // onRemove={(file) =>
+                  //   handleRemoveLead({ file, fieldName: "cinNo" })
+                  // }
                 >
                   {imageUrls.cinNo ? (
                     <img
@@ -658,9 +696,9 @@ function UserLeadGeneration() {
                   }
                   accept="image/*"
                   onChange={handleChangeLead}
-                  onRemove={(file) =>
-                    handleRemoveLead({ file, fieldName: "director" })
-                  }
+                  // onRemove={(file) =>
+                  //   handleRemoveLead({ file, fieldName: "director" })
+                  // }
                 >
                   {imageUrls.director ? (
                     <img
@@ -705,9 +743,9 @@ function UserLeadGeneration() {
                   }
                   accept="image/*"
                   onChange={handleChangeLead}
-                  onRemove={(file) =>
-                    handleRemoveLead({ file, fieldName: "panCard" })
-                  }
+                  // onRemove={(file) =>
+                  //   handleRemoveLead({ file, fieldName: "panCard" })
+                  // }
                 >
                   {imageUrls.panCard ? (
                     <img
@@ -752,9 +790,9 @@ function UserLeadGeneration() {
                   }
                   accept="image/*"
                   onChange={handleChangeLead}
-                  onRemove={(file) =>
-                    handleRemoveLead({ file, fieldName: "gstCopy" })
-                  }
+                  // onRemove={(file) =>
+                  //   handleRemoveLead({ file, fieldName: "gstCopy" })
+                  // }
                 >
                   {imageUrls.gstCopy ? (
                     <img
@@ -799,9 +837,9 @@ function UserLeadGeneration() {
                   }
                   accept="image/*"
                   onChange={handleChangeLead}
-                  onRemove={(file) =>
-                    handleRemoveLead({ file, fieldName: "fss" })
-                  }
+                  // onRemove={(file) =>
+                  //   handleRemoveLead({ file, fieldName: "fss" })
+                  // }
                 >
                   {imageUrls.fss ? (
                     <img
@@ -846,9 +884,9 @@ function UserLeadGeneration() {
                   }
                   accept="image/*"
                   onChange={handleChangeLead}
-                  onRemove={(file) =>
-                    handleRemoveLead({ file, fieldName: "cancelCheck" })
-                  }
+                  // onRemove={(file) =>
+                  //   handleRemoveLead({ file, fieldName: "cancelCheck" })
+                  // }
                 >
                   {imageUrls.cancelCheck ? (
                     <img
@@ -894,7 +932,6 @@ function UserLeadGeneration() {
             <p className="pb-2 md:pl-16">Add Table Counts</p>
             <Form.List
               name="tableCount"
-              // initialValue={[{ tableCount: "", seaters: "" }]}
             >
               {(fields, { add, remove }) => (
                 <>
@@ -994,7 +1031,7 @@ function UserLeadGeneration() {
                 }}
                 multiple={true}
                 customRequest={customRequest}
-                onRemove={(file) => handleRemove(file)}
+                // onRemove={(file) => handleRemove(file)}
               >
                 {fileList.length >= 5 ? null : (
                   <div>
@@ -1399,7 +1436,7 @@ function UserLeadGeneration() {
                 }}
                 multiple={true}
                 customRequest={customRequestTrade}
-                onRemove={(file) => onRemoveTrade(file)}
+                // onRemove={(file) => onRemoveTrade(file)}
               >
                 {fileList.length >= 5 ? null : (
                   <div>
