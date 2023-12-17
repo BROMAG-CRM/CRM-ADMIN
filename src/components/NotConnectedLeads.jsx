@@ -107,16 +107,7 @@ const response = await axios.get(`${url}/notconnectedleadsdata`, {
       <div className="pl-6 w-[80vw]">
         <div className="pt-10">
           <Table
-            columns={columnsData.map((column) => ({
-              ...column,
-              key:columnsData.key,
-              onCell: (record) => ({
-                record,
-                editable: column.editable,
-                dataIndex: column.dataIndex,
-                title: column.title,
-              }),
-            }))}
+            columns={columnsData}
             dataSource={data}
             scroll={{ x: 2000 }}
             ref={tableRef}

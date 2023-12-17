@@ -139,23 +139,29 @@ const handleAddFeature = async() => {
 
   const columnsData = [
     {
-        title: <h1>FollowUp Date</h1>,
-        dataIndex: "followupDate",
-        key: "followupDate",
-        align: "center",
-        render: (data) => {
-          return <p>{data}</p>;
-        },
+      title: <h1>Follow-Up Date</h1>,
+      dataIndex: "followupDate",
+      key: "followupDate",
+      align: "center",
+      render: (data) => {
+        const formattedDate = new Date(data).toLocaleString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        return formattedDate;
       },
-      {
-        title: <h1>FollowUp Time</h1>,
-        dataIndex: "followupTime",
-        key: "followupTime",
-        align: "center",
-        render: (data) => {
-          return <p>{data}</p>;
-        },
+    },
+    {
+      title: <h1>Follow-Up Time</h1>,
+      dataIndex: "followupTime",
+      key: "followupTime",
+      align: "center",
+      render: (data) => {
+          return <p>{data}</p>
       },
+    },
+    
     {
       title: <h1>Brand Name</h1>,
       dataIndex: "brandName",
@@ -267,16 +273,7 @@ const handleAddFeature = async() => {
       <div className="pl-6 w-[80vw]">
         <div className="pt-10">
           <Table
-            columns={columnsData.map((column) => ({
-              ...column,
-              key:columnsData.key,
-              onCell: (record) => ({
-                record,
-                editable: column.editable,
-                dataIndex: column.dataIndex,
-                title: column.title,
-              }),
-            }))}
+            columns={columnsData}
             dataSource={data}
             scroll={{ x: 2000 }}
             ref={tableRef}

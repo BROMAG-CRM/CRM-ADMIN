@@ -1,10 +1,10 @@
+import { UploadOutlined } from "@ant-design/icons";
 import { Button, Input, Table, Upload, message} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
-import { UploadOutlined } from '@ant-design/icons';
 
 
 
@@ -108,12 +108,17 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
     },
     {
       title: <h1>Upload Call Record</h1>,
-      dataIndex: "uploadCallRecord",
-      key: "uploadCallRecord",
+      dataIndex: "audio",
+      key: "audio",
       align: "center",
-      render: (_, record) => {
+      render: (data, record) => {
         const props = {
-          action: `/your-upload-api-endpoint/${record.key}`, // Replace with your actual API endpoint
+          name: 'file',
+
+          action: `${url}/uploadcallrecord/${record._id}`, 
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           onChange(info) {
             if (info.file.status !== 'uploading') {
               console.log(info.file, info.fileList);
@@ -126,14 +131,33 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
           },
         };
   
+        const onUpload = async (options) => {
+          const { file } = options;
+  
+          const formData = new FormData();
+          formData.append('file', file);
+  
+          try {
+            await axios.post(`${url}/uploadcallrecord/${record._id}`, formData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+              },
+            });
+            message.success(`${file.name} file uploaded successfully`);
+          } catch (error) {
+            message.error(`${file.name} file upload failed.`);
+          }
+        };
+  
         return (
-          <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Upload</Button>
+          <Upload {...props} customRequest={onUpload} showUploadList={false}>
+            <Button icon={<UploadOutlined />}>Upload Audio</Button>
           </Upload>
         );
       },
     },
-  ];
+  ]
 
   return (
     <>
@@ -152,17 +176,7 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
       <div className="pl-6 w-[80vw]">
         <div className="pt-10">
           <Table
-            columns={columnsData.map((column) => ({
-              ...column,
-              key:columnsData.key,
-              onCell: (record) => ({
-                className: 'no-hover',
-                record,
-                editable: column.editable,
-                dataIndex: column.dataIndex,
-                title: column.title,
-              }),
-            }))}
+            columns={columnsData}
             dataSource={data}
             scroll={{ x: 2000 }}
             ref={tableRef}
