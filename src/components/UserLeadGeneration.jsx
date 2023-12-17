@@ -17,13 +17,16 @@ import {
   PlusOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+
 import { storage } from "../firebase/firebaseConfig";
+
 import {
   getDownloadURL,
   ref,
   uploadBytes,
   deleteObject,
 } from "firebase/storage";
+
 import axios from "axios";
 const url = import.meta.env.VITE_REACT_APP_URL;
 import { get } from "lodash";
@@ -73,6 +76,7 @@ function UserLeadGeneration() {
   };
 
 
+
   const customRequest = async ({ file, onSuccess, onError }) => {
     const storageRef = ref(storage, `table-images/${file.name}`);
 
@@ -89,6 +93,8 @@ function UserLeadGeneration() {
       console.error("Error uploading file to Firebase:", error);
     }
   };
+
+  
   console.log(tableImages, "imahes");
   const handleRemove = async (file) => {
     const storageRef = ref(storage, `table-images/${file.name}`);
@@ -112,9 +118,10 @@ function UserLeadGeneration() {
     }));
   };
 
+
+
   const customRequestLead = async ({ file, onSuccess, onError, fieldName }) => {
     const storageRef = ref(storage, `lead-images/${fieldName}/${file.name}`);
-    // console.log(file, storageRef);
 
     try {
       const uploadFile = file.originFileObj || file;
@@ -133,6 +140,11 @@ function UserLeadGeneration() {
       console.error("Error uploading file to Firebase:", error);
     }
   };
+
+
+
+
+
 
   const handleRemoveLead = async ({ file, fieldName }) => {
     const storageRef = ref(storage, `lead-images/${fieldName}/${file.name}`);
@@ -170,6 +182,7 @@ function UserLeadGeneration() {
   
       console.log(firmDetail, "detail");
   
+
       if (
         firmDetail === "Private limited"
           ? !imageUrls.cinNo ||
@@ -298,7 +311,7 @@ function UserLeadGeneration() {
   
       await axios.put(
         `${url}/updateform/${id}`,
-        formData,  // Pass the form data as the second argument
+        formData,  
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -343,7 +356,7 @@ function UserLeadGeneration() {
   
       await axios.put(
         `${url}/updateform/${id}`,
-        formData,  // Pass the form data as the second argument
+        formData,  
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -483,7 +496,7 @@ function UserLeadGeneration() {
       key: "1",
       label: <div>Lead Generation</div>,
       children: (
-        <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-0 md:py-5">
+        <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
           <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1>
           <Form
             layout="vertical"
@@ -574,6 +587,7 @@ function UserLeadGeneration() {
                     : "block"
                 }`}
               >
+                
                 <Upload
                   name="cinNo"
                   listType="picture-card"

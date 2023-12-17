@@ -14,6 +14,8 @@ function UsersList() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [updated,setUpdated] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+
 
 
   const fetchData = async () => {
@@ -44,6 +46,16 @@ function UsersList() {
 
 
   const columnsData = [
+    {
+      title: <h1>Serial Number</h1>,
+      dataIndex: "serialNumber",
+      key: "serialNumber",
+      align: "center",
+      render: (text, record, index) => {
+        const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
+        return (currentPage - 1) * pageSize + index + 1;
+      },
+    },
     {
       title: <h1>User Name</h1>,
       dataIndex: "name",
@@ -95,10 +107,18 @@ function UsersList() {
       key: "joiningDate",
       align: "center",
       render: (data) => {
-        const formattedDate = new Date(data).toLocaleString();
-        return formattedDate
+        const formattedDate = new Date(data).toLocaleString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: true,
+        });
+        return formattedDate;
       },
-    },
+    },    
     {
       title: <h1>Actions</h1>,
       align: "center",
@@ -189,6 +209,9 @@ function UsersList() {
         console.error("Error updating user:", error);
       }
     };
+
+
+ 
     
 
     return (
@@ -228,7 +251,9 @@ function UsersList() {
     );
   }
 
-  
+  const handleTableChange = (pagination) => {
+    setCurrentPage(pagination.current);
+  };
 
   return (
     <>
@@ -244,12 +269,11 @@ function UsersList() {
         <div className="pt-10">
           <Table
             columns={columnsData}
-            dataSource={
-               data
-            }
-            scroll={{ x: 1000 }}
+            dataSource={data}
+            scroll={{ x: 1500 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
+            onChange={handleTableChange}
           />
         </div>
       </div>
