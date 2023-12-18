@@ -8,7 +8,7 @@ function TeleMarketing() {
     "My Campaigns",
     "My Leads",
   ];
-  const links = ["/campaigns", "/leads"];
+  const links = ["/campaignindiaorbooks", "/leadsindiaorbooks"];
 
   return (
     <div className="pl-[18vw]  pt-7 w-screen">

@@ -8,11 +8,11 @@ import { createBrowserRouter,createRoutesFromElements,Route,RouterProvider,} fro
 //components 
 import Dashboard from "./components/Dashboard"
 import UsersList from "./components/UsersList"
-import MyCampaigns from "./components/MyCampaigns";
+import MyCampaignsIndia from "./components/MyCampaignsIndia";
 import AssignedCampaigns from "./components/AssignedCampaigns";
-import MyLeads from "./components/MyLeads";
-import NewLeadsList from "./components/NewLeadsList";
-import FollowUpLeads from "./components/FollowUpLeads";
+import MyLeadsIndia from "./components/MyLeadsIndia";
+import NewLeadsListIndia from "./components/NewLeadsListIndia";
+import FollowUpLeadsIndia from "./components/FollowUpLeadsIndia";
 import Admin from "./components/Admin";
 import UserLeadGeneration from "./components/UserLeadGeneration";
 import AccountsManagement from "./components/AccountsManagement";
@@ -22,12 +22,16 @@ import TeleMarketing from "./components/TeleMarketing";
 import TeleSales from "./components/TeleSales";
 import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Loader";
-import ConnectedLeads from "./components/ConnectedLeads";
-import NotConnectedLeads from "./components/NotConnectedLeads";
+import ConnectedLeadsIndia from "./components/ConnectedLeadsIndia";
+import NotConnectedLeadsIndia from "./components/NotConnectedLeadsIndia";
 import MyTasks from "./components/MyTasks";
 import HotLeads from "./components/HotLeads";
 import WarmLeads from "./components/WarmLeads";
 import ColdLeads from "./components/ColdLeads";
+import CampaignIndiaorBooks from "./components/CampaignIndiaorBooks";
+import MyCampaignsBooks from "./components/MyCampaignsBooks";
+import LeadIndiaorBooks from "./components/LeadIndiaorBooks";
+import MyLeadsBooks from "./components/MyLeadsBooks";
 
 
 
@@ -45,22 +49,25 @@ const router=createBrowserRouter(
       <Route  path="telesales" element={<TeleSales/>}/>
       <Route path="login" element={<Login/>}/>
       <Route path="users" element={<UsersList/>} />
-      <Route path="campaigns" element={<MyCampaigns/>} />
+      <Route path="campaignsindia" element={<MyCampaignsIndia/>} />
+      <Route path="campaignsbooks" element={<MyCampaignsBooks/>} />
       <Route path="assigned/:city" element={<AssignedCampaigns />} />
-      <Route path="leads" element={<MyLeads />} />
-      <Route path="new_leads" element={<NewLeadsList />} />
-      <Route path="followup_leads" element={<FollowUpLeads />} />
+      <Route path="leadsindia" element={<MyLeadsIndia />} />
+      <Route path="new_leadsindia" element={<NewLeadsListIndia />} />
+      <Route path="followup_leadsindia" element={<FollowUpLeadsIndia />} />
       <Route path="loader" element={<Loader/>} />
-      <Route path="connected_leads" element={<ConnectedLeads/>} />
-      <Route path="notconnected_leads" element={<NotConnectedLeads/>} />
+      <Route path="connected_leadsindia" element={<ConnectedLeadsIndia/>} />
+      <Route path="notconnected_leadsindia" element={<NotConnectedLeadsIndia/>} />
       <Route path="mytasks" element={<MyTasks/>} />
       <Route path="hot_leads" element={<HotLeads/>} />
       <Route path="warm_leads" element={<WarmLeads/>} />
       <Route path="cold_leads" element={<ColdLeads/>} />
+      <Route path="campaignindiaorbooks" element={<CampaignIndiaorBooks/>} />
+      <Route path="leadsindiaorbooks" element={<LeadIndiaorBooks/>} />
+      <Route path="leadsbooks" element={<MyLeadsBooks/>} />
       
 
-
-
+      
     </Route>
     </>
   )

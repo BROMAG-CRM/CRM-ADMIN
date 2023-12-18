@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function MyLeads() {
+function MyLeadsBooks() {
   const cardData = [
     {
       name: "New Leads",
@@ -18,10 +18,10 @@ function MyLeads() {
   ];
 
   const links = [
-    "/new_leads",
-    "/followup_leads",
-    "/connected_leads",
-    "/notconnected_leads",
+    "/new_leadsindia",
+    "/followup_leadsindia",
+    "/connected_leadsindia",
+    "/notconnected_leadsindia",
   ];
 
   return (
@@ -72,4 +72,4 @@ function MyLeads() {
   );
 }
 
-export default MyLeads;
+export default MyLeadsBooks;

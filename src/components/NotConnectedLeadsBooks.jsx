@@ -1,5 +1,4 @@
-import { UploadOutlined } from "@ant-design/icons";
-import { Button, Input, Table, Upload, message} from "antd";
+import { Table} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
@@ -9,15 +8,15 @@ const token = localStorage.getItem("token");
 
 
 
-
-
-function ConnectedLeads() {
+function NotConnectedLeadsIndia() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
+ 
+
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/connectedleadsdata`, {
+const response = await axios.get(`${url}/notconnectedleadsdataindia`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -50,11 +49,7 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
       key: "restaurantMobileNumber",
       align: "center",
       render: (data) => {
-        return (
-          <a href={`tel:${data}`} className="text-blue-500">
-            {data}
-          </a>
-        );
+        return <p>{data}</p>;
       },
     },
     {
@@ -90,11 +85,7 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
       key: "contactPersonNumber",
       align: "center",
       render: (data) => {
-        return (
-          <a href={`tel:${data}`} className="text-blue-500">
-            {data}
-          </a>
-        );
+        return <p>{data}</p>;
       },
     },
     {
@@ -106,70 +97,10 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
         return <p>{data}</p>;
       },
     },
-    {
-      title: <h1>Upload Call Record</h1>,
-      dataIndex: "audio",
-      key: "audio",
-      align: "center",
-      render: (data, record) => {
-        const props = {
-          name: 'file',
-
-          action: `${url}/uploadcallrecord/${record._id}`, 
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          onChange(info) {
-            if (info.file.status !== 'uploading') {
-              console.log(info.file, info.fileList);
-            }
-            if (info.file.status === 'done') {
-              message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-              message.error(`${info.file.name} file upload failed.`);
-            }
-          },
-        };
-  
-        const onUpload = async (options) => {
-          const { file } = options;
-  
-          const formData = new FormData();
-          formData.append('file', file);
-  
-          try {
-            await axios.post(`${url}/uploadcallrecord/${record._id}`, formData, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data',
-              },
-            });
-            message.success(`${file.name} file uploaded successfully`);
-          } catch (error) {
-            message.error(`${file.name} file upload failed.`);
-          }
-        };
-  
-        return (
-          <Upload {...props} customRequest={onUpload} showUploadList={false}>
-            <Button icon={<UploadOutlined />}>Upload Audio</Button>
-          </Upload>
-        );
-      },
-    },
-  ]
+  ];
 
   return (
     <>
-
-<style>
-      {`
-        .no-hover:hover {
-          pointer-events: none;
-          cursor: default;
-        }
-      `}
-    </style>
 
 <div className="pl-[18vw]  pt-14 w-screen">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
@@ -189,4 +120,4 @@ const response = await axios.get(`${url}/connectedleadsdata`, {
   );
 }
 
-export default ConnectedLeads;
+export default NotConnectedLeadsIndia;

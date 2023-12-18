@@ -1,25 +1,27 @@
 import { Link } from "react-router-dom";
 
-function MyTasks() {
+function MyLeadsIndia() {
   const cardData = [
     {
-      name: "Hot",
-      description: "",
+      name: "New Leads",
+      description: "Leads, which haven't been called so far",
     },
     {
-      name: "Warm",
-      description: "",
+      name: "Follow-up Leads",
+      description: "Leads, which are scheduled to be called later",
     },
-    { 
-    name: "Cold", 
-    description: "" 
+    { name: "Connected Leads", description: "Leads, which are connected" },
+    {
+      name: "Not Connected Leads",
+      description: "Leads, which weren't connected in the previous attempt",
     },
   ];
 
   const links = [
-    "/hot_leads",
-    "/warm_leads",
-    "/cold_leads",
+    "/new_leadsindia",
+    "/followup_leadsindia",
+    "/connected_leadsindia",
+    "/notconnected_leadsindia",
   ];
 
   return (
@@ -27,7 +29,7 @@ function MyTasks() {
       <div className="pl-6 w-[80vw]">
         <div className="text-center mb-6 w-full mt-3">
           <h1 className="text-3xl font-semibold bg-black text-white p-5 w-full">
-            My Tasks
+            My Leads
           </h1>
         </div>
 
@@ -70,4 +72,4 @@ function MyTasks() {
   );
 }
 
-export default MyTasks;
+export default MyLeadsIndia;
