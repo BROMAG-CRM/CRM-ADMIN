@@ -5,7 +5,7 @@ const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 import { get } from "lodash";
 
-function MyCampaigns() {
+function MyCampaignsIndia() {
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
 
@@ -15,7 +15,7 @@ function MyCampaigns() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/getassigned`, {
+      const response = await axios.get(`${url}/getassignedindia`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -111,4 +111,4 @@ function MyCampaigns() {
   );
 }
 
-export default MyCampaigns;
+export default MyCampaignsIndia;
