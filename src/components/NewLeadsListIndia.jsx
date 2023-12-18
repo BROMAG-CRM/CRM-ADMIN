@@ -10,7 +10,7 @@ const { Option } = Select;
 
 
 
-function NewLeadsList() {
+function NewLeadsListIndia() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [activeRow, setActiveRow] = useState(null);
@@ -23,6 +23,8 @@ function NewLeadsList() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [form] = Form.useForm();
   const [updated,setUpdated] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+
 
 
 
@@ -30,7 +32,7 @@ function NewLeadsList() {
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getnewleadsdata`, {
+const response = await axios.get(`${url}/getnewleadsdataindia`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -163,6 +165,16 @@ const handleAddFeature = async() => {
 
   const columnsData = [
     {
+      title: <h1>Serial Number</h1>,
+      dataIndex: "serialNumber",
+      key: "serialNumber",
+      align: "center",
+      render: (text, record, index) => {
+        const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
+        return (currentPage - 1) * pageSize + index + 1;
+      },
+    },
+    {
       title: <h1>Brand Name</h1>,
       dataIndex: "brandName",
       key: "brandName",
@@ -273,6 +285,10 @@ const handleAddFeature = async() => {
       
   ];
 
+  const handleTableChange = (pagination) => {
+    setCurrentPage(pagination.current);
+  };
+
   return (
     <>
 
@@ -286,6 +302,8 @@ const handleAddFeature = async() => {
             scroll={{ x: 1500 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
+            onChange={handleTableChange}
+
           />
         </div>
       </div>
@@ -336,4 +354,4 @@ const handleAddFeature = async() => {
   );
 }
 
-export default NewLeadsList;
+export default NewLeadsListIndia;

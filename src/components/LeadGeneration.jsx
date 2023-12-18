@@ -19,7 +19,10 @@ function LeadGeneration() {
   const [exportingPartnership, setExportingPartnership] = useState(false);
   const [exportingPvtLmtd, setExportingPvtLmtd] = useState(false);
   const [exportingProprietorship, setExportingProprietorship] = useState(false);
-  
+  const [currentPage1, setCurrentPage1] = useState(1);
+  const [currentPage2, setCurrentPage2] = useState(1);
+  const [currentPage3, setCurrentPage3] = useState(1);
+
 
   const fetchData = async () => {
     try {
@@ -241,6 +244,16 @@ function LeadGeneration() {
 
 
   const pvtLmtdcolumns = [
+    {
+      title: <h1>Serial Number</h1>,
+      dataIndex: "serialNumber",
+      key: "serialNumber",
+      align: "center",
+      render: (text, record, index) => {
+        const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
+        return (currentPage1 - 1) * pageSize + index + 1;
+      },
+    },
     {
       title: <h1>Employee Name</h1>,
       dataIndex: "EmployeeName",
@@ -635,6 +648,16 @@ function LeadGeneration() {
 
   const Partnershipcolumns = [
     {
+      title: <h1>Serial Number</h1>,
+      dataIndex: "serialNumber",
+      key: "serialNumber",
+      align: "center",
+      render: (text, record, index) => {
+        const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
+        return (currentPage2 - 1) * pageSize + index + 1;
+      },
+    },
+    {
       title: <h1>Employee Name</h1>,
       dataIndex: "EmployeeName",
       key: "EmployeeName",
@@ -1013,6 +1036,15 @@ function LeadGeneration() {
     },
   ];
 
+  const handleTableChange1 = (pagination) => {
+    setCurrentPage1(pagination.current);
+  };
+  const handleTableChange2 = (pagination) => {
+    setCurrentPage2(pagination.current);
+  };
+  const handleTableChange3 = (pagination) => {
+    setCurrentPage3(pagination.current);
+  };
 
   return (
     <div className="pl-[19vw]  pt-14 w-screen">
@@ -1048,6 +1080,7 @@ function LeadGeneration() {
             scroll={{ x: 5000 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
+            onChange={handleTableChange1}
           />
         </div>
         <div className="pt-10">
@@ -1078,6 +1111,7 @@ function LeadGeneration() {
             scroll={{ x: 4000 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
+            onChange={handleTableChange2}
           />
         </div>
         <div className="pt-10">
@@ -1108,6 +1142,7 @@ function LeadGeneration() {
             scroll={{ x: 4000 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
+            onChange={handleTableChange3}
           />
         </div>
       </div>

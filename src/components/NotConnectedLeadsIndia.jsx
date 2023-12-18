@@ -8,15 +8,17 @@ const token = localStorage.getItem("token");
 
 
 
-function NotConnectedLeads() {
+function NotConnectedLeadsIndia() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
  
 
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/notconnectedleadsdata`, {
+const response = await axios.get(`${url}/notconnectedleadsdataindia`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -34,6 +36,16 @@ const response = await axios.get(`${url}/notconnectedleadsdata`, {
 
 
   const columnsData = [
+    {
+      title: <h1>Serial Number</h1>,
+      dataIndex: "serialNumber",
+      key: "serialNumber",
+      align: "center",
+      render: (text, record, index) => {
+        const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
+        return (currentPage - 1) * pageSize + index + 1;
+      },
+    },
     {
       title: <h1>Brand Name</h1>,
       dataIndex: "brandName",
@@ -99,6 +111,10 @@ const response = await axios.get(`${url}/notconnectedleadsdata`, {
     },
   ];
 
+  const handleTableChange = (pagination) => {
+    setCurrentPage(pagination.current);
+  };
+
   return (
     <>
 
@@ -112,6 +128,7 @@ const response = await axios.get(`${url}/notconnectedleadsdata`, {
             scroll={{ x: 2000 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
+            onChange={handleTableChange}
           />
         </div>
       </div>
@@ -120,4 +137,4 @@ const response = await axios.get(`${url}/notconnectedleadsdata`, {
   );
 }
 
-export default NotConnectedLeads;
+export default NotConnectedLeadsIndia;
