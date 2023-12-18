@@ -26,5 +26,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
+    - run: cp /home/ubuntu/devenvcrm/.env /home/ubuntu/devcrm/dev/CRM-ADMIN/CRM-ADMIN
     - run: npm run build --if-present
     
