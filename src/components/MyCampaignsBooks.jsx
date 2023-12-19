@@ -46,8 +46,7 @@ function MyCampaignsBooks() {
                 {city} Leads
               </p>
               <div className="flex flex-col lg:flex-row justify-around gap-5">
-                <Link
-                  to={`/assigned/${encodeURIComponent(city)}`}
+                <div
                   className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
@@ -56,9 +55,8 @@ function MyCampaignsBooks() {
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
                     {data.filter((form) => form.city === city).length}
                   </p>
-                </Link>
-                <Link
-                  to="/opened"
+                </div>
+                <div
                   className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl flex font-extrabold items-center justify-center">
@@ -67,9 +65,8 @@ function MyCampaignsBooks() {
                   <p className="text-white text-xl flex font-extrabold items-center justify-center">
                     0
                   </p>
-                </Link>
-                <Link
-                  to="/in-progress"
+                </div>
+                <div
                   className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
@@ -78,9 +75,8 @@ function MyCampaignsBooks() {
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
                     0
                   </p>
-                </Link>
-                <Link
-                  to="/connected"
+                </div>
+                <div
                   className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
@@ -89,9 +85,8 @@ function MyCampaignsBooks() {
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
                     0
                   </p>
-                </Link>
-                <Link
-                  to="/notconnected"
+                </div>
+                <div
                   className="w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
@@ -100,7 +95,7 @@ function MyCampaignsBooks() {
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
                     0
                   </p>
-                </Link>
+                </div>
               </div>
             </div>
             ))}

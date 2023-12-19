@@ -1,74 +1,148 @@
-import { Link } from "react-router-dom";
+import { Table} from "antd";
+import axios from "axios";
+import { get} from "lodash";
+import { useEffect, useState, useRef } from "react";
+const url = import.meta.env.VITE_REACT_APP_URL;
+const token = localStorage.getItem("token");
+
+
+
 
 function MyLeadsBooks() {
-  const cardData = [
+  const [data, setData] = useState([]);
+  const tableRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+ 
+
+
+const fetchData = async () => {
+    try {
+const response = await axios.get(`${url}/myleadsbooks`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+
+      setData(get(response, "data.data", []));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
+  const columnsData = [
     {
-      name: "New Leads",
-      description: "Leads, which haven't been called so far",
+      title: <h1>Serial Number</h1>,
+      dataIndex: "serialNumber",
+      key: "serialNumber",
+      align: "center",
+      render: (text, record, index) => {
+        const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
+        return (currentPage - 1) * pageSize + index + 1;
+      },
     },
     {
-      name: "Follow-up Leads",
-      description: "Leads, which are scheduled to be called later",
+      title: <h1>Brand Name</h1>,
+      dataIndex: "brandName",
+      key: "brandName",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
     },
-    { name: "Connected Leads", description: "Leads, which are connected" },
     {
-      name: "Not Connected Leads",
-      description: "Leads, which weren't connected in the previous attempt",
+      title: <h1>City</h1>,
+      dataIndex: "city",
+      key: "city",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
     },
+    {
+      title: <h1>Mobile Number</h1>,
+      dataIndex: "restaurantMobileNumber",
+      key: "restaurantMobileNumber",
+      align: "center",
+      render: (data) => {
+        return (
+          <a href={`tel:${data}`} className="text-blue-500">
+            {data}
+          </a>
+        );
+      },
+    },
+    {
+      title: <h1>Firm Name</h1>,
+      dataIndex: "firmName",
+      key: "firmName",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>Contact Person Name</h1>,
+      dataIndex: "contactPersonname",
+      key: "contactPersonname",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>Contact Person Designation</h1>,
+      dataIndex: "designation",
+      key: "designation",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>Contact Person Mobile Number</h1>,
+      dataIndex: "contactPersonNumber",
+      key: "contactPersonNumber",
+      align: "center",
+      render: (data) => {
+        return (
+          <a href={`tel:${data}`} className="text-blue-500">
+            {data}
+          </a>
+        );
+      },
+    },
+    
   ];
 
-  const links = [
-    "/new_leadsindia",
-    "/followup_leadsindia",
-    "/connected_leadsindia",
-    "/notconnected_leadsindia",
-  ];
+  const handleTableChange = (pagination) => {
+    setCurrentPage(pagination.current);
+  };
 
   return (
-    <div className="pl-[18vw]  pt-12 w-screen">
-      <div className="pl-6 w-[80vw]">
-        <div className="text-center mb-6 w-full mt-3">
-          <h1 className="text-3xl font-semibold bg-black text-white p-5 w-full">
-            My Leads
-          </h1>
-        </div>
+    <>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 p-4 sm:p-10">
-          {cardData.map((card, index) => (
-            <Link
-              key={index}
-              to={`${links[index]}`}
-              className="text-decoration-none"
-            >
-              <div className="p-4 bg-amber-600 h-48 border flex flex-col justify-center items-center shadow-xl border-gray-200 transition-transform duration-700 hover:bg-amber-700 hover:border-gray-300">
-                <div className="flex items-center">
-                  <h2 className="text-white text-lg md:text-xl lg:text-2xl font-semibold mb-2 cursor-pointer">
-                    {card.name}
-                  </h2>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="w-6 text-white h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 ml-4 mb-2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                    />
-                  </svg>
-                </div>
-                <p className="text-sm text-white md:text-base lg:text-lg">
-                  {card.description}
-                </p>
-              </div>
-            </Link>
-          ))}
+<div className="pl-[18vw]  pt-14 w-screen">
+      <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
+      <div className="pl-6 w-[80vw]">
+        <div className="pt-10">
+          <Table
+            columns={columnsData}
+            dataSource={data}
+            scroll={{ x: 2000 }}
+            ref={tableRef}
+            pagination={{ pageSize: 5 }}
+            onChange={handleTableChange}
+          />
         </div>
       </div>
     </div>
+    </>
   );
 }
 

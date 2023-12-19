@@ -6,8 +6,13 @@ const token = localStorage.getItem("token");
 import { get } from "lodash";
 
 function MyCampaignsIndia() {
-  const [data, setData] = useState([]);
+  const [newLeadsCount, setNewLeadsCount] = useState();  
+  const [openedCount, setOpenedCount] = useState();  
+  const [followUpCount, setFollowUpCount] = useState();
+  const [connectedCount, setConnectedCount] = useState();
+  const [notConnectedCount, setNotConnectedCount] = useState();
   const [cities, setCities] = useState([]);
+
 
   useEffect(() => {
     fetchData();
@@ -20,7 +25,11 @@ function MyCampaignsIndia() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setData(get(response, "data.data.forms", []));
+      setNewLeadsCount(get(response, "data.data.newLeadsCount"));
+      setOpenedCount(get(response, "data.data.openedCount"));
+      setFollowUpCount(get(response, "data.data.followUpCount"));
+      setConnectedCount(get(response, "data.data.connectedCount"));
+      setNotConnectedCount(get(response, "data.data.notConnectedCount"));
       setCities(get(response, "data.data.uniqueCities"));
     } catch (err) {
       console.log(err);
@@ -46,61 +55,56 @@ function MyCampaignsIndia() {
                 {city} Leads
               </p>
               <div className="flex flex-col lg:flex-row justify-around gap-5">
-                <Link
-                  to={`/assigned/${encodeURIComponent(city)}`}
+                <div
                   className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
                     New Leads
                   </p>
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    {data.filter((form) => form.city === city).length}
+                    {newLeadsCount}
                   </p>
-                </Link>
-                <Link
-                  to="/opened"
+                </div>
+                <div
                   className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl flex font-extrabold items-center justify-center">
                     Opened
                   </p>
                   <p className="text-white text-xl flex font-extrabold items-center justify-center">
-                    0
+                    {openedCount}
                   </p>
-                </Link>
-                <Link
-                  to="/in-progress"
+                </div>
+                <div
                   className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
                     Follow Up
                   </p>
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    0
+                    {followUpCount}
                   </p>
-                </Link>
-                <Link
-                  to="/connected"
+                </div>
+                <div
                   className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
                     Connected
                   </p>
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    0
+                    {connectedCount}
                   </p>
-                </Link>
-                <Link
-                  to="/notconnected"
+                </div>
+                <div
                   className="w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
                 >
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
                     Not Connected
                   </p>
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    0
+                    {notConnectedCount}
                   </p>
-                </Link>
+                </div>
               </div>
             </div>
             ))}

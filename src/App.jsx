@@ -9,7 +9,6 @@ import { createBrowserRouter,createRoutesFromElements,Route,RouterProvider,} fro
 import Dashboard from "./components/Dashboard"
 import UsersList from "./components/UsersList"
 import MyCampaignsIndia from "./components/MyCampaignsIndia";
-import AssignedCampaigns from "./components/AssignedCampaigns";
 import MyLeadsIndia from "./components/MyLeadsIndia";
 import NewLeadsListIndia from "./components/NewLeadsListIndia";
 import FollowUpLeadsIndia from "./components/FollowUpLeadsIndia";
@@ -51,7 +50,6 @@ const router=createBrowserRouter(
       <Route path="users" element={<UsersList/>} />
       <Route path="campaignsindia" element={<MyCampaignsIndia/>} />
       <Route path="campaignsbooks" element={<MyCampaignsBooks/>} />
-      <Route path="assigned/:city" element={<AssignedCampaigns />} />
       <Route path="leadsindia" element={<MyLeadsIndia />} />
       <Route path="new_leadsindia" element={<NewLeadsListIndia />} />
       <Route path="followup_leadsindia" element={<FollowUpLeadsIndia />} />
