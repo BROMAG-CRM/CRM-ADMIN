@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
@@ -6,8 +5,13 @@ const token = localStorage.getItem("token");
 import { get } from "lodash";
 
 function MyCampaignsBooks() {
-  const [data, setData] = useState([]);
+  const [newLeadsCount, setNewLeadsCount] = useState();  
+  const [openedCount, setOpenedCount] = useState();  
+  const [followUpCount, setFollowUpCount] = useState();
+  const [connectedCount, setConnectedCount] = useState();
+  const [notConnectedCount, setNotConnectedCount] = useState();
   const [cities, setCities] = useState([]);
+
 
   useEffect(() => {
     fetchData();
@@ -20,7 +24,11 @@ function MyCampaignsBooks() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setData(get(response, "data.data.forms", []));
+      setNewLeadsCount(get(response, "data.data.newLeadsCount"));
+      setOpenedCount(get(response, "data.data.openedCount"));
+      setFollowUpCount(get(response, "data.data.followUpCount"));
+      setConnectedCount(get(response, "data.data.connectedCount"));
+      setNotConnectedCount(get(response, "data.data.notConnectedCount"));
       setCities(get(response, "data.data.uniqueCities"));
     } catch (err) {
       console.log(err);
@@ -53,7 +61,7 @@ function MyCampaignsBooks() {
                     New Leads
                   </p>
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    {data.filter((form) => form.city === city).length}
+                    {newLeadsCount}
                   </p>
                 </div>
                 <div
@@ -63,7 +71,7 @@ function MyCampaignsBooks() {
                     Opened
                   </p>
                   <p className="text-white text-xl flex font-extrabold items-center justify-center">
-                    0
+                    {openedCount}
                   </p>
                 </div>
                 <div
@@ -73,7 +81,7 @@ function MyCampaignsBooks() {
                     Follow Up
                   </p>
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    0
+                    {followUpCount}
                   </p>
                 </div>
                 <div
@@ -83,7 +91,7 @@ function MyCampaignsBooks() {
                     Connected
                   </p>
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    0
+                    {connectedCount}
                   </p>
                 </div>
                 <div
@@ -93,7 +101,7 @@ function MyCampaignsBooks() {
                     Not Connected
                   </p>
                   <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    0
+                    {notConnectedCount}
                   </p>
                 </div>
               </div>
