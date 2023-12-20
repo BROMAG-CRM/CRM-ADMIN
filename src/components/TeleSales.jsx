@@ -1,17 +1,14 @@
 import { Link } from "react-router-dom";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
-import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
+
 
 function TeleSales() {
   const names = [
     "My Tasks",
     "My Report",
-    "Call Logs",
-    "Walk-in Leads",
   ];
-  const links = ["/mytasks"];
+  const links = ["/mytasks","/myreport"]
 
   return (
     <div className="pl-[18vw]  pt-7 w-screen">
@@ -22,8 +19,6 @@ function TeleSales() {
               {[
                 AssignmentIcon,
                 AssessmentIcon,
-                ContactPhoneIcon,
-                DirectionsWalkIcon,
               ].map((Icon, index) => (
                 <Link
                   key={index}

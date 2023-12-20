@@ -250,8 +250,8 @@ const handleAddFeature = async() => {
     },    
     {
       title: <h1>Status</h1>,
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "leadStatus",
+      key: "leadStatus",
       align: "center",
       render: (data, record) => (
         <>
@@ -284,8 +284,7 @@ const handleAddFeature = async() => {
       render: (data, record) => {
         const props = {
           name: 'file',
-
-          action: `${url}/uploadcallrecord/${record._id}`, 
+          action: `${url}/uploadcallrecord/${record._id}`,
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -300,54 +299,65 @@ const handleAddFeature = async() => {
             }
           },
         };
-  
+    
         const onUpload = async (options) => {
           const { file } = options;
-        
+    
           const formData = new FormData();
           formData.append('file', file);
-        
+    
           try {
-            const response = await axios.post(`${url}/uploadcallrecord/${record._id}`, formData, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data',
-              },
-            });
-        
+            const response = await axios.post(
+              `${url}/uploadcallrecord/${record._id}`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'multipart/form-data',
+                },
+              }
+            );
+    
             const newFileUrl = response.data.fileUrl;
-        
-            // Update the data state with the new audio file URL after a short delay
-            setTimeout(() => {
-              setData((prevData) => {
-                const newData = prevData.map((item) =>
-                  item._id === record._id ? { ...item, callRecord: newFileUrl } : item
-                );
-                return newData;
-              });
-            }, 100);
-        
-        
+    
+            // Update the data state with the new audio file URL
+            setData((prevData) => {
+              const newData = prevData.map((item) =>
+                item._id === record._id
+                  ? { ...item, callRecord: [...(item.callRecord || []), newFileUrl] }
+                  : item
+              );
+              return newData;
+            });
+    
             message.success(`${file.name} file uploaded successfully`);
           } catch (error) {
             message.error(`${file.name} file upload failed.`);
           }
         };
-        
-  
+    
         return (
-          <Upload {...props} customRequest={onUpload} showUploadList={false}>
-            <Button icon={<UploadOutlined />}>Upload Audio</Button>
-          </Upload>
+          <div>
+           
+              <Upload {...props} customRequest={onUpload} showUploadList={false}>
+                <Button icon={<UploadOutlined />}>Upload Audio</Button>
+              </Upload>
+            
+          </div>
         );
       },
     },
     {
-      title: <h1>Play Audio</h1>,
+      title: <h1>Play Call Records</h1>,
       dataIndex: "callRecord",
       key: "callRecord",
       align: "center",
       render: (data) => {
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          console.error('Invalid or empty data array:', data);
+          return null;
+        }
+    
         const mimeTypes = {
           mp3: 'audio/mp3',
           ogg: 'audio/ogg',
@@ -362,21 +372,37 @@ const handleAddFeature = async() => {
           return '';
         };
     
-        const fileExtension = getFileExtension(data);
-        const fileType = mimeTypes[fileExtension] || 'audio/*';
-    
-        // Generate a unique key based on the audio URL
-        const key = data || 'defaultKey';
-    
         return (
-          <audio controls key={key}>
-            <source src={encodeURI(data)} type={fileType} />
-            Your browser does not support the audio tag.
-          </audio>
+          <div>
+            {data.map((audioUrl, index) => {
+              if (!audioUrl) {
+                console.error('Invalid audio URL at index', index);
+                return null;
+              }
+    
+              const fileExtension = getFileExtension(audioUrl);
+              const fileType = mimeTypes[fileExtension] || 'audio/*';
+        
+              // Generate a unique key based on the audio URL
+              const key = `audioKey_${index}`;
+        
+              console.log('Audio URL:', audioUrl);
+        
+              return (
+                <div key={key}>
+                  <audio controls>
+                    <source src={audioUrl} type={fileType} />
+                    Your browser does not support the audio tag.
+                  </audio>
+                </div>
+              );
+            })}
+          </div>
         );
       },
     }
-
+    
+    
     
   ];
 
@@ -395,7 +421,7 @@ const handleAddFeature = async() => {
           <Table
             columns={columnsData}
             dataSource={data}
-            scroll={{ x: 2000 }}
+            scroll={{ x: 2500 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
             onChange={handleTableChange}

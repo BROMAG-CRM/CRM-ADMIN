@@ -3,23 +3,23 @@ import { Link } from "react-router-dom";
 function MyTasks() {
   const cardData = [
     {
-      name: "Hot",
+      name: "Progress",
       description: "",
     },
     {
-      name: "Warm",
+      name: "Connected",
       description: "",
     },
     { 
-    name: "Cold", 
+    name: "Not Connected", 
     description: "" 
     },
   ];
 
   const links = [
-    "/hot_leads",
+    "/progress_leads",
     "/warm_leads",
-    "/cold_leads",
+    "/notconnected_leadsindia",
   ];
 
   return (

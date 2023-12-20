@@ -24,13 +24,13 @@ import Loader from "./components/Loader";
 import ConnectedLeadsIndia from "./components/ConnectedLeadsIndia";
 import NotConnectedLeadsIndia from "./components/NotConnectedLeadsIndia";
 import MyTasks from "./components/MyTasks";
-import HotLeads from "./components/HotLeads";
+import HotLeads from "./components/ProgressLeads";
 import WarmLeads from "./components/WarmLeads";
-import ColdLeads from "./components/ColdLeads";
 import CampaignIndiaorBooks from "./components/CampaignIndiaorBooks";
 import MyCampaignsBooks from "./components/MyCampaignsBooks";
 import LeadIndiaorBooks from "./components/LeadIndiaorBooks";
 import MyLeadsBooks from "./components/MyLeadsBooks";
+import MyReport from "./components/MyReport";
 
 
 
@@ -57,12 +57,12 @@ const router=createBrowserRouter(
       <Route path="connected_leadsindia" element={<ConnectedLeadsIndia/>} />
       <Route path="notconnected_leadsindia" element={<NotConnectedLeadsIndia/>} />
       <Route path="mytasks" element={<MyTasks/>} />
-      <Route path="hot_leads" element={<HotLeads/>} />
+      <Route path="progress_leads" element={<HotLeads/>} />
       <Route path="warm_leads" element={<WarmLeads/>} />
-      <Route path="cold_leads" element={<ColdLeads/>} />
       <Route path="campaignindiaorbooks" element={<CampaignIndiaorBooks/>} />
       <Route path="leadsindiaorbooks" element={<LeadIndiaorBooks/>} />
       <Route path="leadsbooks" element={<MyLeadsBooks/>} />
+      <Route path="myreport" element={<MyReport/>} />
       
 
       
