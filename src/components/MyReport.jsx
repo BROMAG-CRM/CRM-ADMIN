@@ -1,11 +1,12 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Modal, Table, Upload, message} from "antd";
+import { Button, Modal, Table, Upload, message,Form, Input, Select} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 import FeatureModal from "./FeatureModal";
+import { Option } from "antd/es/mentions";
 
 
 
@@ -13,10 +14,18 @@ function MyReport() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
+  
+  const [update,setUpdate] = useState(false)
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [form] = Form.useForm();
+  const [modalVisible, setModalVisible] = useState(false);
 
 
+console.log(data)
+;
 const fetchData = async () => {
     try {
 const response = await axios.get(`${url}/progressleadsdata`, {
@@ -33,8 +42,61 @@ const response = await axios.get(`${url}/progressleadsdata`, {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [update]);
 
+
+  //business status
+const handleBusinessStatus = async (record)=>{
+
+
+  const id = record._id
+
+  const res = await axios.post(
+    `${url}/businessstatus`,
+    {userId:id,newBusinessStatus:"bdm"},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  console.log(res);
+  setUpdate(!update)
+}
+
+
+  //feature function
+  const handleButtonClick = (record) => {
+    setSelectedRowData(record);
+    setModalVisible(true);
+  };
+  
+  const handleModalClose = () => {
+    setModalVisible(false);
+    form.resetFields();
+  };
+  
+  const handleAddFeature = async() => {
+    form.validateFields().then(async(values) => {
+  
+      form.resetFields(['featureName', 'featureDescription']);
+      handleModalClose();
+  
+      console.log(values);
+       await axios.post(
+        `${url}/addfeature`,
+        {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+     setUpdate(!update)
+
+    });
+  };
+  
 
   const columnsData = [
     {
@@ -173,31 +235,6 @@ const response = await axios.get(`${url}/progressleadsdata`, {
       },
     },
     {
-      title: <h1>Features</h1>,
-      dataIndex: "features",
-      key: "features",
-      align: "center",
-      render: (data) => {
-
-        const handleViewFeatures = (features) => {
-          setSelectedFeatures(features);
-          setModalOpen(true);
-        };
-    
-        const handleCloseModal = () => {
-          setModalOpen(false);
-          setSelectedFeatures([]);
-        };
-    
-        return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
-            <Button onClick={() => handleViewFeatures(data)}>View Features</Button>
-            <FeatureModal isOpen={isModalOpen} onClose={handleCloseModal} features={selectedFeatures} />
-          </div>
-        );
-      },
-    },
-    {
       title: <h1>Upload Video Record</h1>,
       dataIndex: "audio",
       key: "audio",
@@ -205,7 +242,7 @@ const response = await axios.get(`${url}/progressleadsdata`, {
       render: (data, record) => {
         const props = {
           name: 'file',
-          action: `${url}/uploadcallrecord/${record._id}`,
+          action: `${url}/uploadvideorecord/${record._id}`,
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -229,7 +266,7 @@ const response = await axios.get(`${url}/progressleadsdata`, {
     
           try {
             const response = await axios.post(
-              `${url}/uploadcallrecord/${record._id}`,
+              `${url}/uploadvideorecord/${record._id}`,
               formData,
               {
                 headers: {
@@ -268,6 +305,17 @@ const response = await axios.get(`${url}/progressleadsdata`, {
         );
       },
     },
+    {
+      title: <h1>Add Features</h1>,
+      dataIndex: "features",
+      key: "features",
+      align: "center",
+      render: (data, record) => (
+        <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
+          Add
+        </Button>
+      ),
+    }, 
     {
       title: <h1>Play Video Record</h1>,
       dataIndex: "videoRecord",
@@ -321,6 +369,42 @@ const response = await axios.get(`${url}/progressleadsdata`, {
         );
       },
     },
+    {
+      title: <h1>Features</h1>,
+      dataIndex: "features",
+      key: "features",
+      align: "center",
+      render: (data) => {
+
+        const handleViewFeatures = (features) => {
+          setSelectedFeatures(features);
+          setModalOpen(true);
+        };
+    
+        const handleCloseModal = () => {
+          setModalOpen(false);
+          setSelectedFeatures([]);
+        };
+    
+        return (
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewFeatures(data)}>View Features</Button>
+            <FeatureModal isOpen={isModalOpen} onClose={handleCloseModal} features={selectedFeatures} />
+          </div>
+        );
+      },
+    },
+    {
+      title: <h1>Move to BDM</h1>,
+      dataIndex: "businessStatus",
+      key: "businessStatus",
+      align: "center",
+      render: (data, record) => (
+        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleBusinessStatus(record)}>
+          Okay
+        </Button>
+      ),
+    }, 
     
   ];
 
@@ -338,13 +422,49 @@ const response = await axios.get(`${url}/progressleadsdata`, {
           <Table
             columns={columnsData}
             dataSource={data}
-            scroll={{ x: 2000 }}
+            scroll={{ x: 3000 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
             onChange={handleTableChange}
           />
         </div>
       </div>
+
+      <Modal
+        title="Add New Feature"
+        open={modalVisible}
+        onCancel={handleModalClose}
+        footer={[
+          <Button key="cancel" onClick={handleModalClose}>
+            Cancel
+          </Button>,
+          <Button key="addFeature" type="primary" style={{ backgroundColor: "green" }} onClick={handleAddFeature}>
+            Add Feature
+          </Button>,
+        ]}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item label="Feature" name="feature" rules={[{ required: true, message: 'Please select a feature' }]}>
+            <Select placeholder="Select a feature description">
+              <Option value="Online Order">Online Order</Option>
+              <Option value="Dining">Dining</Option>
+              <Option value="Call for Order">Call for Order</Option>
+              <Option value="Take Away">Take Away</Option>
+              <Option value="Content Banner">Content Banner</Option>
+              <Option value="Top Notch">Top Notch</Option>
+              <Option value="Vegetarian">Vegetarian</Option>
+              <Option value="Non Vegetarian">Non Vegetarian</Option>
+              <Option value="Scratch Card">Scratch Card</Option>
+              <Option value="Food Review">Food Review</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="Feature Description" name="featureDescription" rules={[{ required: true, message: 'Please enter a feature description' }]}>
+            <Input.TextArea />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+
     </div>
     </>
   );

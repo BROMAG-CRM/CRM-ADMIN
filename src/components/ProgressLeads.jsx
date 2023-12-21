@@ -55,19 +55,6 @@ const response = await axios.get(`${url}/progressleadsdata`, {
       },
     },
     {
-      title: <h1>Mobile Number</h1>,
-      dataIndex: "restaurantMobileNumber",
-      key: "restaurantMobileNumber",
-      align: "center",
-      render: (data) => {
-        return (
-          <a href={`tel:${data}`} className="text-blue-500">
-            {data}
-          </a>
-        );
-      },
-    },
-    {
       title: <h1>Firm Name</h1>,
       dataIndex: "firmName",
       key: "firmName",
@@ -86,110 +73,25 @@ const response = await axios.get(`${url}/progressleadsdata`, {
       },
     },
     {
-      title: <h1>Contact Person Designation</h1>,
-      dataIndex: "designation",
-      key: "designation",
-      align: "center",
-      render: (data) => {
-        return <p>{data}</p>;
-      },
-    },
-    {
       title: <h1>Contact Person Mobile Number</h1>,
       dataIndex: "contactPersonNumber",
       key: "contactPersonNumber",
       align: "center",
       render: (data) => {
         return (
-          <a href={`tel:${data}`} className="text-blue-500">
+          <p>
             {data}
-          </a>
+          </p>
         );
       },
     },
     {
-      title: <h1>Description</h1>,
-      dataIndex: "leadDescription",
-      key: "leadDescription",
+      title: <h1>City</h1>,
+      dataIndex: "city",
+      key: "city",
       align: "center",
       render: (data) => {
         return <p>{data}</p>;
-      },
-    },
-    {
-      title: <h1>Play Call Records</h1>,
-      dataIndex: "callRecord",
-      key: "callRecord",
-      align: "center",
-      render: (data) => {
-        if (!data || !Array.isArray(data) || data.length === 0) {
-          console.error('Invalid or empty data array:', data);
-          return null;
-        }
-    
-        const mimeTypes = {
-          mp3: 'audio/mp3',
-          ogg: 'audio/ogg',
-          wav: 'audio/wav',
-          // Add more supported audio formats as needed
-        };
-    
-        const getFileExtension = (filename) => {
-          if (filename) {
-            return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
-          }
-          return '';
-        };
-    
-        return (
-          <div>
-            {data.map((audioUrl, index) => {
-              if (!audioUrl) {
-                console.error('Invalid audio URL at index', index);
-                return null;
-              }
-    
-              const fileExtension = getFileExtension(audioUrl);
-              const fileType = mimeTypes[fileExtension] || 'audio/*';
-        
-              // Generate a unique key based on the audio URL
-              const key = `audioKey_${index}`;
-        
-              console.log('Audio URL:', audioUrl);
-        
-              return (
-                <div key={key}>
-                  <audio controls>
-                    <source src={audioUrl} type={fileType} />
-                    Your browser does not support the audio tag.
-                  </audio>
-                </div>
-              );
-            })}
-          </div>
-        );
-      },
-    },
-    {
-      title: <h1>Features</h1>,
-      dataIndex: "features",
-      key: "features",
-      align: "center",
-      render: (data) => {
-        return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
-            {data.map((feature, index) => (
-              <div key={`feature_${index}`} style={{ whiteSpace: 'pre-line' }}>
-                <p className="font-normal">
-                  <span className="font-extrabold">{index+1}.Feature Name</span>: {feature.featureName}
-                </p>
-                <p className="font-normal">
-                  <span className="font-extrabold">Feature Description</span>: {feature.featureDescription}
-                </p>
-              </div>
-            ))}
-          </div>
-        );
       },
     },
   ];

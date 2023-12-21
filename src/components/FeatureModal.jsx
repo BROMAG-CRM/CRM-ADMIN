@@ -1,9 +1,8 @@
-// Modal.js
-import React from 'react';
+
 
 const FeatureModal = ({ isOpen, onClose, features }) => {
   return (
-    <div style={{ display: isOpen ? 'block' : 'none', position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1 }}>
+    <div style={{ display: isOpen ? 'block' : 'none', position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1, overflowY: 'auto' }}>
       <div style={{ backgroundColor: '#fff', margin: '10% auto', padding: '20px', maxWidth: '600px', borderRadius: '8px' }}>
         <button onClick={onClose} style={{ float: 'right', cursor: 'pointer' }}>Close</button>
         {features.map((feature, index) => (
@@ -18,3 +17,4 @@ const FeatureModal = ({ isOpen, onClose, features }) => {
 };
 
 export default FeatureModal;
+

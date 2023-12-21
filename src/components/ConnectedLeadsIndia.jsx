@@ -4,6 +4,7 @@ import { Option } from "antd/es/mentions";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
+import FeatureModal from "./FeatureModal";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 
@@ -20,7 +21,8 @@ function ConnectedLeadsIndia() {
   const [form] = Form.useForm();
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [update,setUpdate] = useState(false)
-
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedFeatures, setSelectedFeatures] = useState([]);
 
 const fetchData = async () => {
     try {
@@ -37,11 +39,12 @@ const response = await axios.get(`${url}/connectedleadsdataindia`, {
   } 
 
 
-  console.log(data);
 
   useEffect(() => {
     fetchData();
   }, [update]);
+
+  console.log(data);
 
 
 
@@ -74,7 +77,7 @@ const handleAddFeature = async() => {
     );
   });
 };
-
+    //  setUpdate(!update)
 
 //business status
 const handleBusinessStatus = async (record)=>{
@@ -339,18 +342,21 @@ const handleBusinessStatus = async (record)=>{
       key: "features",
       align: "center",
       render: (data) => {
+
+        const handleViewFeatures = (features) => {
+          setSelectedFeatures(features);
+          setModalOpen(true);
+        };
+    
+        const handleCloseModal = () => {
+          setModalOpen(false);
+          setSelectedFeatures([]);
+        };
+    
         return (
           <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
-            {data.map((feature, index) => (
-              <div key={`feature_${index}`} style={{ whiteSpace: 'pre-line' }}>
-                <p className="font-normal">
-                  <span className="font-extrabold">{index+1}.Feature Name</span>: {feature.featureName}
-                </p>
-                <p className="font-normal">
-                  <span className="font-extrabold">Feature Description</span>: {feature.featureDescription}
-                </p>
-              </div>
-            ))}
+            <Button onClick={() => handleViewFeatures(data)}>View Features</Button>
+            <FeatureModal isOpen={isModalOpen} onClose={handleCloseModal} features={selectedFeatures} />
           </div>
         );
       },

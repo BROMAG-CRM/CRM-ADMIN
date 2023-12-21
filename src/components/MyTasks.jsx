@@ -18,7 +18,7 @@ function MyTasks() {
 
   const links = [
     "/progress_leads",
-    "/warm_leads",
+    "/progress_connected",
     "/notconnected_leadsindia",
   ];
 

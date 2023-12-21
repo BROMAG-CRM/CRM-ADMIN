@@ -25,12 +25,12 @@ import ConnectedLeadsIndia from "./components/ConnectedLeadsIndia";
 import NotConnectedLeadsIndia from "./components/NotConnectedLeadsIndia";
 import MyTasks from "./components/MyTasks";
 import HotLeads from "./components/ProgressLeads";
-import WarmLeads from "./components/WarmLeads";
 import CampaignIndiaorBooks from "./components/CampaignIndiaorBooks";
 import MyCampaignsBooks from "./components/MyCampaignsBooks";
 import LeadIndiaorBooks from "./components/LeadIndiaorBooks";
 import MyLeadsBooks from "./components/MyLeadsBooks";
 import MyReport from "./components/MyReport";
+import ProgressConnected from "./components/ProgressConnected";
 
 
 
@@ -58,7 +58,7 @@ const router=createBrowserRouter(
       <Route path="notconnected_leadsindia" element={<NotConnectedLeadsIndia/>} />
       <Route path="mytasks" element={<MyTasks/>} />
       <Route path="progress_leads" element={<HotLeads/>} />
-      <Route path="warm_leads" element={<WarmLeads/>} />
+      <Route path="progress_connected" element={<ProgressConnected/>} />
       <Route path="campaignindiaorbooks" element={<CampaignIndiaorBooks/>} />
       <Route path="leadsindiaorbooks" element={<LeadIndiaorBooks/>} />
       <Route path="leadsbooks" element={<MyLeadsBooks/>} />
