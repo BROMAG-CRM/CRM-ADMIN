@@ -28,3 +28,4 @@ jobs:
     - run: pwd
     - run: cp /home/ubuntu/preprodenv/admin/.env /home/ubuntu/pre-prod-runner/_work/CRM-ADMIN/CRM-ADMIN
     - run: npm run build --if-present
+    - run: sudo systemctl restart nginx
