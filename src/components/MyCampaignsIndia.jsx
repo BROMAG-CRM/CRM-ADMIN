@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 import { get } from "lodash";
+import { Button } from "antd";
+import { useNavigate } from "react-router-dom";
 
 function MyCampaignsIndia() {
   const [newLeadsCount, setNewLeadsCount] = useState();  
@@ -11,7 +13,7 @@ function MyCampaignsIndia() {
   const [connectedCount, setConnectedCount] = useState();
   const [notConnectedCount, setNotConnectedCount] = useState();
   const [cities, setCities] = useState([]);
-
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchData();
@@ -41,11 +43,13 @@ function MyCampaignsIndia() {
       <div className="pl-6 w-[80vw]">
         <div>
           <div className="w-full mx-auto mt-8">
-            
+          <Button className="text-white bg-black mb-4" onClick={() => navigate(-1)}>Go Back</Button>
+
             <div className="text-center mb-6 w-full">
               <h1 className="text-3xl font-semibold bg-black text-white p-5 w-full">
                 My Campaigns
               </h1>
+
             </div>
 
             {cities.map((city) => (

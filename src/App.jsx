@@ -23,14 +23,21 @@ import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Loader";
 import ConnectedLeadsIndia from "./components/ConnectedLeadsIndia";
 import NotConnectedLeadsIndia from "./components/NotConnectedLeadsIndia";
-import MyTasks from "./components/MyTasks";
-import HotLeads from "./components/ProgressLeads";
 import CampaignIndiaorBooks from "./components/CampaignIndiaorBooks";
 import MyCampaignsBooks from "./components/MyCampaignsBooks";
 import LeadIndiaorBooks from "./components/LeadIndiaorBooks";
 import MyLeadsBooks from "./components/MyLeadsBooks";
 import MyReport from "./components/MyReport";
 import ProgressConnected from "./components/ProgressConnected";
+import LeaadGenerationNew from "./components/LeadGenerationNew";
+import Partnership from "./components/Partnership";
+import PrivateLtd from "./components/PrivateLtd";
+import Proprietor from "./components/Proprietor";
+import SalesTasksIndiaorBooks from "./components/SalesTasksIndiaorBooks";
+import SalesCampaignsIndiaorBooks from "./components/SalesCampaignsIndiaorBooks";
+import SalesBooks from "./components/salesbooks";
+import SalesCampaignsIndia from "./components/SalesCampaignsIndia";
+import SalesCampaignsBooks from "./components/SalesCampaignsBooks";
 
 
 
@@ -40,7 +47,7 @@ const router=createBrowserRouter(
     <Route path="/" element={<RootLayout/>}>
       <Route index path="/" element={<DashboardOrUserLeadGeneration/>}/>
       <Route  path="admin" element={<Admin />}/>
-      <Route  path="leadgeneration" element={<LeadGeneration/>}/>
+      <Route  path="leadgeneration" element={<LeaadGenerationNew/>}/>
       <Route  path="accountsmanagement" element={<AccountsManagement/>}/>
       <Route  path="bdm" element={<Bdm/>}/>
       <Route  path="legalmanagement" element={<LegalManagement/>}/>
@@ -56,13 +63,20 @@ const router=createBrowserRouter(
       <Route path="loader" element={<Loader/>} />
       <Route path="connected_leadsindia" element={<ConnectedLeadsIndia/>} />
       <Route path="notconnected_leadsindia" element={<NotConnectedLeadsIndia/>} />
-      <Route path="mytasks" element={<MyTasks/>} />
-      <Route path="progress_leads" element={<HotLeads/>} />
-      <Route path="progress_connected" element={<ProgressConnected/>} />
+      <Route path="mytasks" element={<ProgressConnected/>} />
       <Route path="campaignindiaorbooks" element={<CampaignIndiaorBooks/>} />
       <Route path="leadsindiaorbooks" element={<LeadIndiaorBooks/>} />
       <Route path="leadsbooks" element={<MyLeadsBooks/>} />
       <Route path="myreport" element={<MyReport/>} />
+      <Route path="partnership" element={<Partnership/>} />
+      <Route path="privateltd" element={<PrivateLtd/>} />
+      <Route path="proprietor" element={<Proprietor/>} />      
+      <Route path="salestasksindiaorbooks" element={<SalesTasksIndiaorBooks/>} />      
+      <Route path="salescampaignindiaorbooks" element={<SalesCampaignsIndiaorBooks/>} />      
+      <Route path="taskbooks" element={<SalesBooks/>} />      
+      <Route path="salescampaignsindia" element={<SalesCampaignsIndia/>} />      
+      <Route path="salescampaignsbooks" element={<SalesCampaignsBooks/>} />      
+
       
 
       

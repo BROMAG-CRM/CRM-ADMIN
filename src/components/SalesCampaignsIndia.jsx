@@ -6,7 +6,7 @@ import { get } from "lodash";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function MyCampaignsBooks() {
+function SalesCampaignsIndia() {
   const [newLeadsCount, setNewLeadsCount] = useState();  
   const [openedCount, setOpenedCount] = useState();  
   const [followUpCount, setFollowUpCount] = useState();
@@ -15,14 +15,13 @@ function MyCampaignsBooks() {
   const [cities, setCities] = useState([]);
   const navigate = useNavigate()
 
-
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/getassignedbooks`, {
+      const response = await axios.get(`${url}/salescampaignsindia`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -45,10 +44,12 @@ function MyCampaignsBooks() {
         <div>
           <div className="w-full mx-auto mt-8">
           <Button className="text-white bg-black mb-4" onClick={() => navigate(-1)}>Go Back</Button>
+
             <div className="text-center mb-6 w-full">
               <h1 className="text-3xl font-semibold bg-black text-white p-5 w-full">
                 My Campaigns
               </h1>
+
             </div>
 
             {cities.map((city) => (
@@ -117,4 +118,4 @@ function MyCampaignsBooks() {
   );
 }
 
-export default MyCampaignsBooks;
+export default SalesCampaignsIndia;

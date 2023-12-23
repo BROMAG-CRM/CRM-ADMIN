@@ -7,6 +7,8 @@ const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 import FeatureModal from "./FeatureModal";
 import { Option } from "antd/es/mentions";
+import { useNavigate } from "react-router-dom";
+import VideoRecordsModal from "./VideoRecordsModal";
 
 
 
@@ -22,6 +24,10 @@ function MyReport() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [form] = Form.useForm();
   const [modalVisible, setModalVisible] = useState(false);
+  const navigate = useNavigate()
+  const [isVideoRecordsModalOpen,setVideoRecordsModalOpen] = useState(false)
+  const [selectedVideoRecords,setSelectedVideoRecords] = useState([])  
+
 
 
 console.log(data)
@@ -45,15 +51,16 @@ const response = await axios.get(`${url}/progressleadsdata`, {
   }, [update]);
 
 
+
   //business status
-const handleBusinessStatus = async (record)=>{
+const handleBusinessStatus = async (record,value)=>{
 
 
   const id = record._id
 
   const res = await axios.post(
     `${url}/businessstatus`,
-    {userId:id,newBusinessStatus:"bdm"},
+    {userId:id,newBusinessStatus:value},
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -84,7 +91,7 @@ const handleBusinessStatus = async (record)=>{
   
       console.log(values);
        await axios.post(
-        `${url}/addfeature`,
+        `${url}/addvideofeature`,
         {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
         {
           headers: {
@@ -100,7 +107,7 @@ const handleBusinessStatus = async (record)=>{
 
   const columnsData = [
     {
-      title: <h1>Serial Number</h1>,
+      title: <h1>S. No</h1>,
       dataIndex: "serialNumber",
       key: "serialNumber",
       align: "center",
@@ -168,69 +175,6 @@ const handleBusinessStatus = async (record)=>{
           <a href={`tel:${data}`} className="text-blue-500">
             {data}
           </a>
-        );
-      },
-    },
-    {
-      title: <h1>Description</h1>,
-      dataIndex: "leadDescription",
-      key: "leadDescription",
-      align: "center",
-      render: (data) => {
-        return <p>{data}</p>;
-      },
-    },
-    {
-      title: <h1>Play Call Records</h1>,
-      dataIndex: "callRecord",
-      key: "callRecord",
-      align: "center",
-      render: (data) => {
-        if (!data || !Array.isArray(data) || data.length === 0) {
-          console.error('Invalid or empty data array:', data);
-          return null;
-        }
-    
-        const mimeTypes = {
-          mp3: 'audio/mp3',
-          ogg: 'audio/ogg',
-          wav: 'audio/wav',
-          // Add more supported audio formats as needed
-        };
-    
-        const getFileExtension = (filename) => {
-          if (filename) {
-            return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
-          }
-          return '';
-        };
-    
-        return (
-          <div>
-            {data.map((audioUrl, index) => {
-              if (!audioUrl) {
-                console.error('Invalid audio URL at index', index);
-                return null;
-              }
-    
-              const fileExtension = getFileExtension(audioUrl);
-              const fileType = mimeTypes[fileExtension] || 'audio/*';
-        
-              // Generate a unique key based on the audio URL
-              const key = `audioKey_${index}`;
-        
-              console.log('Audio URL:', audioUrl);
-        
-              return (
-                <div key={key}>
-                  <audio controls>
-                    <source src={audioUrl} type={fileType} />
-                    Your browser does not support the audio tag.
-                  </audio>
-                </div>
-              );
-            })}
-          </div>
         );
       },
     },
@@ -307,8 +251,8 @@ const handleBusinessStatus = async (record)=>{
     },
     {
       title: <h1>Add Features</h1>,
-      dataIndex: "features",
-      key: "features",
+      dataIndex: "videoFeatures",
+      key: "videoFeatures",
       align: "center",
       render: (data, record) => (
         <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
@@ -327,57 +271,38 @@ const handleBusinessStatus = async (record)=>{
           return null;
         }
     
-        const fileExtensions = {
-          mp4: 'video/mp4',
-          webm: 'video/webm',
-          // Add more supported video formats as needed
+        const handleViewCallRecords = (videoRecords) => {
+          console.log(videoRecords);
+          console.log("vdoooooo");
+
+          setSelectedVideoRecords(videoRecords);
+          setVideoRecordsModalOpen(true);
         };
-    
-        const getFileExtension = (filename) => {
-          if (filename) {
-            return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
-          }
-          return '';
+        
+        const handleCloseCallRecordsModal = () => {
+          setVideoRecordsModalOpen(false);
+          setSelectedVideoRecords([]);
         };
     
         return (
-          <div>
-            {data.map((videoUrl, index) => {
-              if (!videoUrl) {
-                console.error('Invalid video URL at index', index);
-                return null;
-              }
-    
-              const fileExtension = getFileExtension(videoUrl);
-              const fileType = fileExtensions[fileExtension] || 'video/*';
-    
-              // Generate a unique key based on the video URL
-              const key = `videoKey_${index}`;
-    
-              console.log('Video URL:', videoUrl);
-    
-              return (
-                <div key={key}>
-                  <video controls width="300" height="200">
-                    <source src={videoUrl} type={fileType} />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              );
-            })}
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewCallRecords(data)}>View Call Records</Button>
+            <VideoRecordsModal isOpen={isVideoRecordsModalOpen} onClose={handleCloseCallRecordsModal} videoUrls={selectedVideoRecords} />
           </div>
+
         );
+
       },
     },
     {
-      title: <h1>Features</h1>,
-      dataIndex: "features",
-      key: "features",
+      title: <h1>Features(video)</h1>,
+      dataIndex: "videoFeatures",
+      key: "videoFeatures",
       align: "center",
       render: (data) => {
 
-        const handleViewFeatures = (features) => {
-          setSelectedFeatures(features);
+        const handleViewFeatures = (videoFeatures) => {
+          setSelectedFeatures(videoFeatures);
           setModalOpen(true);
         };
     
@@ -400,11 +325,22 @@ const handleBusinessStatus = async (record)=>{
       key: "businessStatus",
       align: "center",
       render: (data, record) => (
-        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleBusinessStatus(record)}>
+        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleBusinessStatus(record,"bdm")}>
           Okay
         </Button>
       ),
-    }, 
+    },
+    {
+      title: <h1>Move to Telemarketing</h1>,
+      dataIndex: "businessStatus",
+      key: "businessStatus",
+      align: "center",
+      render: (data, record) => (
+        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleBusinessStatus(record,"telemarketing")}>
+          Okay
+        </Button>
+      ),
+    },  
     
   ];
 
@@ -418,7 +354,8 @@ const handleBusinessStatus = async (record)=>{
 <div className="pl-[18vw]  pt-14 w-screen">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
       <div className="pl-6 w-[80vw]">
-        <div className="pt-10">
+      <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
+        <div className="pt-7">
           <Table
             columns={columnsData}
             dataSource={data}
@@ -426,6 +363,9 @@ const handleBusinessStatus = async (record)=>{
             ref={tableRef}
             pagination={{ pageSize: 5 }}
             onChange={handleTableChange}
+            className="w-full"
+            bordered
+            style={{  background: 'white' }}
           />
         </div>
       </div>
@@ -456,6 +396,7 @@ const handleBusinessStatus = async (record)=>{
               <Option value="Non Vegetarian">Non Vegetarian</Option>
               <Option value="Scratch Card">Scratch Card</Option>
               <Option value="Food Review">Food Review</Option>
+              <Option value="Others">Others</Option>
             </Select>
           </Form.Item>
           <Form.Item label="Feature Description" name="featureDescription" rules={[{ required: true, message: 'Please enter a feature description' }]}>

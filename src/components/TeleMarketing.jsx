@@ -6,7 +6,7 @@ import CallIcon from "@mui/icons-material/Call";
 function TeleMarketing() {
   const names = [
     "My Campaigns",
-    "My Leads",
+    "My Tasks",
   ];
   const links = ["/campaignindiaorbooks", "/leadsindiaorbooks"];
 

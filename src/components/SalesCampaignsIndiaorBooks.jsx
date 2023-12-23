@@ -1,8 +1,7 @@
 import { Button } from 'antd';
-import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 
-function LeadIndiaorBooks() {
+function SalesCampaignsIndiaorBooks() {
     const cardData = [
         {
           name: "Bromag India",
@@ -14,7 +13,7 @@ function LeadIndiaorBooks() {
         },
       ];
     
-      const links = ["/leadsindia","/leadsbooks"];
+      const links = ["/salescampaignsindia","/salescampaignsbooks"];
       const navigate = useNavigate()
 
     
@@ -67,4 +66,4 @@ function LeadIndiaorBooks() {
       );
 }
 
-export default LeadIndiaorBooks
+export default SalesCampaignsIndiaorBooks

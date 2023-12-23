@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Button } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 
 function MyTasks() {
   const cardData = [
@@ -10,21 +11,20 @@ function MyTasks() {
       name: "Connected",
       description: "",
     },
-    { 
-    name: "Not Connected", 
-    description: "" 
-    },
   ];
 
   const links = [
     "/progress_leads",
     "/progress_connected",
-    "/notconnected_leadsindia",
   ];
+  const navigate = useNavigate()
+
 
   return (
     <div className="pl-[18vw]  pt-12 w-screen">
       <div className="pl-6 w-[80vw]">
+      <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
+
         <div className="text-center mb-6 w-full mt-3">
           <h1 className="text-3xl font-semibold bg-black text-white p-5 w-full">
             My Tasks

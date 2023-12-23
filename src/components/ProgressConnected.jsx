@@ -3,6 +3,7 @@ import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 import FeatureModal from "./FeatureModal";
+import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 
@@ -15,6 +16,7 @@ function ProgressConnected() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
+  const navigate = useNavigate()
 
 
 
@@ -210,7 +212,8 @@ const response = await axios.get(`${url}/progressleadsdata`, {
 <div className="pl-[18vw]  pt-14 w-screen">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
       <div className="pl-6 w-[80vw]">
-        <div className="pt-10">
+      <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
+        <div className="pt-7">
           <Table
             columns={columnsData}
             dataSource={data}

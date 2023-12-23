@@ -1,23 +1,26 @@
-import { Table} from "antd";
+import { Button, Table} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 
 
 
 
-function ProgressLeads() {
+function SalesBooks() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate()
 
+ 
 
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/progressleadsdata`, {
+const response = await axios.get(`${url}/salessbooks`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -55,6 +58,28 @@ const response = await axios.get(`${url}/progressleadsdata`, {
       },
     },
     {
+      title: <h1>City</h1>,
+      dataIndex: "city",
+      key: "city",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>Mobile Number</h1>,
+      dataIndex: "restaurantMobileNumber",
+      key: "restaurantMobileNumber",
+      align: "center",
+      render: (data) => {
+        return (
+          <a href={`tel:${data}`} className="text-blue-500">
+            {data}
+          </a>
+        );
+      },
+    },
+    {
       title: <h1>Firm Name</h1>,
       dataIndex: "firmName",
       key: "firmName",
@@ -73,27 +98,28 @@ const response = await axios.get(`${url}/progressleadsdata`, {
       },
     },
     {
+      title: <h1>Contact Person Designation</h1>,
+      dataIndex: "designation",
+      key: "designation",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
       title: <h1>Contact Person Mobile Number</h1>,
       dataIndex: "contactPersonNumber",
       key: "contactPersonNumber",
       align: "center",
       render: (data) => {
         return (
-          <p>
+          <a href={`tel:${data}`} className="text-blue-500">
             {data}
-          </p>
+          </a>
         );
       },
     },
-    {
-      title: <h1>City</h1>,
-      dataIndex: "city",
-      key: "city",
-      align: "center",
-      render: (data) => {
-        return <p>{data}</p>;
-      },
-    },
+    
   ];
 
   const handleTableChange = (pagination) => {
@@ -105,19 +131,13 @@ const response = await axios.get(`${url}/progressleadsdata`, {
 
 <div className="pl-[18vw]  pt-14 w-screen">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
+
       <div className="pl-6 w-[80vw]">
-        <div className="pt-10">
+      <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
+
+        <div className="pt-7">
           <Table
-            columns={columnsData.map((column) => ({
-              ...column,
-              key:columnsData.key,
-              onCell: (record) => ({
-                record,
-                editable: column.editable,
-                dataIndex: column.dataIndex,
-                title: column.title,
-              }),
-            }))}
+            columns={columnsData}
             dataSource={data}
             scroll={{ x: 2000 }}
             ref={tableRef}
@@ -131,4 +151,4 @@ const response = await axios.get(`${url}/progressleadsdata`, {
   );
 }
 
-export default ProgressLeads;
+export default SalesBooks;

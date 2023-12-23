@@ -6,7 +6,7 @@ import { get } from "lodash";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function MyCampaignsBooks() {
+function SalesCampaignsBooks() {
   const [newLeadsCount, setNewLeadsCount] = useState();  
   const [openedCount, setOpenedCount] = useState();  
   const [followUpCount, setFollowUpCount] = useState();
@@ -22,7 +22,7 @@ function MyCampaignsBooks() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/getassignedbooks`, {
+      const response = await axios.get(`${url}/salescampaignsbooks`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -117,4 +117,4 @@ function MyCampaignsBooks() {
   );
 }
 
-export default MyCampaignsBooks;
+export default SalesCampaignsBooks;

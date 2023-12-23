@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import AssessmentIcon from "@mui/icons-material/Assessment";
+import CampaignIcon from "@mui/icons-material/Campaign";
+import CallIcon from "@mui/icons-material/Call";
 
 
 function TeleSales() {
   const names = [
+    "My Campaigns",
     "My Tasks",
-    "My Report",
   ];
-  const links = ["/mytasks","/myreport"]
+  const links = ["/salescampaignindiaorbooks","/salestasksindiaorbooks"]
 
   return (
     <div className="pl-[18vw]  pt-7 w-screen">
@@ -17,8 +17,8 @@ function TeleSales() {
           <div>
             <div className="grid grid-cols-2 gap-4 p-10 ">
               {[
-                AssignmentIcon,
-                AssessmentIcon,
+                CampaignIcon,
+                CallIcon
               ].map((Icon, index) => (
                 <Link
                   key={index}

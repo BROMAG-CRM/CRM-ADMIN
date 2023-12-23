@@ -6,6 +6,7 @@ const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 import FollowUpModal from "./FollowUpModal";
 import { UploadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 
@@ -25,6 +26,7 @@ function FollowUpLeadsIndia() {
   const [statusValue,setStatusValue] = useState()
   const [updated,setupdated] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate()
 
 
 
@@ -142,7 +144,7 @@ const handleAddFeature = async() => {
 
   const columnsData = [
     {
-      title: <h1>Serial Number</h1>,
+      title: <h1>S. No</h1>,
       dataIndex: "serialNumber",
       key: "serialNumber",
       align: "center",
@@ -417,7 +419,8 @@ const handleAddFeature = async() => {
 <div className="pl-[18vw]  pt-14 w-screen">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
       <div className="pl-6 w-[80vw]">
-        <div className="pt-10">
+      <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
+        <div className="pt-7">
           <Table
             columns={columnsData}
             dataSource={data}
@@ -425,6 +428,9 @@ const handleAddFeature = async() => {
             ref={tableRef}
             pagination={{ pageSize: 5 }}
             onChange={handleTableChange}
+            className="w-full"
+            bordered
+            style={{  background: 'white' }}
           />
         </div>
       </div>
@@ -455,6 +461,7 @@ const handleAddFeature = async() => {
               <Option value="Non Vegetarian">Non Vegetarian</Option>
               <Option value="Scratch Card">Scratch Card</Option>
               <Option value="Food Review">Food Review</Option>
+              <Option value="Others">Others</Option>
             </Select>
           </Form.Item>
           <Form.Item label="Feature Description" name="featureDescription" rules={[{ required: true, message: 'Please enter a feature description' }]}>
