@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
-function MyLeadsIndia() {
+function MarketingLeadsIndia() {
   const cardData = [
     {
       name: "New Leads",
@@ -78,4 +78,4 @@ function MyLeadsIndia() {
   );
 }
 
-export default MyLeadsIndia;
+export default MarketingLeadsIndia;

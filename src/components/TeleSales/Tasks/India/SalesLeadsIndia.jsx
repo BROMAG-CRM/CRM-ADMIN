@@ -1,22 +1,30 @@
 import { Button } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
-function MyTasks() {
+function SalesLeadsIndia() {
   const cardData = [
     {
-      name: "Progress",
-      description: "",
+      name: "New Leads",
+      description: "Leads, which haven't been called so far",
     },
     {
-      name: "Connected",
-      description: "",
+      name: "Follow-up Leads",
+      description: "Leads, which are scheduled to be called later",
+    },
+    { name: "Connected Leads", description: "Leads, which are connected" },
+    {
+      name: "Not Connected Leads",
+      description: "Leads, which weren't connected in the previous attempt",
     },
   ];
 
   const links = [
-    "/progress_leads",
-    "/progress_connected",
+    "/new_leadssalesindia",
+    "/followup_leadssalesindia",
+    "/connected_leadssalesindia",
+    "/notconnected_leadssalesindia",
   ];
+
   const navigate = useNavigate()
 
 
@@ -27,7 +35,7 @@ function MyTasks() {
 
         <div className="text-center mb-6 w-full mt-3">
           <h1 className="text-3xl font-semibold bg-black text-white p-5 w-full">
-            My Tasks
+            My Leads
           </h1>
         </div>
 
@@ -70,4 +78,4 @@ function MyTasks() {
   );
 }
 
-export default MyTasks;
+export default SalesLeadsIndia;

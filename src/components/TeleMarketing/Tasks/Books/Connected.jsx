@@ -13,13 +13,13 @@ import { Option } from "antd/es/mentions";
 import axios from "axios";
 import { get } from "lodash";
 import { useEffect, useState, useRef } from "react";
-import FeatureModal from "./FeatureModal";
+import FeatureModal from "../../../Modals/FeatureModal";
 import { useNavigate } from "react-router-dom";
-import CallRecordModal from "./CallRecordModal";
+import CallRecordModal from "../../../Modals/CallRecordModal";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 
-function ConnectedLeadsIndia() {
+function Connected() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,7 +35,7 @@ function ConnectedLeadsIndia() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/connectedleadsdataindia`, {
+      const response = await axios.get(`${url}/booksconnectedinmarketing`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -480,4 +480,4 @@ function ConnectedLeadsIndia() {
   );
 }
 
-export default ConnectedLeadsIndia;
+export default Connected;

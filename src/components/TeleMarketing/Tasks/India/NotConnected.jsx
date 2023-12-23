@@ -9,7 +9,7 @@ const token = localStorage.getItem("token");
 
 
 
-function NotConnectedLeadsIndia() {
+function NotConnected() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -102,15 +102,6 @@ const response = await axios.get(`${url}/notconnectedleadsdataindia`, {
         return <p>{data}</p>;
       },
     },
-    {
-      title: <h1>Description</h1>,
-      dataIndex: "leadDescription",
-      key: "leadDescription",
-      align: "center",
-      render: (data) => {
-        return <p>{data}</p>;
-      },
-    },
   ];
 
   const handleTableChange = (pagination) => {
@@ -143,4 +134,4 @@ const response = await axios.get(`${url}/notconnectedleadsdataindia`, {
   );
 }
 
-export default NotConnectedLeadsIndia;
+export default NotConnected;

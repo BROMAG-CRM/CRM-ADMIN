@@ -1,45 +1,41 @@
-import { Table,Input, Select, Button, Form, Modal, message, Upload} from "antd";
+import { Table,Select, Button, Modal, Form, Input, Upload, message} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
-import FollowUpModal from "./FollowUpModal";
-import { useNavigate } from "react-router-dom";
-import FeatureModal from "./FeatureModal";
+import FollowUpModal from "../../../Modals/FollowUpModal";
 import { UploadOutlined } from "@ant-design/icons";
-import CallRecordModal from "./CallRecordModal";
+import { useNavigate } from "react-router-dom";
+import FeatureModal from "../../../Modals/FeatureModal";
 const { Option } = Select;
 
 
 
 
-function NewLeadsListIndia() {
+function FollowUp() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [activeRow, setActiveRow] = useState(null);
   const [followUpModalVisible, setFollowUpModalVisible] = useState(false);
   const [selectedFollowUpDate, setSelectedFollowUpDate] = useState(null);
   const [selectedFollowUpTime, setSelectedFollowUpTime] = useState(null);
-  const [statusId,setStatusId] = useState()
-  const [statusValue,setStatusValue] = useState()
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [form] = Form.useForm();
-  const [updated,setUpdated] = useState(false)
+  const [statusId,setStatusId] = useState()
+  const [statusValue,setStatusValue] = useState()
+  const [updated,setupdated] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate()
-  const [isModalOpen,setModalOpen] = useState(false)
   const [selectedFeatures,setSelectedFeatures] = useState([])
-  const [selectedCallRecords,setSelectedCallRecords] = useState([])
-  const [isCallRecordsModalOpen,setCallRecordsModalOpen] = useState(false)
-
+  const [isModalOpen,setModalOpen] = useState(false)
 
 
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getnewleadsdataindia`, {
+const response = await axios.get(`${url}/getfollowupleadsdataindia`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -56,11 +52,8 @@ const response = await axios.get(`${url}/getnewleadsdataindia`, {
   }, [updated]);
 
 
-//status function
+// status function
   const handleStatusChange = async(value, record) => {
-
-    console.log(value);
-    console.log(record);
 
     if (value === "follow-up") {
       setStatusValue(value)
@@ -75,10 +68,9 @@ const response = await axios.get(`${url}/getnewleadsdataindia`, {
       })
       setActiveRow(null);
       setFollowUpModalVisible(false);
-      setUpdated(!updated)
+      setupdated(!updated)
     }
   }
-
 
   const handleFollowUpDateChange = (date) => {
     setSelectedFollowUpDate(date);
@@ -88,38 +80,41 @@ const response = await axios.get(`${url}/getnewleadsdataindia`, {
     setSelectedFollowUpTime(time);
   };
 
-const handleFollowUpModalClose = async () => {
-  try {
-    setActiveRow(null);
-    setFollowUpModalVisible(false);
+  const handleFollowUpModalClose = async () => {
+    try {
+      console.log("modal closed");
+      setActiveRow(null);
+      setFollowUpModalVisible(false);
+  
+      if (selectedFollowUpDate && selectedFollowUpTime) {
 
-    if (selectedFollowUpDate && selectedFollowUpTime) {
-      
-      const date = selectedFollowUpDate.format("YYYY-MM-DD");
-      const time = selectedFollowUpTime.format("HH:mm");
+        console.log("modal closed with date & time");
 
-      await axios.post(
-        `${url}/followupdetails`,
-        { time: time, date: date, id: statusId, value: statusValue },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setUpdated(!updated)
-      console.log("Follow-up details posted successfully!");
-    } else {
-      console.log("selectedFollowUpDate or selectedFollowUpTime is null or undefined.");
+        const date = selectedFollowUpDate.format("YYYY-MM-DD");
+        const time = selectedFollowUpTime.format("HH:mm");
+  
+        await axios.post(
+          `${url}/followupdetails`,
+          { time: time, date: date, id: statusId, value: statusValue },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setupdated(!updated)
+        console.log("Follow-up details posted successfully!");
+      } else {
+        console.log("selectedFollowUpDate or selectedFollowUpTime is null or undefined.");
+      }
+    } catch (err) {
+      console.error("Error during follow-up details posting:", err);
     }
-  } catch (err) {
-    console.error("Error during follow-up details posting:", err);
-  }
-};
+  };
+  
 
 
-
-//new Lead Feature function
+//feature function
 const handleButtonClick = (record) => {
   setSelectedRowData(record);
   setModalVisible(true);
@@ -138,7 +133,7 @@ const handleAddFeature = async() => {
 
     console.log(values);
      await axios.post(
-      `${url}/addnewleadfeature`,
+      `${url}/addfeature`,
       {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
       {
         headers: {
@@ -146,10 +141,9 @@ const handleAddFeature = async() => {
         },
       }
     );
+    setupdated(!updated)
   });
-  setUpdated(!updated)
 };
-
 
 
   const columnsData = [
@@ -163,6 +157,30 @@ const handleAddFeature = async() => {
         return (currentPage - 1) * pageSize + index + 1;
       },
     },
+    {
+      title: <h1>Follow-Up Date</h1>,
+      dataIndex: "followupDate",
+      key: "followupDate",
+      align: "center",
+      render: (data) => {
+        const formattedDate = new Date(data).toLocaleString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        return formattedDate;
+      },
+    },
+    {
+      title: <h1>Follow-Up Time</h1>,
+      dataIndex: "followupTime",
+      key: "followupTime",
+      align: "center",
+      render: (data) => {
+          return <p>{data}</p>
+      },
+    },
+    
     {
       title: <h1>Brand Name</h1>,
       dataIndex: "brandName",
@@ -227,19 +245,19 @@ const handleAddFeature = async() => {
     },
     {
       title: <h1>Add Features</h1>,
-      dataIndex: "newLeadFeatures",
-      key: "newLeadFeatures",
+      dataIndex: "features",
+      key: "features",
       align: "center",
       render: (data, record) => (
         <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
           Add
         </Button>
       ),
-    },
+    },    
     {
       title: <h1>Features</h1>,
-      dataIndex: "newLeadFeatures",
-      key: "newLeadFeatures",
+      dataIndex: "features",
+      key: "features",
       align: "center",
       render: (data) => {
         const handleViewFeatures = (features) => {
@@ -272,29 +290,29 @@ const handleAddFeature = async() => {
       align: "center",
       render: (data, record) => {
         const props = {
-          name: "file",
+          name: 'file',
           action: `${url}/uploadcallrecord/${record._id}`,
           headers: {
             Authorization: `Bearer ${token}`,
           },
           onChange(info) {
-            if (info.file.status !== "uploading") {
+            if (info.file.status !== 'uploading') {
               console.log(info.file, info.fileList);
             }
-            if (info.file.status === "done") {
+            if (info.file.status === 'done') {
               message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === "error") {
+            } else if (info.file.status === 'error') {
               message.error(`${info.file.name} file upload failed.`);
             }
           },
         };
-
+    
         const onUpload = async (options) => {
           const { file } = options;
-
+    
           const formData = new FormData();
-          formData.append("file", file);
-
+          formData.append('file', file);
+    
           try {
             const response = await axios.post(
               `${url}/uploadcallrecord/${record._id}`,
@@ -302,80 +320,103 @@ const handleAddFeature = async() => {
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
-                  "Content-Type": "multipart/form-data",
+                  'Content-Type': 'multipart/form-data',
                 },
               }
             );
-
+    
             const newFileUrl = response.data.fileUrl;
-
+    
             // Update the data state with the new audio file URL
             setData((prevData) => {
               const newData = prevData.map((item) =>
                 item._id === record._id
-                  ? {
-                      ...item,
-                      callRecord: [...(item.callRecord || []), newFileUrl],
-                    }
+                  ? { ...item, callRecord: [...(item.callRecord || []), newFileUrl] }
                   : item
               );
               return newData;
             });
-
+    
             message.success(`${file.name} file uploaded successfully`);
           } catch (error) {
             message.error(`${file.name} file upload failed.`);
           }
         };
-
+    
         return (
           <div>
-            <Upload {...props} customRequest={onUpload} showUploadList={false}>
-              <Button icon={<UploadOutlined />}>Upload Audio</Button>
-            </Upload>
+           
+              <Upload {...props} customRequest={onUpload} showUploadList={false}>
+                <Button icon={<UploadOutlined />}>Upload Audio</Button>
+              </Upload>
+            
           </div>
         );
       },
     },
     {
       title: <h1>Play Call Records</h1>,
-      dataIndex: 'callRecord',
-      key: 'callRecord',
-      align: 'center',
+      dataIndex: "callRecord",
+      key: "callRecord",
+      align: "center",
       render: (data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {
           console.error('Invalid or empty data array:', data);
           return null;
         }
-
-        const handleViewCallRecords = (callRecords) => {
-          setSelectedCallRecords(callRecords);
-          setCallRecordsModalOpen(true);
+    
+        const mimeTypes = {
+          mp3: 'audio/mp3',
+          ogg: 'audio/ogg',
+          wav: 'audio/wav',
+          // Add more supported audio formats as needed
         };
-        
-        const handleCloseCallRecordsModal = () => {
-          setCallRecordsModalOpen(false);
-          setSelectedCallRecords([]);
+    
+        const getFileExtension = (filename) => {
+          if (filename) {
+            return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
+          }
+          return '';
         };
     
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
-            <Button onClick={() => handleViewCallRecords(data)}>View Call Records</Button>
-            <CallRecordModal isOpen={isCallRecordsModalOpen} onClose={handleCloseCallRecordsModal} callRecords={selectedCallRecords} />
+          <div>
+            {data.map((audioUrl, index) => {
+              if (!audioUrl) {
+                console.error('Invalid audio URL at index', index);
+                return null;
+              }
+    
+              const fileExtension = getFileExtension(audioUrl);
+              const fileType = mimeTypes[fileExtension] || 'audio/*';
+        
+              // Generate a unique key based on the audio URL
+              const key = `audioKey_${index}`;
+        
+              console.log('Audio URL:', audioUrl);
+        
+              return (
+                <div key={key}>
+                  <audio controls>
+                    <source src={audioUrl} type={fileType} />
+                    Your browser does not support the audio tag.
+                  </audio>
+                </div>
+              );
+            })}
           </div>
-
         );
       },
     },
     {
       title: <h1>Status</h1>,
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "leadStatus",
+      key: "leadStatus",
       align: "center",
       render: (data, record) => (
         <>
           <Select
-            placeholder="Select Status"
+            placeholder="Update Status"
             value={data}
             onChange={(value) => handleStatusChange(value, record)}
           >
@@ -386,8 +427,11 @@ const handleAddFeature = async() => {
         </>
       ),
     },
-      
+    
+    
+    
   ];
+
 
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
@@ -415,7 +459,6 @@ const handleAddFeature = async() => {
         </div>
       </div>
 
-
       <Modal
         title="Add New Feature"
         open={modalVisible}
@@ -424,19 +467,25 @@ const handleAddFeature = async() => {
           <Button key="cancel" onClick={handleModalClose}>
             Cancel
           </Button>,
-          <Button key="newLeadFeatures" type="primary" style={{ backgroundColor: "green" }} onClick={handleAddFeature}>
+          <Button key="addFeature" type="primary" style={{ backgroundColor: "green" }} onClick={handleAddFeature}>
             Add Feature
           </Button>,
         ]}
       >
         <Form form={form} layout="vertical">
           <Form.Item label="Feature" name="feature" rules={[{ required: true, message: 'Please select a feature' }]}>
-            <Select placeholder="Select a feature">
-              <Option value="Self Introduction">Self Introduction</Option>
-              <Option value="About Restaurant">About Restaurant</Option>
-              <Option value="About Bromag">About Bromag</Option>
-              <Option value="About Product">About Product</Option>
-              <Option value="Feedback">Feedback</Option>
+            <Select placeholder="Select a feature description">
+              <Option value="Online Order">Online Order</Option>
+              <Option value="Dining">Dining</Option>
+              <Option value="Call for Order">Call for Order</Option>
+              <Option value="Take Away">Take Away</Option>
+              <Option value="Content Banner">Content Banner</Option>
+              <Option value="Top Notch">Top Notch</Option>
+              <Option value="Vegetarian">Vegetarian</Option>
+              <Option value="Non Vegetarian">Non Vegetarian</Option>
+              <Option value="Scratch Card">Scratch Card</Option>
+              <Option value="Food Review">Food Review</Option>
+              <Option value="Others">Others</Option>
             </Select>
           </Form.Item>
           <Form.Item label="Feature Description" name="featureDescription" rules={[{ required: true, message: 'Please enter a feature description' }]}>
@@ -444,6 +493,7 @@ const handleAddFeature = async() => {
           </Form.Item>
         </Form>
       </Modal>
+
 
       <FollowUpModal
         visible={followUpModalVisible}
@@ -456,4 +506,4 @@ const handleAddFeature = async() => {
   );
 }
 
-export default NewLeadsListIndia;
+export default FollowUp;

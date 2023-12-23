@@ -4,15 +4,17 @@ import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
-import FollowUpModal from "./FollowUpModal";
+import FollowUpModal from "../../../Modals/FollowUpModal";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import FeatureModal from "../../../Modals/FeatureModal";
+import VideoRecordsModal from "../../../Modals/VideoRecordsModal";
 const { Option } = Select;
 
 
 
 
-function FollowUpLeadsIndia() {
+function FollowUp() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [activeRow, setActiveRow] = useState(null);
@@ -27,12 +29,14 @@ function FollowUpLeadsIndia() {
   const [updated,setupdated] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate()
-
-
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedFeatures, setSelectedFeatures] = useState([]);
+  const [isVideoRecordsModalOpen,setVideoRecordsModalOpen] = useState(false)
+  const [selectedVideoRecords,setSelectedVideoRecords] = useState([])  
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getfollowupleadsdataindia`, {
+const response = await axios.get(`${url}/indiafollowupinsales`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -130,7 +134,7 @@ const handleAddFeature = async() => {
 
     console.log(values);
      await axios.post(
-      `${url}/addfeature`,
+      `${url}/addvideofeature`,
       {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
       {
         headers: {
@@ -138,6 +142,8 @@ const handleAddFeature = async() => {
         },
       }
     );
+   setupdated(!updated)
+
   });
 };
 
@@ -176,7 +182,6 @@ const handleAddFeature = async() => {
           return <p>{data}</p>
       },
     },
-    
     {
       title: <h1>Brand Name</h1>,
       dataIndex: "brandName",
@@ -241,52 +246,49 @@ const handleAddFeature = async() => {
     },
     {
       title: <h1>Add Features</h1>,
-      dataIndex: "features",
-      key: "features",
+      dataIndex: "videoFeatures",
+      key: "videoFeatures",
       align: "center",
       render: (data, record) => (
         <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
           Add
         </Button>
       ),
-    },    
-    {
-      title: <h1>Status</h1>,
-      dataIndex: "leadStatus",
-      key: "leadStatus",
-      align: "center",
-      render: (data, record) => (
-        <>
-          <Select
-            placeholder="Update Status"
-            value={data}
-            onChange={(value) => handleStatusChange(value, record)}
-          >
-            <Option value="follow-up">Follow-up</Option>
-            <Option value="connected">Connected</Option>
-            <Option value="not-connected">Not Connected</Option>
-          </Select>
-        </>
-      ),
     },
     {
-      title: <h1>Description</h1>,
-      dataIndex: "leadDescription",
-      key: "leadDescription",
+      title: <h1>Features(video)</h1>,
+      dataIndex: "videoFeatures",
+      key: "videoFeatures",
       align: "center",
       render: (data) => {
-        return <p>{data}</p>;
+
+        const handleViewFeatures = (videoFeatures) => {
+          setSelectedFeatures(videoFeatures);
+          setModalOpen(true);
+        };
+    
+        const handleCloseModal = () => {
+          setModalOpen(false);
+          setSelectedFeatures([]);
+        };
+    
+        return (
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewFeatures(data)}>View Features</Button>
+            <FeatureModal isOpen={isModalOpen} onClose={handleCloseModal} features={selectedFeatures} />
+          </div>
+        );
       },
     },
     {
-      title: <h1>Upload Call Record</h1>,
+      title: <h1>Upload Video Record</h1>,
       dataIndex: "audio",
       key: "audio",
       align: "center",
       render: (data, record) => {
         const props = {
           name: 'file',
-          action: `${url}/uploadcallrecord/${record._id}`,
+          action: `${url}/uploadvideorecord/${record._id}`,
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -310,7 +312,7 @@ const handleAddFeature = async() => {
     
           try {
             const response = await axios.post(
-              `${url}/uploadcallrecord/${record._id}`,
+              `${url}/uploadvideorecord/${record._id}`,
               formData,
               {
                 headers: {
@@ -342,7 +344,7 @@ const handleAddFeature = async() => {
           <div>
            
               <Upload {...props} customRequest={onUpload} showUploadList={false}>
-                <Button icon={<UploadOutlined />}>Upload Audio</Button>
+                <Button icon={<UploadOutlined />}>Upload Video</Button>
               </Upload>
             
           </div>
@@ -350,9 +352,9 @@ const handleAddFeature = async() => {
       },
     },
     {
-      title: <h1>Play Call Records</h1>,
-      dataIndex: "callRecord",
-      key: "callRecord",
+      title: <h1>Play Video Records</h1>,
+      dataIndex: "videoRecord",
+      key: "videoRecord",
       align: "center",
       render: (data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {
@@ -360,50 +362,48 @@ const handleAddFeature = async() => {
           return null;
         }
     
-        const mimeTypes = {
-          mp3: 'audio/mp3',
-          ogg: 'audio/ogg',
-          wav: 'audio/wav',
-          // Add more supported audio formats as needed
+        const handleViewCallRecords = (videoRecords) => {
+          console.log(videoRecords);
+          console.log("vdoooooo");
+
+          setSelectedVideoRecords(videoRecords);
+          setVideoRecordsModalOpen(true);
         };
-    
-        const getFileExtension = (filename) => {
-          if (filename) {
-            return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
-          }
-          return '';
+        
+        const handleCloseCallRecordsModal = () => {
+          setVideoRecordsModalOpen(false);
+          setSelectedVideoRecords([]);
         };
     
         return (
-          <div>
-            {data.map((audioUrl, index) => {
-              if (!audioUrl) {
-                console.error('Invalid audio URL at index', index);
-                return null;
-              }
-    
-              const fileExtension = getFileExtension(audioUrl);
-              const fileType = mimeTypes[fileExtension] || 'audio/*';
-        
-              // Generate a unique key based on the audio URL
-              const key = `audioKey_${index}`;
-        
-              console.log('Audio URL:', audioUrl);
-        
-              return (
-                <div key={key}>
-                  <audio controls>
-                    <source src={audioUrl} type={fileType} />
-                    Your browser does not support the audio tag.
-                  </audio>
-                </div>
-              );
-            })}
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewCallRecords(data)}>View Video Records</Button>
+            <VideoRecordsModal isOpen={isVideoRecordsModalOpen} onClose={handleCloseCallRecordsModal} videoUrls={selectedVideoRecords} />
           </div>
+
         );
+
       },
-    }
-    
+    },
+    {
+      title: <h1>Status</h1>,
+      dataIndex: "leadStatus",
+      key: "leadStatus",
+      align: "center",
+      render: (data, record) => (
+        <>
+          <Select
+            placeholder="Update Status"
+            value={data}
+            onChange={(value) => handleStatusChange(value, record)}
+          >
+            <Option value="follow-up">Follow-up</Option>
+            <Option value="connected">Connected</Option>
+            <Option value="not-connected">Not Connected</Option>
+          </Select>
+        </>
+      ),
+    },
     
     
   ];
@@ -482,4 +482,4 @@ const handleAddFeature = async() => {
   );
 }
 
-export default FollowUpLeadsIndia;
+export default FollowUp;

@@ -9,7 +9,7 @@ const token = localStorage.getItem("token");
 
 
 
-function MyLeadsBooks() {
+function NotConnected() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +20,7 @@ function MyLeadsBooks() {
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/myleadsbooks`, {
+const response = await axios.get(`${url}/booksnotconnectedinmarketing`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -58,25 +58,12 @@ const response = await axios.get(`${url}/myleadsbooks`, {
       },
     },
     {
-      title: <h1>City</h1>,
-      dataIndex: "city",
-      key: "city",
-      align: "center",
-      render: (data) => {
-        return <p>{data}</p>;
-      },
-    },
-    {
       title: <h1>Mobile Number</h1>,
       dataIndex: "restaurantMobileNumber",
       key: "restaurantMobileNumber",
       align: "center",
       render: (data) => {
-        return (
-          <a href={`tel:${data}`} className="text-blue-500">
-            {data}
-          </a>
-        );
+        return <p>{data}</p>;
       },
     },
     {
@@ -112,14 +99,18 @@ const response = await axios.get(`${url}/myleadsbooks`, {
       key: "contactPersonNumber",
       align: "center",
       render: (data) => {
-        return (
-          <a href={`tel:${data}`} className="text-blue-500">
-            {data}
-          </a>
-        );
+        return <p>{data}</p>;
       },
     },
-    
+    {
+      title: <h1>Description</h1>,
+      dataIndex: "leadDescription",
+      key: "leadDescription",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
   ];
 
   const handleTableChange = (pagination) => {
@@ -131,10 +122,8 @@ const response = await axios.get(`${url}/myleadsbooks`, {
 
 <div className="pl-[18vw]  pt-14 w-screen">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
-
       <div className="pl-6 w-[80vw]">
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
-
         <div className="pt-7">
           <Table
             columns={columnsData}
@@ -154,4 +143,4 @@ const response = await axios.get(`${url}/myleadsbooks`, {
   );
 }
 
-export default MyLeadsBooks;
+export default NotConnected;

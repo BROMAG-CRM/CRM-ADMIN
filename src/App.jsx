@@ -6,38 +6,84 @@ import { createBrowserRouter,createRoutesFromElements,Route,RouterProvider,} fro
   import { useSelector } from "react-redux";
 
 //components 
-import Dashboard from "./components/Dashboard"
-import UsersList from "./components/UsersList"
-import MyCampaignsIndia from "./components/MyCampaignsIndia";
-import MyLeadsIndia from "./components/MyLeadsIndia";
-import NewLeadsListIndia from "./components/NewLeadsListIndia";
-import FollowUpLeadsIndia from "./components/FollowUpLeadsIndia";
-import Admin from "./components/Admin";
-import UserLeadGeneration from "./components/UserLeadGeneration";
-import AccountsManagement from "./components/AccountsManagement";
-import Bdm from "./components/Bdm";
-import LegalManagement from "./components/LegalManagement";
-import TeleMarketing from "./components/TeleMarketing";
-import TeleSales from "./components/TeleSales";
-import LeadGeneration from "./components/LeadGeneration";
-import Loader from "./components/Loader";
-import ConnectedLeadsIndia from "./components/ConnectedLeadsIndia";
-import NotConnectedLeadsIndia from "./components/NotConnectedLeadsIndia";
-import CampaignIndiaorBooks from "./components/CampaignIndiaorBooks";
-import MyCampaignsBooks from "./components/MyCampaignsBooks";
-import LeadIndiaorBooks from "./components/LeadIndiaorBooks";
-import MyLeadsBooks from "./components/MyLeadsBooks";
-import MyReport from "./components/MyReport";
-import ProgressConnected from "./components/ProgressConnected";
-import LeaadGenerationNew from "./components/LeadGenerationNew";
-import Partnership from "./components/Partnership";
-import PrivateLtd from "./components/PrivateLtd";
-import Proprietor from "./components/Proprietor";
-import SalesTasksIndiaorBooks from "./components/SalesTasksIndiaorBooks";
-import SalesCampaignsIndiaorBooks from "./components/SalesCampaignsIndiaorBooks";
-import SalesBooks from "./components/SalesBooks";
-import SalesCampaignsIndia from "./components/SalesCampaignsIndia";
-import SalesCampaignsBooks from "./components/SalesCampaignsBooks";
+import Dashboard from "./components/Others/Dashboard"
+import UsersList from "./components/Others/UsersList"
+import Admin from "./components/Others/Admin";
+import UserLeadGeneration from "./components/Others/UserLeadGeneration";
+import AccountsManagement from "./components/AccountsManagement/AccountsManagement";
+import Bdm from "./components/Bdm/Bdm";
+import LegalManagement from "./components/LegalManagement/LegalManagement";
+// import LeadGeneration from "./components/LeadGeneration";
+import Loader from "./components/Others/Loader";
+
+
+//Tele Marketing
+import TeleMarketing from "./components/TeleMarketing/TeleMarketing";
+import Campaigns from "./components/TeleMarketing/Campaigns/Campaigns";
+import Tasks from "./components/TeleMarketing/Tasks/Tasks";
+
+//Tele Marketing Campaigns(India)
+import MyCampaignsIndia from "./components/TeleMarketing/Campaigns/India/MyCampaignsIndia";
+
+//Tele Marketing Campaigns(books)
+import MyCampaignsBooks from "./components/TeleMarketing/Campaigns/Books/MyCampaignsBooks";
+
+//Tele Marketing Tasks(India)
+import MarketingLeadsIndia from "./components/TeleMarketing/Tasks/India/MarketingLeadsIndia";
+import NewLeads from "./components/TeleMarketing/Tasks/India/NewLeads";
+import FollowUp from "./components/TeleMarketing/Tasks/India/FollowUp";
+import Connected from "./components/TeleMarketing/Tasks/India/Connected";
+import NotConnected from "./components/TeleMarketing/Tasks/India/NotConnected";
+
+//Tele Marketing Tasks(books)
+import MarketingLeadsBooks from "./components/TeleMarketing/Tasks/Books/MarketingLeadsBooks";
+import ConnectedBooksMarketing from "./components/TeleMarketing/Tasks/Books/Connected"
+import NewLeadsBooksMarketing from "./components/TeleMarketing/Tasks/Books/NewLeads"
+import FollowUpBooksMarketing from "./components/TeleMarketing/Tasks/Books/FollowUp"
+import NotConnectedBooksMarketing from "./components/TeleMarketing/Tasks/Books/NotConnected"
+
+
+
+//Tele Sales
+import TeleSales from "./components/TeleSales/TeleSales";
+import TasksTeleSales from "./components/TeleSales/Tasks/Tasks";
+import CampaignsTeleSales from "./components/TeleSales/Campaigns/Campaigns";
+
+//Tele Sales Campaigns(india)
+import SalesCampaignsIndia from "./components/TeleSales/Campaigns/India/SalesCampaignsIndia";
+
+//Tele Sales Campaigns(books)
+import SalesCampaignsBooks from "./components/TeleSales/Campaigns/Books/SalesCampaignsBooks";
+
+//Tele Sales Tasks(India)
+import SalesLeadsIndia from "./components/TeleSales/Tasks/India/SalesLeadsIndia";
+import NewLeadsSalesIndia from "./components/TeleSales/Tasks/India/NewLeads"
+import FollowUpSalesIndia from "./components/TeleSales/Tasks/India/FollowUp"
+import ConnectedSalesIndia from "./components/TeleSales/Tasks/India/Connected"
+import NotConnectedSalesIndia from "./components/TeleSales/Tasks/India/NotConnected"
+
+//Tele Sales Tasks(books)
+import SalesLeadsBooks from "./components/TeleSales/Tasks/Books/SalesLeadsBooks";
+import NewLeadBooksSales from "./components/TeleSales/Tasks/Books/NewLead"
+import FollowUpBooksSales from "./components/TeleSales/Tasks/Books/FollowUp"
+import ConnectedBooksSales from "./components/TeleSales/Tasks/Books/Connected"
+import NotConnectedBooksSales from "./components/TeleSales/Tasks/Books/NotConnected"
+
+
+
+
+import MyReport from "./components/TeleSales/MyReport";
+
+import SalesBooks from "./components/TeleSales/SalesBooks";
+
+
+
+//Lead Generation
+import LeaadGenerationNew from "./components/LeadGeneration/LeadGenerationNew";
+import Partnership from "./components/LeadGeneration/Partnership";
+import PrivateLtd from "./components/LeadGeneration/PrivateLtd";
+import Proprietor from "./components/LeadGeneration/Proprietor";
+
 
 
 
@@ -57,27 +103,54 @@ const router=createBrowserRouter(
       <Route path="users" element={<UsersList/>} />
       <Route path="campaignsindia" element={<MyCampaignsIndia/>} />
       <Route path="campaignsbooks" element={<MyCampaignsBooks/>} />
-      <Route path="leadsindia" element={<MyLeadsIndia />} />
-      <Route path="new_leadsindia" element={<NewLeadsListIndia />} />
-      <Route path="followup_leadsindia" element={<FollowUpLeadsIndia />} />
+
+      <Route path="leadsindia" element={<MarketingLeadsIndia />} />
+      <Route path="leadsbooks" element={<MarketingLeadsBooks/>} />
+
+      <Route path="salesleadsindia" element={<SalesLeadsIndia/>} />
+      <Route path="salesleadsbooks" element={<SalesLeadsBooks/>} />
+
       <Route path="loader" element={<Loader/>} />
-      <Route path="connected_leadsindia" element={<ConnectedLeadsIndia/>} />
-      <Route path="notconnected_leadsindia" element={<NotConnectedLeadsIndia/>} />
-      <Route path="mytasks" element={<ProgressConnected/>} />
-      <Route path="campaignindiaorbooks" element={<CampaignIndiaorBooks/>} />
-      <Route path="leadsindiaorbooks" element={<LeadIndiaorBooks/>} />
-      <Route path="leadsbooks" element={<MyLeadsBooks/>} />
+
+
+     
+
+      <Route path="campaignindiaorbooks" element={<Campaigns/>} />
+      <Route path="leadsindiaorbooks" element={<Tasks/>} />
       <Route path="myreport" element={<MyReport/>} />
+      <Route path="taskbooks" element={<SalesBooks/>} />  
+
+
       <Route path="partnership" element={<Partnership/>} />
       <Route path="privateltd" element={<PrivateLtd/>} />
-      <Route path="proprietor" element={<Proprietor/>} />      
-      <Route path="salestasksindiaorbooks" element={<SalesTasksIndiaorBooks/>} />      
-      <Route path="salescampaignindiaorbooks" element={<SalesCampaignsIndiaorBooks/>} />      
-      <Route path="taskbooks" element={<SalesBooks/>} />      
-      <Route path="salescampaignsindia" element={<SalesCampaignsIndia/>} />      
-      <Route path="salescampaignsbooks" element={<SalesCampaignsBooks/>} />      
+      <Route path="proprietor" element={<Proprietor/>} />   
 
+      <Route path="salestasksindiaorbooks" element={<TasksTeleSales/>} />      
+      <Route path="salescampaignindiaorbooks" element={<CampaignsTeleSales/>} /> 
+
+      <Route path="salescampaignsindia" element={<SalesCampaignsIndia/>} />      
+      <Route path="salescampaignsbooks" element={<SalesCampaignsBooks/>} /> 
+
+      <Route path="new_leadsindia" element={<NewLeads />} />
+      <Route path="followup_leadsindia" element={<FollowUp />} />
+      <Route path="connected_leadsindia" element={<Connected/>} />
+      <Route path="notconnected_leadsindia" element={<NotConnected/>} />
       
+      <Route path="new_leadsmarketingbooks" element={<NewLeadsBooksMarketing/>} />  
+      <Route path="followup_leadsmarketingbooks" element={<FollowUpBooksMarketing/>} />          
+      <Route path="connected_leadsmarketingbooks" element={<ConnectedBooksMarketing/>} />      
+      <Route path="notconnected_leadsmarketingbooks" element={<NotConnectedBooksMarketing/>} />  
+
+      <Route path="new_leadssalesindia" element={<NewLeadsSalesIndia/>} />  
+      <Route path="followup_leadssalesindia" element={<FollowUpSalesIndia/>} />  
+      <Route path="connected_leadssalesindia" element={<ConnectedSalesIndia/>} />  
+      <Route path="notconnected_leadssalesindia" element={<NotConnectedSalesIndia/>} /> 
+
+      <Route path="new_leadssalesbooks" element={<NewLeadBooksSales/>} /> 
+      <Route path="followup_leadssalesbooks" element={<FollowUpBooksSales/>} /> 
+      <Route path="connected_leadssalesbooks" element={<ConnectedBooksSales/>} /> 
+      <Route path="notconnected_leadssalesbooks" element={<NotConnectedBooksSales/>} /> 
+
 
       
     </Route>

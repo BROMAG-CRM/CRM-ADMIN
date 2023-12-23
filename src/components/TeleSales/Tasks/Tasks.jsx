@@ -13,7 +13,7 @@ function SalesTasksIndiaorBooks() {
         },
       ];
     
-      const links = ["/myreport","/taskbooks"];
+      const links = ["/salesleadsindia","/salesleadsbooks"];
       const navigate = useNavigate()
 
     
