@@ -35,7 +35,7 @@ import PrivateLtd from "./components/PrivateLtd";
 import Proprietor from "./components/Proprietor";
 import SalesTasksIndiaorBooks from "./components/SalesTasksIndiaorBooks";
 import SalesCampaignsIndiaorBooks from "./components/SalesCampaignsIndiaorBooks";
-import SalesBooks from "./components/Salesbooks";
+import SalesBooks from "./components/SalesBooks";
 import SalesCampaignsIndia from "./components/SalesCampaignsIndia";
 import SalesCampaignsBooks from "./components/SalesCampaignsBooks";
 
