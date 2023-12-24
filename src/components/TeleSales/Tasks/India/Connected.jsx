@@ -292,7 +292,8 @@ function Connected() {
             );
     
             const newFileUrl = response.data.fileUrl;
-    
+            setUpdate(!update)
+
             // Update the data state with the new audio file URL
             setData((prevData) => {
               const newData = prevData.map((item) =>
