@@ -24,7 +24,7 @@ const ImageModal = ({ isOpen, onClose, imageUrl }) => {
         </button>
         {images && images.length > 0 ? (
           images.map((image, index) => (
-            <div key={index}>
+            <div key={index} style={{ marginBottom: '25px' }}>
               <Image src={image} alt={`Image ${index + 1}`} style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }} />
             </div>
           ))

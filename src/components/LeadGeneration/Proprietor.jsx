@@ -265,9 +265,6 @@ console.log("responseeeeeee");
         }
     
         const handleViewImage = (imageUrl) => {
-          console.log(imageUrl);
-          console.log("View Image");
-    
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
@@ -278,12 +275,8 @@ console.log("responseeeeeee");
         };
     
         return (
-          <div>
-            {data.map((imageUrl, index) => (
-              <div key={index} style={{ maxWidth: '300px', overflow: 'hidden', marginBottom: '10px' }}>
-                <Button onClick={() => handleViewImage(imageUrl)}>View Images{index + 1}</Button>
-              </div>
-            ))}
+              <div style={{ maxWidth: '300px', overflow: 'hidden'}}>
+                <Button onClick={() => handleViewImage(data)}>View Images</Button>
             <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
           </div>
         );
@@ -448,9 +441,6 @@ console.log("responseeeeeee");
         }
     
         const handleViewImage = (imageUrl) => {
-          console.log(imageUrl);
-          console.log("View Image");
-    
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
@@ -461,15 +451,11 @@ console.log("responseeeeeee");
         };
     
         return (
-          <div>
-            {data.map((imageUrl, index) => (
-              <div key={index} style={{ maxWidth: '300px', overflow: 'hidden', marginBottom: '10px' }}>
-                <Button onClick={() => handleViewImage(imageUrl)}>View Images{index + 1}</Button>
-              </div>
-            ))}
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
-          </div>
-        );
+          <div style={{ maxWidth: '300px', overflow: 'hidden'}}>
+            <Button onClick={() => handleViewImage(data)}>View Images</Button>
+        <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+      </div>
+    );
       },
     },
     {
