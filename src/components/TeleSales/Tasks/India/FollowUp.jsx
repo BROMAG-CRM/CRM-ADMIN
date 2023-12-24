@@ -282,8 +282,8 @@ const handleAddFeature = async() => {
     },
     {
       title: <h1>Upload Video Record</h1>,
-      dataIndex: "audio",
-      key: "audio",
+      dataIndex: "videoRecord",
+      key: "videoRecord",
       align: "center",
       render: (data, record) => {
         const props = {
