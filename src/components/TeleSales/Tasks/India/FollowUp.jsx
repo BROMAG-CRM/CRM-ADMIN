@@ -323,7 +323,8 @@ const handleAddFeature = async() => {
             );
     
             const newFileUrl = response.data.fileUrl;
-    
+            setupdated(!updated)
+
             // Update the data state with the new audio file URL
             setData((prevData) => {
               const newData = prevData.map((item) =>
