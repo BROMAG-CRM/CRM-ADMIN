@@ -79,12 +79,13 @@ function UserLeadGeneration() {
 
   const customRequest = async ({ file, onSuccess, onError, fieldName }) => {
 
+
     try {
 
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${url}/uploadimage`, formData, {
+      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -123,7 +124,8 @@ function UserLeadGeneration() {
   //   }
   // };
 
-  const handleChangeLead = ({ fileList, file }) => {
+  const 
+  handleChangeLead = ({ fileList, file }) => {
     const urls = fileList.map((file) => file.url).filter(Boolean);
     const fieldName = file.fieldName;
     setImageUrls((prevUrls) => ({
@@ -140,7 +142,7 @@ function UserLeadGeneration() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${url}/uploadimage`, formData, {
+      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -419,7 +421,7 @@ function UserLeadGeneration() {
       formData.append("file", file);
 
 
-      const response = await axios.post(`${url}/uploadimage`, formData, {
+      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -595,12 +597,8 @@ function UserLeadGeneration() {
                 allowClear={true}
               >
                 <Select.Option value={"Partnership"}>Partnership</Select.Option>
-                <Select.Option value={"Proprietorship"}>
-                  Proprietorship
-                </Select.Option>
-                <Select.Option value={"Private limited"}>
-                  Private limited
-                </Select.Option>
+                <Select.Option value={"Proprietorship"}>Proprietorship</Select.Option>
+                <Select.Option value={"Private limited"}>Private limited </Select.Option>
               </Select>
             </Form.Item>
             <div
@@ -662,7 +660,7 @@ function UserLeadGeneration() {
                 </Upload>
               </Form.Item>
               <Form.Item
-                name={"director"}
+                name="director"
                 label={<p>Director</p>}
                 valuePropName="fileList"
                 getValueFromEvent={(e) => normFile(e, "director")}
@@ -1030,8 +1028,15 @@ function UserLeadGeneration() {
                   showRemoveIcon: true,
                 }}
                 multiple={true}
-                customRequest={customRequest}
-                // onRemove={(file) => handleRemove(file)}
+                customRequest={({ file, onSuccess, onError }) =>
+                customRequest({
+                  file,
+                  onSuccess,
+                  onError,
+                  fieldName: "tablePhotos",
+                })
+              }                
+              // onRemove={(file) => handleRemove(file)}
               >
                 {fileList.length >= 5 ? null : (
                   <div>
@@ -1435,7 +1440,14 @@ function UserLeadGeneration() {
                   showRemoveIcon: true,
                 }}
                 multiple={true}
-                customRequest={customRequestTrade}
+                customRequest={({ file, onSuccess, onError }) =>
+                customRequestTrade({
+                  file,
+                  onSuccess,
+                  onError,
+                  fieldName: "tradeMarkPhotos",
+                })
+              }
                 // onRemove={(file) => onRemoveTrade(file)}
               >
                 {fileList.length >= 5 ? null : (
