@@ -138,7 +138,6 @@ const handleFollowUpModalClose = async () => {
       form.resetFields(['featureName', 'featureDescription']);
       handleModalClose();
   
-      console.log(values);
        await axios.post(
         `${url}/addvideofeature`,
         {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
@@ -307,7 +306,8 @@ const handleFollowUpModalClose = async () => {
             );
     
             const newFileUrl = response.data.fileUrl;
-    
+            setUpdated(!updated)
+
             // Update the data state with the new audio file URL
             setData((prevData) => {
               const newData = prevData.map((item) =>
