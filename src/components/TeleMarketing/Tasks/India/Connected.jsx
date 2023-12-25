@@ -93,7 +93,7 @@ function Connected() {
 
     const res = await axios.post(
       `${url}/businessstatus`,
-      { userId: id, newBusinessStatus: value },
+      { userId: id, newBusinessStatus: value, leadStatus:"new-lead" },
       {
         headers: {
           Authorization: `Bearer ${token}`,
