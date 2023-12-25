@@ -578,6 +578,29 @@ const response = await axios.get(`${url}/getform/Private limited`, {
         );
       },
     },
+    {
+      title: <h1 className="w-[10vw]">Auto Location</h1>,
+      dataIndex: "location",
+      key: "location",
+      align: "center",
+      render: (data) => {
+        return (
+          <div className="w-[14vw]">
+            {data && data.length > 0 ? (
+              data.map((res, i) => (
+                <div key={i}>
+                  <p> Longitude:{res.latitude}</p>
+                  <p> Latitude:{res.longitude}</p>
+                  <p> Location Name:{res.locationName}</p>
+                </div>
+              ))
+            ) : (
+              <p>No location data available</p>
+            )}
+          </div>
+        );
+      },
+    }    
   ];
 
   const handleTableChange = (pagination) => {

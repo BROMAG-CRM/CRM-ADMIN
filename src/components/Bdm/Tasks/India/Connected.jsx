@@ -5,6 +5,8 @@ import {
   Modal,
   Select,
   Table,
+  Upload,
+  message,
   notification,
 } from "antd";
 import { Option } from "antd/es/mentions";
@@ -15,6 +17,7 @@ import FeatureModal from "../../../Modals/FeatureModal";
 import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
+import { UploadOutlined, CameraOutlined } from '@ant-design/icons';
 
 function Connected() {
   const [data, setData] = useState([]);
@@ -310,6 +313,102 @@ const locationAutoFetch = async (record) => {
           <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
             <Button onClick={() => handleViewFeatures(data)}>View Features</Button>
             <FeatureModal isOpen={isModalOpen} onClose={handleCloseModal} features={selectedFeatures} />
+          </div>
+        );
+      },
+    },
+    {
+      title: <h1>Upload A Selfi Image</h1>,
+      dataIndex: "photo",
+      key: "photo",
+      align: "center",
+      render: (data, record) => {
+        const props = {
+          name: "file",
+          action: `${url}/uploadselfiphoto/${record._id}`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          onChange(info) {
+            if (info.file.status !== "uploading") {
+              console.log(info.file, info.fileList);
+            }
+            if (info.file.status === "done") {
+              message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === "error") {
+              message.error(`${info.file.name} file upload failed.`);
+            }
+          },
+        };
+    
+        const onUpload = async (options) => {
+          const { file } = options;
+    
+          const formData = new FormData();
+          formData.append("file", file);
+    
+          try {
+            const response = await axios.post(
+              `${url}/uploadselfiphoto/${record._id}`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+    
+            const newFileUrl = response.data.fileUrl;
+            setUpdate(!update);
+    
+            // Update the data state with the new photo file URL
+            setData((prevData) => {
+              const newData = prevData.map((item) =>
+                item._id === record._id
+                  ? {
+                      ...item,
+                      photo: newFileUrl,
+                    }
+                  : item
+              );
+              return newData;
+            });
+    
+            message.success(`${file.name} file uploaded successfully`);
+          } catch (error) {
+            message.error(`${file.name} file upload failed.`);
+          }
+        };
+    
+        const openCamera = () => {
+          // Trigger the input file click event
+          const inputElement = document.getElementById('cameraInput');
+          if (inputElement) {
+            inputElement.click();
+          }
+        };
+    
+        return (
+          <div>
+            <Upload {...props} customRequest={onUpload} showUploadList={false}>
+              <Button icon={<UploadOutlined />}>Upload Photo</Button>
+            </Upload>
+    
+            {/* Hidden input element for camera capture */}
+            <input
+              type="file"
+              accept="image/*"
+              capture="camera"
+              id="cameraInput"
+              style={{ display: 'none' }}
+              onChange={onUpload}
+            />
+    
+            {/* Button to trigger camera capture */}
+            <Button icon={<CameraOutlined />} onClick={openCamera}>
+              Take Photo
+            </Button>
           </div>
         );
       },
