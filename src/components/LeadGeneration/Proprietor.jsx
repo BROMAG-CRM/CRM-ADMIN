@@ -526,19 +526,22 @@ console.log("responseeeeeee");
       render: (data) => {
         return (
           <div className="w-[14vw]">
-            {data.map((res, i) => {
-              return (
+            {data && data.length > 0 ? (
+              data.map((res, i) => (
                 <div key={i}>
                   <p> Longitude:{res.latitude}</p>
                   <p> Latitude:{res.longitude}</p>
                   <p> Location Name:{res.locationName}</p>
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              <p>No location data available</p>
+            )}
           </div>
         );
       },
-    },
+    }
+    
   ];
 
   const handleTableChange = (pagination) => {
@@ -556,7 +559,7 @@ console.log("responseeeeeee");
           <Table
             columns={Proprietorcolumns}
             dataSource={data}
-            scroll={{ x: 4000 }}
+            scroll={{ x: 7000 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
             onChange={handleTableChange}

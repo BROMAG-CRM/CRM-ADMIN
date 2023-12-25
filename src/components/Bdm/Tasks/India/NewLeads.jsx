@@ -1,4 +1,4 @@
-import { Table,Input, Select, Button, Form, Modal, message, Upload} from "antd";
+import { Table,Input, Select, Button, Form, Modal, message, Upload, notification} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
@@ -7,9 +7,7 @@ const token = localStorage.getItem("token");
 import FollowUpModal from "../../../Modals/FollowUpModal";
 import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
-import { UploadOutlined } from "@ant-design/icons";
-import CallRecordModal from "../../../Modals/CallRecordModal";
-import VideoRecordsModal from "../../../Modals/VideoRecordsModal";
+
 const { Option } = Select;
 
 
@@ -32,15 +30,16 @@ function NewLeads() {
   const navigate = useNavigate()
   const [isModalOpen,setModalOpen] = useState(false)
   const [selectedFeatures,setSelectedFeatures] = useState([])
-  const [isVideoRecordsModalOpen,setVideoRecordsModalOpen] = useState(false)
-  const [selectedVideoRecords,setSelectedVideoRecords] = useState([])  
+  const [location, setLocation] = useState(null);
+
+ 
 
 
 
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/indianewleadsinsales`, {
+const response = await axios.get(`${url}/indianewleadinbdm`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -55,6 +54,75 @@ const response = await axios.get(`${url}/indianewleadsinsales`, {
   useEffect(() => {
     fetchData();
   }, [updated]);
+
+
+
+  //location function
+
+  const getLocationName = async (latitude, longitude) => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+      );
+  
+      const data = response.data;
+      const locationName = data.display_name;
+      return locationName;
+    } catch (error) {
+      console.error('Error getting location name:', error.message);
+      return null;
+    }
+  };
+  
+  
+  const locationAutoFetch = async (record) => {
+    try {
+      console.log("0");
+  
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => resolve(position),
+          (error) => reject(error)
+        );
+      });
+  
+      console.log("1");
+      const { latitude, longitude } = position.coords;
+      const locationName = await getLocationName(latitude, longitude);
+      console.log("2");
+      setLocation({ latitude, longitude, locationName });
+  
+      if (location) {
+        console.log("3");
+        const formData = {
+          location: location
+        };
+  
+        console.log("4");
+        console.log(formData);
+  
+        await axios.post(
+          `${url}/updatebdmlocation/${record._id}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        console.log("5");
+        notification.success({
+          message: "Location fetched successfully",
+        });
+  
+        setUpdated(!updated);
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  };
+
 
 
 //status function
@@ -119,23 +187,22 @@ const handleFollowUpModalClose = async () => {
 };
 
 
- //business status
- const handleBusinessStatus = async (record) => {
-  const id = record._id;
+  //business status
+  const handleBusinessStatus = async (record) => {
+    const id = record._id;
 
-  const res = await axios.post(
-    `${url}/businessstatus`,
-    { userId: id, newBusinessStatus: "telemarketing", leadStatus:"connected" },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  console.log(res);
-  setUpdated(!updated);
-};
-
+    const res = await axios.post(
+      `${url}/businessstatus`,
+      { userId: id, newBusinessStatus: "telesales", leadStatus:"connected" },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(res);
+    setUpdated(!updated);
+  };
 
 
 
@@ -157,7 +224,7 @@ const handleFollowUpModalClose = async () => {
       handleModalClose();
   
        await axios.post(
-        `${url}/addvideofeature`,
+        `${url}/addbdmfeature`,
         {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
         {
           headers: {
@@ -247,8 +314,8 @@ const handleFollowUpModalClose = async () => {
     },
     {
       title: <h1>Add Features</h1>,
-      dataIndex: "videoFeatures",
-      key: "newLeadFeatures",
+      dataIndex: "bdmFeatures",
+      key: "bdmFeatures",
       align: "center",
       render: (data, record) => (
         <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
@@ -257,14 +324,14 @@ const handleFollowUpModalClose = async () => {
       ),
     },
     {
-      title: <h1>Features(video)</h1>,
-      dataIndex: "videoFeatures",
-      key: "videoFeatures",
+      title: <h1>Features</h1>,
+      dataIndex: "bdmFeatures",
+      key: "bdmFeatures",
       align: "center",
       render: (data) => {
 
-        const handleViewFeatures = (videoFeatures) => {
-          setSelectedFeatures(videoFeatures);
+        const handleViewFeatures = (bdmFeatures) => {
+          setSelectedFeatures(bdmFeatures);
           setModalOpen(true);
         };
     
@@ -282,111 +349,39 @@ const handleFollowUpModalClose = async () => {
       },
     },
     {
-      title: <h1>Upload Video Record</h1>,
-      dataIndex: "videoRecord",
-      key: "videoRecord",
+      title: <h1>Fetch Current Location</h1>,
+      dataIndex: "locationBdm",
+      key: "locationBdm",
       align: "center",
-      render: (data, record) => {
-        const props = {
-          name: 'file',
-          action: `${url}/uploadvideorecord/${record._id}`,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          onChange(info) {
-            if (info.file.status !== 'uploading') {
-              console.log(info.file, info.fileList);
-            }
-            if (info.file.status === 'done') {
-              message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-              message.error(`${info.file.name} file upload failed.`);
-            }
-          },
-        };
-    
-        const onUpload = async (options) => {
-          const { file } = options;
-    
-          const formData = new FormData();
-          formData.append('file', file);
-    
-          try {
-            const response = await axios.post(
-              `${url}/uploadvideorecord/${record._id}`,
-              formData,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  'Content-Type': 'multipart/form-data',
-                },
-              }
-            );
-    
-            const newFileUrl = response.data.fileUrl;
-            setUpdated(!updated)
-
-            // Update the data state with the new audio file URL
-            setData((prevData) => {
-              const newData = prevData.map((item) =>
-                item._id === record._id
-                  ? { ...item, callRecord: [...(item.callRecord || []), newFileUrl] }
-                  : item
-              );
-              return newData;
-            });
-    
-            message.success(`${file.name} file uploaded successfully`);
-          } catch (error) {
-            message.error(`${file.name} file upload failed.`);
-          }
-        };
-    
-        return (
-          <div>
-           
-              <Upload {...props} customRequest={onUpload} showUploadList={false}>
-                <Button icon={<UploadOutlined />}>Upload Video</Button>
-              </Upload>
-            
-          </div>
-        );
-      },
+      render: (data, record) => (
+        <Button
+          type="primary"
+          style={{ backgroundColor: "green" }}
+          onClick={() => locationAutoFetch(record)}
+        >
+          Okay
+        </Button>
+      ),
     },
     {
-      title: <h1>Play Video Records</h1>,
-      dataIndex: "videoRecord",
-      key: "videoRecord",
+      title: <h1>Current Location</h1>,
+      dataIndex: "locationBdm",
+      key: "locationBdm",
       align: "center",
       render: (data) => {
-        if (!data || !Array.isArray(data) || data.length === 0) {
-          console.error('Invalid or empty data array:', data);
-          return null;
+        if (!data || typeof data !== 'object') {
+          return null; // or handle the case when data is undefined or not an object
         }
     
-        const handleViewCallRecords = (videoRecords) => {
-          console.log(videoRecords);
-          console.log("vdoooooo");
-
-          setSelectedVideoRecords(videoRecords);
-          setVideoRecordsModalOpen(true);
-        };
-        
-        const handleCloseCallRecordsModal = () => {
-          setVideoRecordsModalOpen(false);
-          setSelectedVideoRecords([]);
-        };
-    
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
-            <Button onClick={() => handleViewCallRecords(data)}>View Video Records</Button>
-            <VideoRecordsModal isOpen={isVideoRecordsModalOpen} onClose={handleCloseCallRecordsModal} videoUrls={selectedVideoRecords} />
+          <div className="w-[14vw] ml-12 text-center">
+            <p>Longitude: {data.latitude}</p>
+            <p>Latitude: {data.longitude}</p>
+            <p>Location Name: {data.locationName}</p>
           </div>
-
         );
-
       },
-    },
+    },    
     {
       title: <h1>Status</h1>,
       dataIndex: "status",
@@ -407,7 +402,7 @@ const handleFollowUpModalClose = async () => {
       ),
     },
     {
-      title: <h1>Move to Tele Marketing</h1>,
+      title: <h1>Move to Tele Sales</h1>,
       dataIndex: "businessStatus",
       key: "businessStatus",
       align: "center",
@@ -421,6 +416,7 @@ const handleFollowUpModalClose = async () => {
         </Button>
       ),
     },
+    
       
   ];
 

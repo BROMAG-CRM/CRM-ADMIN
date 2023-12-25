@@ -1,4 +1,3 @@
-import { UploadOutlined } from "@ant-design/icons";
 import {
   Button,
   Form,
@@ -8,6 +7,7 @@ import {
   Table,
   Upload,
   message,
+  notification,
 } from "antd";
 import { Option } from "antd/es/mentions";
 import axios from "axios";
@@ -15,9 +15,9 @@ import { get } from "lodash";
 import { useEffect, useState, useRef } from "react";
 import FeatureModal from "../../../Modals/FeatureModal";
 import { useNavigate } from "react-router-dom";
-import VideoRecordsModal from "../../../Modals/VideoRecordsModal";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
+import { UploadOutlined, CameraOutlined } from '@ant-design/icons';
 
 function Connected() {
   const [data, setData] = useState([]);
@@ -29,16 +29,14 @@ function Connected() {
   const [update, setUpdate] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
-
-  const [isVideoRecordsModalOpen,setVideoRecordsModalOpen] = useState(false)
-  const [selectedVideoRecords,setSelectedVideoRecords] = useState([])  
   const navigate = useNavigate();
+  const [location, setLocation] = useState(null);
 
 
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/indiaconnectedinsales`, {
+      const response = await axios.get(`${url}/indiaconnectedinbdm`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,6 +54,76 @@ function Connected() {
 
 
   console.log(data);
+
+
+
+
+ //location function
+
+ const getLocationName = async (latitude, longitude) => {
+  try {
+    const response = await axios.get(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+    );
+
+    const data = response.data;
+    const locationName = data.display_name;
+    return locationName;
+  } catch (error) {
+    console.error('Error getting location name:', error.message);
+    return null;
+  }
+};
+
+
+const locationAutoFetch = async (record) => {
+  try {
+    console.log("0");
+
+    const position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => resolve(position),
+        (error) => reject(error)
+      );
+    });
+
+    console.log("1");
+    const { latitude, longitude } = position.coords;
+    const locationName = await getLocationName(latitude, longitude);
+    console.log("2");
+    setLocation({ latitude, longitude, locationName });
+
+    if (location) {
+      console.log("3");
+      const formData = {
+        location: location
+      };
+
+      console.log("4");
+      console.log(formData);
+
+      await axios.post(
+        `${url}/updatebdmlocation/${record._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("5");
+      notification.success({
+        message: "Location fetched successfully",
+      });
+
+      setUpdate(!update);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+};
+
 
 
   //feature function
@@ -77,7 +145,7 @@ function Connected() {
   
       console.log(values);
        await axios.post(
-        `${url}/addvideofeature`,
+        `${url}/addbdmfeature`,
         {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
         {
           headers: {
@@ -96,15 +164,15 @@ function Connected() {
 
     const res = await axios.post(
       `${url}/businessstatus`,
-      { userId: id, newBusinessStatus: "bdm", leadStatus:"new-lead" },
+      { userId: id, newBusinessStatus: "legalmanagement" ,leadStatus:"new-lead" },
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-    setUpdate(!update);
     console.log(res);
+    setUpdate(!update);
   };
 
   // status function
@@ -215,8 +283,8 @@ function Connected() {
     },
     {
       title: <h1>Add Features</h1>,
-      dataIndex: "videoFeatures",
-      key: "videoFeatures",
+      dataIndex: "bdmFeatures",
+      key: "bdmFeatures",
       align: "center",
       render: (data, record) => (
         <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
@@ -225,9 +293,9 @@ function Connected() {
       ),
     },
     {
-      title: <h1>Features(video)</h1>,
-      dataIndex: "videoFeatures",
-      key: "videoFeatures",
+      title: <h1>Features</h1>,
+      dataIndex: "bdmFeatures",
+      key: "bdmFeatures",
       align: "center",
       render: (data) => {
 
@@ -250,24 +318,24 @@ function Connected() {
       },
     },
     {
-      title: <h1>Upload Video Record</h1>,
-      dataIndex: "videoRecord",
-      key: "videoRecord",
+      title: <h1>Upload A Selfi Image</h1>,
+      dataIndex: "photo",
+      key: "photo",
       align: "center",
       render: (data, record) => {
         const props = {
-          name: 'file',
-          action: `${url}/uploadvideorecord/${record._id}`,
+          name: "file",
+          action: `${url}/uploadselfiphoto/${record._id}`,
           headers: {
             Authorization: `Bearer ${token}`,
           },
           onChange(info) {
-            if (info.file.status !== 'uploading') {
+            if (info.file.status !== "uploading") {
               console.log(info.file, info.fileList);
             }
-            if (info.file.status === 'done') {
+            if (info.file.status === "done") {
               message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
+            } else if (info.file.status === "error") {
               message.error(`${info.file.name} file upload failed.`);
             }
           },
@@ -277,28 +345,31 @@ function Connected() {
           const { file } = options;
     
           const formData = new FormData();
-          formData.append('file', file);
+          formData.append("file", file);
     
           try {
             const response = await axios.post(
-              `${url}/uploadvideorecord/${record._id}`,
+              `${url}/uploadselfiphoto/${record._id}`,
               formData,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
-                  'Content-Type': 'multipart/form-data',
+                  "Content-Type": "multipart/form-data",
                 },
               }
             );
     
             const newFileUrl = response.data.fileUrl;
-            setUpdate(!update)
-
-            // Update the data state with the new audio file URL
+            setUpdate(!update);
+    
+            // Update the data state with the new photo file URL
             setData((prevData) => {
               const newData = prevData.map((item) =>
                 item._id === record._id
-                  ? { ...item, callRecord: [...(item.callRecord || []), newFileUrl] }
+                  ? {
+                      ...item,
+                      photo: newFileUrl,
+                    }
                   : item
               );
               return newData;
@@ -310,66 +381,72 @@ function Connected() {
           }
         };
     
+        const openCamera = () => {
+          // Trigger the input file click event
+          const inputElement = document.getElementById('cameraInput');
+          if (inputElement) {
+            inputElement.click();
+          }
+        };
+    
         return (
           <div>
-           
-              <Upload {...props} customRequest={onUpload} showUploadList={false}>
-                <Button icon={<UploadOutlined />}>Upload Video</Button>
-              </Upload>
-            
+            <Upload {...props} customRequest={onUpload} showUploadList={false}>
+              <Button icon={<UploadOutlined />}>Upload Photo</Button>
+            </Upload>
+    
+            {/* Hidden input element for camera capture */}
+            <input
+              type="file"
+              accept="image/*"
+              capture="camera"
+              id="cameraInput"
+              style={{ display: 'none' }}
+              onChange={onUpload}
+            />
+    
+            {/* Button to trigger camera capture */}
+            <Button icon={<CameraOutlined />} onClick={openCamera}>
+              Take Photo
+            </Button>
           </div>
         );
       },
     },
     {
-      title: <h1>Play Video Records</h1>,
-      dataIndex: "videoRecord",
-      key: "videoRecord",
-      align: "center",
-      render: (data) => {
-        if (!data || !Array.isArray(data) || data.length === 0) {
-          console.error('Invalid or empty data array:', data);
-          return null;
-        }
-    
-        const handleViewCallRecords = (videoRecords) => {
-          console.log(videoRecords);
-          console.log("vdoooooo");
-
-          setSelectedVideoRecords(videoRecords);
-          setVideoRecordsModalOpen(true);
-        };
-        
-        const handleCloseCallRecordsModal = () => {
-          setVideoRecordsModalOpen(false);
-          setSelectedVideoRecords([]);
-        };
-    
-        return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
-            <Button onClick={() => handleViewCallRecords(data)}>View Video Records</Button>
-            <VideoRecordsModal isOpen={isVideoRecordsModalOpen} onClose={handleCloseCallRecordsModal} videoUrls={selectedVideoRecords} />
-          </div>
-
-        );
-
-      },
-    },
-    {
-      title: <h1>Move to BDM</h1>,
-      dataIndex: "businessStatus",
-      key: "businessStatus",
+      title: <h1>Fetch Current Location</h1>,
+      dataIndex: "locationBdm",
+      key: "locationBdm",
       align: "center",
       render: (data, record) => (
         <Button
           type="primary"
           style={{ backgroundColor: "green" }}
-          onClick={() => handleBusinessStatus(record)}
+          onClick={() => locationAutoFetch(record)}
         >
           Okay
         </Button>
       ),
     },
+    {
+      title: <h1>Current Location</h1>,
+      dataIndex: "locationBdm",
+      key: "locationBdm",
+      align: "center",
+      render: (data) => {
+        if (!data || typeof data !== 'object') {
+          return null; // or handle the case when data is undefined or not an object
+        }
+    
+        return (
+          <div className="w-[14vw] ml-12 text-center">
+            <p>Longitude: {data.latitude}</p>
+            <p>Latitude: {data.longitude}</p>
+            <p>Location Name: {data.locationName}</p>
+          </div>
+        );
+      },
+    },    
     {
       title: <h1>Move to New Lead</h1>,
       dataIndex: "leadStatus",
@@ -380,6 +457,21 @@ function Connected() {
           type="primary"
           style={{ backgroundColor: "green" }}
           onClick={() => handleStatusChange("new-lead", record)}
+        >
+          Okay
+        </Button>
+      ),
+    },
+    {
+      title: <h1>Move to Legal Management</h1>,
+      dataIndex: "businessStatus",
+      key: "businessStatus",
+      align: "center",
+      render: (data, record) => (
+        <Button
+          type="primary"
+          style={{ backgroundColor: "green" }}
+          onClick={() => handleBusinessStatus(record)}
         >
           Okay
         </Button>
