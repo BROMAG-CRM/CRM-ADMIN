@@ -11,7 +11,6 @@ import UsersList from "./components/Others/UsersList"
 import Admin from "./components/Others/Admin";
 import UserLeadGeneration from "./components/Others/UserLeadGeneration";
 import AccountsManagement from "./components/AccountsManagement/AccountsManagement";
-import Bdm from "./components/Bdm/Bdm";
 import LegalManagement from "./components/LegalManagement/LegalManagement";
 // import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Others/Loader";
@@ -70,6 +69,29 @@ import ConnectedBooksSales from "./components/TeleSales/Tasks/Books/Connected"
 import NotConnectedBooksSales from "./components/TeleSales/Tasks/Books/NotConnected"
 
 
+//BDM 
+import Bdm from "./components/Bdm/Bdm";
+import TasksBdm from "./components/Bdm/Tasks/Tasks"
+import CampaignsBdm from "./components/Bdm/Campaigns/Campaigns"
+
+//Bdm Campaigns(India)
+import BdmCampaignsIndia from "./components/Bdm/Campaigns/India/BdmCampaignsIndia";
+
+//Bdm Campaigns(books)
+import BdmCampaignsBooks from "./components/Bdm/Campaigns/Books/BdmCampaignsBooks";
+
+//Bdm Tasks(India)
+import BdmTasksIndia from "./components/Bdm/Tasks/India/BdmTasksIndia";
+import NewLeadsBdmIndia from "./components/Bdm/Tasks/India/NewLeads"
+import FollowUpLeadsBdmIndia from "./components/Bdm/Tasks/India/FollowUp"
+import ConnectedLeadsBdmIndia from "./components/Bdm/Tasks/India/Connected"
+import NotConnectedLeadsBdmIndia from "./components/Bdm/Tasks/India/NotConnected"
+
+//Bdm Tasks(Books)
+import BdmTasksBooks from "./components/Bdm/Tasks/Books/BdmTasksBooks";
+
+
+
 
 
 import MyReport from "./components/TeleSales/MyReport";
@@ -101,14 +123,13 @@ const router=createBrowserRouter(
       <Route  path="telesales" element={<TeleSales/>}/>
       <Route path="login" element={<Login/>}/>
       <Route path="users" element={<UsersList/>} />
+
       <Route path="campaignsindia" element={<MyCampaignsIndia/>} />
       <Route path="campaignsbooks" element={<MyCampaignsBooks/>} />
 
       <Route path="leadsindia" element={<MarketingLeadsIndia />} />
       <Route path="leadsbooks" element={<MarketingLeadsBooks/>} />
 
-      <Route path="salesleadsindia" element={<SalesLeadsIndia/>} />
-      <Route path="salesleadsbooks" element={<SalesLeadsBooks/>} />
 
       <Route path="loader" element={<Loader/>} />
 
@@ -125,11 +146,16 @@ const router=createBrowserRouter(
       <Route path="privateltd" element={<PrivateLtd/>} />
       <Route path="proprietor" element={<Proprietor/>} />   
 
+
+
       <Route path="salestasksindiaorbooks" element={<TasksTeleSales/>} />      
       <Route path="salescampaignindiaorbooks" element={<CampaignsTeleSales/>} /> 
 
       <Route path="salescampaignsindia" element={<SalesCampaignsIndia/>} />      
       <Route path="salescampaignsbooks" element={<SalesCampaignsBooks/>} /> 
+
+      <Route path="salesleadsindia" element={<SalesLeadsIndia/>} />
+      <Route path="salesleadsbooks" element={<SalesLeadsBooks/>} />
 
       <Route path="new_leadsindia" element={<NewLeads />} />
       <Route path="followup_leadsindia" element={<FollowUp />} />
@@ -150,6 +176,26 @@ const router=createBrowserRouter(
       <Route path="followup_leadssalesbooks" element={<FollowUpBooksSales/>} /> 
       <Route path="connected_leadssalesbooks" element={<ConnectedBooksSales/>} /> 
       <Route path="notconnected_leadssalesbooks" element={<NotConnectedBooksSales/>} /> 
+
+
+
+      <Route path="bdmtasksindiaorbooks" element={<TasksBdm/>} /> 
+      <Route path="bdmcampaignindiaorbooks" element={<CampaignsBdm/>} /> 
+
+      <Route path="bdmcampaignsindia" element={<BdmCampaignsIndia/>} />      
+      <Route path="bdmcampaignsbooks" element={<BdmCampaignsBooks/>} /> 
+
+      <Route path="bdmtasksbooks" element={<BdmTasksBooks/>} /> 
+      <Route path="bdmtasksindia" element={<BdmTasksIndia/>} /> 
+
+
+      <Route path="new_leadsbdmindia" element={<NewLeadsBdmIndia/>} /> 
+      <Route path="followup_leadsbdmindia" element={<FollowUpLeadsBdmIndia/>} /> 
+      <Route path="connected_leadsbdmindia" element={<ConnectedLeadsBdmIndia/>} /> 
+      <Route path="notconnected_leadsbdmindia" element={<NotConnectedLeadsBdmIndia/>} /> 
+
+
+
 
 
       
