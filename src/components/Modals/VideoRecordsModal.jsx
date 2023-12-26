@@ -52,7 +52,7 @@ const VideoRecordsModal = ({ isOpen, onClose, videoUrls }) => {
 
             return (
               <div key={key}>
-                <video controls width="100%">
+                <video controls width="100%" style={{ marginBottom: '25px' }}>
                   <source src={videoUrl} type={fileType} />
                   Your browser does not support the video tag.
                 </video>

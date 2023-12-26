@@ -200,7 +200,6 @@ const handleAddFeature = async() => {
     form.resetFields(['featureName', 'featureDescription']);
     handleModalClose();
 
-    console.log(values);
      await axios.post(
       `${url}/addbdmfeature`,
       {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
@@ -447,7 +446,7 @@ const handleAddFeature = async() => {
       >
         <Form form={form} layout="vertical">
           <Form.Item label="Feature" name="feature" rules={[{ required: true, message: 'Please select a feature' }]}>
-            <Select placeholder="Select a feature description">
+            <Select placeholder="Select a feature">
               <Option value="Online Order">Online Order</Option>
               <Option value="Dining">Dining</Option>
               <Option value="Call for Order">Call for Order</Option>

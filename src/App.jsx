@@ -215,7 +215,7 @@ function DashboardOrUserLeadGeneration() {
     return <Loader />;
   }
 
-  if (user.name && user.name.toLowerCase().startsWith('admin@')) {
+  if (user.role && user.role !== "employee") {
     console.log('Admin logged in');
     return <Dashboard />;
   }

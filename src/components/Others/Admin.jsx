@@ -1,34 +1,29 @@
-import { Button, Form,Input, notification} from "antd";
+import { Button, Form, Input, notification, Select } from "antd";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_REACT_APP_URL;
+const { Option } = Select;
 
 function Admin() {
   const [form] = Form.useForm();
   const userState = useSelector((state) => state?.user?.user?.state);
-  const userId = useSelector((state) => state?.user?.user?.userId)
-  const navigate = useNavigate()
-
-  
-
+  const userId = useSelector((state) => state?.user?.user?.userId);
+  const navigate = useNavigate();
 
   const handleFinish = async (values) => {
     try {
-      values.adminId = userId
-      values.state = userState
+      values.adminId = userId;
+      values.state = userState;
       await axios.post(`${url}/createuser`, values);
       notification.success({ message: "User created successfully" });
       form.resetFields();
-      navigate("/users")
+      navigate("/users");
     } catch (e) {
       console.log(e);
       notification.error({ message: e.response.data.message });
     }
   };
-
- 
-
 
   return (
     <div className="pl-[18vw]  pt-14 w-screen">
@@ -69,7 +64,9 @@ function Admin() {
                     );
                   }
                   if (value.length > 10) {
-                    return Promise.reject("Mobile number can't be more than 10 digits");
+                    return Promise.reject(
+                      "Mobile number can't be more than 10 digits"
+                    );
                   }
                   return Promise.resolve();
                 },
@@ -101,20 +98,29 @@ function Admin() {
               placeholder="Enter password..."
             />
           </Form.Item>
-          <Form.Item label={<p>State</p>}>
-            <Input value={userState} readOnly />
+          <Form.Item
+            name="role"
+            rules={[{ required: true, message: "Role is required" }]}
+            label={<p>Role</p>}
+          >
+            <Select size="large" placeholder="Select a role...">
+              <Option value="employee">Employee</Option>
+              <Option value="marketing executive">Marketing Executive</Option>
+              <Option value="sales executive">Sales Executive</Option>
+              <Option value="bdm executive">BDM Executive</Option>
+            </Select>
           </Form.Item>
           <Form.Item
             name="city"
             rules={[{ required: true, message: "City is required" }]}
             label={<p>City</p>}
           >
-            <Input
-              type="city"
-              size="large"
-              placeholder="Enter city..."
-            />
+            <Input type="city" size="large" placeholder="Enter city..." />
           </Form.Item>
+          <Form.Item label={<p>State</p>}>
+            <Input value={userState} readOnly />
+          </Form.Item>
+
           <Form.Item className="flex items-end justify-end">
             <Button
               htmlType="submit"
