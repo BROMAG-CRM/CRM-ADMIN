@@ -225,7 +225,7 @@ function Connected() {
       ),
     },
     {
-      title: <h1>Features(video)</h1>,
+      title: <h1>Features</h1>,
       dataIndex: "videoFeatures",
       key: "videoFeatures",
       align: "center",

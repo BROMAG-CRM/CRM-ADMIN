@@ -463,11 +463,17 @@ const handleFollowUpModalClose = async () => {
         <Form form={form} layout="vertical">
           <Form.Item label="Feature" name="feature" rules={[{ required: true, message: 'Please select a feature' }]}>
             <Select placeholder="Select a feature">
-              <Option value="Self Introduction">Self Introduction</Option>
-              <Option value="About Restaurant">About Restaurant</Option>
-              <Option value="About Bromag">About Bromag</Option>
-              <Option value="About Product">About Product</Option>
-              <Option value="Feedback">Feedback</Option>
+            <Option value="Online Order">Online Order</Option>
+              <Option value="Dining">Dining</Option>
+              <Option value="Call for Order">Call for Order</Option>
+              <Option value="Take Away">Take Away</Option>
+              <Option value="Content Banner">Content Banner</Option>
+              <Option value="Top Notch">Top Notch</Option>
+              <Option value="Vegetarian">Vegetarian</Option>
+              <Option value="Non Vegetarian">Non Vegetarian</Option>
+              <Option value="Scratch Card">Scratch Card</Option>
+              <Option value="Food Review">Food Review</Option>
+              <Option value="Others">Others</Option>
             </Select>
           </Form.Item>
           <Form.Item label="Feature Description" name="featureDescription" rules={[{ required: true, message: 'Please enter a feature description' }]}>
