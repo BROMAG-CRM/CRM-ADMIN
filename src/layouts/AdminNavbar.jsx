@@ -108,7 +108,7 @@ function AdminNavbar() {
 
   return (
     <div>
-      {user && user.role !== "employee" ? (
+      {user && user.role !== "field sales executive" ? (
         <div
           className={`w-screen px-20 z-50 fixed border-b shadow-md flex items-center justify-between h-[7.5vh] bg-black`}
         >

@@ -90,10 +90,7 @@ function LeadGeneration() {
 
   const debouncedSearchPartnership = debounce(handleSearchPartnership, 300);
   const debouncedSearchPvtLmt = debounce(handleSearchPvtLmt, 300);
-  const debouncedSearchProprietorship = debounce(
-    handleSearchProprietorship,
-    300
-  );
+  const debouncedSearchProprietorship = debounce(handleSearchProprietorship,300);
 
 
   const exportPvtLmtdToExcel = () => {

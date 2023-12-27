@@ -215,7 +215,7 @@ function DashboardOrUserLeadGeneration() {
     return <Loader />;
   }
 
-  if (user.role && user.role !== "employee") {
+  if (user.role && user.role !== "field sales executive") {
     console.log('Admin logged in');
     return <Dashboard />;
   }

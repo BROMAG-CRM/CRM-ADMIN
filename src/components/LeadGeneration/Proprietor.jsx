@@ -23,7 +23,7 @@ function Proprietor() {
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getform/Proprietor`, {
+const response = await axios.get(`${url}/getform/Proprietorship`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
