@@ -1,6 +1,6 @@
 import { Menu } from 'antd'
-import React, { useEffect } from 'react'
-import { items } from '../helper/menu'
+import { useEffect } from 'react'
+import { adminItems,marketingItems,salesItems,bdmItems } from '../helper/menu'
 import {get} from "lodash"
 import axios from 'axios'
 const url = import.meta.env.VITE_REACT_APP_URL;
@@ -40,17 +40,30 @@ useEffect(()=>{
 
   return (
 <div className="h-[100vh] fixed top-[7.5vh] bg-black flex flex-col justify-between lg:border-r">
-  <div
-    className={`w-[19vw] h-[92vh] overflow-y-scroll ${
-      user && user.name && user.name.toLowerCase().startsWith("admin@") ? "block" : "hidden"
-    }`}
-  >
+<div
+  className={`w-[19vw] h-[92vh] overflow-y-scroll ${
+    user && user.role === "employee" ? "hidden" : "block"
+  }`}
+>
+  {user && user.role !== "employee" && (
     <Menu
       defaultSelectedKeys={get(location, "pathname", "/")}
       mode="inline"
-      items={items}
+      items={
+        user.role === "admin"
+          ? adminItems
+          : user.role === "sales executive"
+          ? salesItems
+          : user.role === "bdm executive"
+          ? bdmItems
+          : user.role === "marketing executive"
+          ? marketingItems
+          : [] // Set a default value or an empty array for unknown roles
+      }
     />
-  </div>
+  )}
+</div>
+
 </div>
 
   )

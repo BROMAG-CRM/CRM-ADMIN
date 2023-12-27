@@ -56,6 +56,7 @@ const response = await axios.get(`${url}/indianewleadsinsales`, {
     fetchData();
   }, [updated]);
 
+  console.log(data);
 
 //status function
   const handleStatusChange = async(value, record) => {
@@ -155,6 +156,9 @@ const handleFollowUpModalClose = async () => {
   
       form.resetFields(['featureName', 'featureDescription']);
       handleModalClose();
+
+      console.log(values);
+      console.log("values");
   
        await axios.post(
         `${url}/addvideofeature`,
@@ -248,7 +252,7 @@ const handleFollowUpModalClose = async () => {
     {
       title: <h1>Add Features</h1>,
       dataIndex: "videoFeatures",
-      key: "newLeadFeatures",
+      key: "videoFeatures",
       align: "center",
       render: (data, record) => (
         <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
@@ -257,7 +261,7 @@ const handleFollowUpModalClose = async () => {
       ),
     },
     {
-      title: <h1>Features(video)</h1>,
+      title: <h1>Features</h1>,
       dataIndex: "videoFeatures",
       key: "videoFeatures",
       align: "center",
@@ -467,11 +471,17 @@ const handleFollowUpModalClose = async () => {
         <Form form={form} layout="vertical">
           <Form.Item label="Feature" name="feature" rules={[{ required: true, message: 'Please select a feature' }]}>
             <Select placeholder="Select a feature">
-              <Option value="Self Introduction">Self Introduction</Option>
-              <Option value="About Restaurant">About Restaurant</Option>
-              <Option value="About Bromag">About Bromag</Option>
-              <Option value="About Product">About Product</Option>
-              <Option value="Feedback">Feedback</Option>
+            <Option value="Online Order">Online Order</Option>
+              <Option value="Dining">Dining</Option>
+              <Option value="Call for Order">Call for Order</Option>
+              <Option value="Take Away">Take Away</Option>
+              <Option value="Content Banner">Content Banner</Option>
+              <Option value="Top Notch">Top Notch</Option>
+              <Option value="Vegetarian">Vegetarian</Option>
+              <Option value="Non Vegetarian">Non Vegetarian</Option>
+              <Option value="Scratch Card">Scratch Card</Option>
+              <Option value="Food Review">Food Review</Option>
+              <Option value="Others">Others</Option>
             </Select>
           </Form.Item>
           <Form.Item label="Feature Description" name="featureDescription" rules={[{ required: true, message: 'Please enter a feature description' }]}>

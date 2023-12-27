@@ -108,7 +108,7 @@ function AdminNavbar() {
 
   return (
     <div>
-      {user && user.name && user.name.toLowerCase().startsWith("admin@") ? (
+      {user && user.role !== "employee" ? (
         <div
           className={`w-screen px-20 z-50 fixed border-b shadow-md flex items-center justify-between h-[7.5vh] bg-black`}
         >

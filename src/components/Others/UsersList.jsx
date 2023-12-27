@@ -57,6 +57,24 @@ function UsersList() {
       },
     },
     {
+      title: <h1>User Id</h1>,
+      dataIndex: "uniqueId",
+      key: "uniqueId",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>User Role</h1>,
+      dataIndex: "role",
+      key: "role",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
       title: <h1>User Name</h1>,
       dataIndex: "name",
       key: "name",
@@ -270,7 +288,7 @@ function UsersList() {
           <Table
             columns={columnsData}
             dataSource={data}
-            scroll={{ x: 1500 }}
+            scroll={{ x: 2500 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}
             onChange={handleTableChange}

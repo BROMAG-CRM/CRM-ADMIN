@@ -119,7 +119,7 @@ const handleFollowUpModalClose = async () => {
 
 
 
-//new Lead Feature function
+//add introduction function
 const handleButtonClick = (record) => {
   setSelectedRowData(record);
   setModalVisible(true);
@@ -138,7 +138,7 @@ const handleAddFeature = async() => {
 
     console.log(values);
      await axios.post(
-      `${url}/addnewleadfeature`,
+      `${url}/addintroduction`,
       {featureName: values.feature, featureDescription: values.featureDescription, id: selectedRowData._id},
       {
         headers: {
@@ -226,9 +226,9 @@ const handleAddFeature = async() => {
       },
     },
     {
-      title: <h1>Add Features</h1>,
-      dataIndex: "newLeadFeatures",
-      key: "newLeadFeatures",
+      title: <h1>Add Introduction</h1>,
+      dataIndex: "introduction",
+      key: "introduction",
       align: "center",
       render: (data, record) => (
         <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
@@ -237,9 +237,9 @@ const handleAddFeature = async() => {
       ),
     },
     {
-      title: <h1>Features</h1>,
-      dataIndex: "newLeadFeatures",
-      key: "newLeadFeatures",
+      title: <h1>Intorduction</h1>,
+      dataIndex: "introduction",
+      key: "introduction",
       align: "center",
       render: (data) => {
         const handleViewFeatures = (features) => {
