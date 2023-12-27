@@ -8,6 +8,7 @@ import FollowUpModal from "../../../Modals/FollowUpModal";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
+import CallRecordModal from "../../../Modals/CallRecordModal";
 const { Option } = Select;
 
 
@@ -30,6 +31,8 @@ function FollowUp() {
   const navigate = useNavigate()
   const [selectedFeatures,setSelectedFeatures] = useState([])
   const [isModalOpen,setModalOpen] = useState(false)
+  const [isCallRecordsModalOpen,setCallRecordsModalOpen] = useState(false)
+  const [selectedCallRecords,setSelectedCallRecords] = useState([])
 
 
 
@@ -357,55 +360,31 @@ const handleAddFeature = async() => {
     },
     {
       title: <h1>Play Call Records</h1>,
-      dataIndex: "callRecord",
-      key: "callRecord",
-      align: "center",
+      dataIndex: 'callRecord',
+      key: 'callRecord',
+      align: 'center',
       render: (data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {
           console.error('Invalid or empty data array:', data);
           return null;
         }
-    
-        const mimeTypes = {
-          mp3: 'audio/mp3',
-          ogg: 'audio/ogg',
-          wav: 'audio/wav',
-          // Add more supported audio formats as needed
+
+        const handleViewCallRecords = (callRecords) => {
+          setSelectedCallRecords(callRecords);
+          setCallRecordsModalOpen(true);
         };
-    
-        const getFileExtension = (filename) => {
-          if (filename) {
-            return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
-          }
-          return '';
+        
+        const handleCloseCallRecordsModal = () => {
+          setCallRecordsModalOpen(false);
+          setSelectedCallRecords([]);
         };
     
         return (
-          <div>
-            {data.map((audioUrl, index) => {
-              if (!audioUrl) {
-                console.error('Invalid audio URL at index', index);
-                return null;
-              }
-    
-              const fileExtension = getFileExtension(audioUrl);
-              const fileType = mimeTypes[fileExtension] || 'audio/*';
-        
-              // Generate a unique key based on the audio URL
-              const key = `audioKey_${index}`;
-        
-              console.log('Audio URL:', audioUrl);
-        
-              return (
-                <div key={key}>
-                  <audio controls>
-                    <source src={audioUrl} type={fileType} />
-                    Your browser does not support the audio tag.
-                  </audio>
-                </div>
-              );
-            })}
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewCallRecords(data)}>View Call Records</Button>
+            <CallRecordModal isOpen={isCallRecordsModalOpen} onClose={handleCloseCallRecordsModal} callRecords={selectedCallRecords} />
           </div>
+
         );
       },
     },

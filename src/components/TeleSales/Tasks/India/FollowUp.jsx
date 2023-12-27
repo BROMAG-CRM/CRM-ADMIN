@@ -256,7 +256,7 @@ const handleAddFeature = async() => {
       ),
     },
     {
-      title: <h1>Features(video)</h1>,
+      title: <h1>Features</h1>,
       dataIndex: "videoFeatures",
       key: "videoFeatures",
       align: "center",
@@ -451,7 +451,7 @@ const handleAddFeature = async() => {
       >
         <Form form={form} layout="vertical">
           <Form.Item label="Feature" name="feature" rules={[{ required: true, message: 'Please select a feature' }]}>
-            <Select placeholder="Select a feature description">
+            <Select placeholder="Select a feature">
               <Option value="Online Order">Online Order</Option>
               <Option value="Dining">Dining</Option>
               <Option value="Call for Order">Call for Order</Option>
