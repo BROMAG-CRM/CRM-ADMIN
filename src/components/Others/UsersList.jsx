@@ -102,7 +102,7 @@ function UsersList() {
       },
     },
     {
-      title: <h1>User Id</h1>,
+      title: <h1>Employee Id</h1>,
       dataIndex: "uniqueId",
       key: "uniqueId",
       align: "center",

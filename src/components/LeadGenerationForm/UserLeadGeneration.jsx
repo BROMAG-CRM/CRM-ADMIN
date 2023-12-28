@@ -577,10 +577,10 @@ function UserLeadGeneration() {
   const items = [
     {
       key: "1",
-      label: <div>Lead Generation</div>,
+      label: <div className="font-extrabold text-lg">Lead Generation</div>,
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
-          <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1>
+          {/* <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1> */}
           <Form
             layout="vertical"
             className="pt-5 xsm:!w-[100vw] md:w-[65vw] lg:w-[50vw]"
@@ -958,10 +958,10 @@ function UserLeadGeneration() {
     },
     {
       key: "2",
-      label: `Restaurant Details`,
+      label: <div className="font-extrabold text-lg ">Restaurant Details</div>, 
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
-          <h1 className="text-2xl text-center hidden md:block">Restaurant Details</h1>
+          {/* <h1 className="text-2xl text-center hidden md:block">Restaurant Details</h1> */}
           <Form
             layout="vertical"
             name="dynamic_form_nest_item"
@@ -1266,10 +1266,10 @@ function UserLeadGeneration() {
     },
     {
       key: "3",
-      label: `Contact Details`,
+      label: <div className="font-extrabold text-lg ">Contact Details</div> ,
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
-          <h1 className="text-2xl text-center hidden md:block">Contact Details</h1>
+          {/* <h1 className="text-2xl text-center hidden md:block">Contact Details</h1> */}
           <Form
             layout="vertical"
             className="pt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
@@ -1397,10 +1397,10 @@ function UserLeadGeneration() {
     },
     {
       key: "4",
-      label: "Status",
+      label: <div className="font-extrabold text-lg ">Status</div> ,
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
-          <h1 className="text-center text-2xl hidden md:block">Status</h1>
+          {/* <h1 className="text-center text-2xl hidden md:block">Status</h1> */}
           <Form
             layout="vertical"
             className="pt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
@@ -1592,10 +1592,10 @@ function UserLeadGeneration() {
     },
     {
       key: "5",
-      label: "Location",
+      label: <div className="font-extrabold text-lg ">Location</div>,
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
-          <h1 className="text-center text-2xl hidden md:block">Location</h1>
+          {/* <h1 className="text-center text-2xl hidden md:block">Location</h1> */}
           <Form
             layout="vertical"
             className="pt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
@@ -1662,12 +1662,12 @@ function UserLeadGeneration() {
 
   return (
     <div className="lg:w-[100vw]">
-      <div className="lg:flex lg:items-center lg:justify-center bg-white pl-2 shadow-2xl rounded-lg lg:!w-[100vw]">
+      <div className="lg:flex lg:items-center lg:justify-center bg-white pl-2 shadow-2xl rounded-lg lg:!w-[100vw] ">
         <Spin spinning={loading}>
         <Tabs
           defaultActiveKey="1"
           items={items}
-          className="mt-[30vh] md:mt-[45vh]"
+          className="mt-[17vh] md:mt-[20vh]"
         />
         </Spin>
       </div>

@@ -42,31 +42,13 @@ const response = await axios.get(`${url}/getform/Partnership`, {
 
   const Partnershipcolumns = [
     {
-      title: <h1>Serial Number</h1>,
+      title: <h1>S. No</h1>,
       dataIndex: "serialNumber",
       key: "serialNumber",
       align: "center",
       render: (text, record, index) => {
         const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
         return (currentPage - 1) * pageSize + index + 1;
-      },
-    },
-    {
-      title: <h1>Employee Name</h1>,
-      dataIndex: "EmployeeName",
-      key: "EmployeeName",
-      align: "center",
-      render: (data) => {
-        return <p>{data}</p>;
-      },
-    },
-    {
-      title: <h1>Employee City</h1>,
-      dataIndex: "city",
-      key: "city",
-      align: "center",
-      render: (data) => {
-        return <p>{data}</p>;
       },
     },
     {
@@ -514,13 +496,13 @@ const response = await axios.get(`${url}/getform/Partnership`, {
       },
     },
     {
-      title: <h1 className="w-[10vw]">Auto Location</h1>,
+      title: <h1>Auto Location</h1>,
       dataIndex: "location",
       key: "location",
       align: "center",
       render: (data) => {
         return (
-          <div className="w-[14vw]">
+          <div className="w-[14vw] ml-12 text-center">
             {data && data.length > 0 ? (
               data.map((res, i) => (
                 <div key={i}>
@@ -535,7 +517,25 @@ const response = await axios.get(`${url}/getform/Partnership`, {
           </div>
         );
       },
-    }
+    },
+    {
+      title: <h1>Created At</h1>,
+      dataIndex: "createdDate",
+      key: "createdDate",
+      align: "center",
+      render: (data) => {
+        const formattedDate = new Date(data).toLocaleString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: true,
+        });
+        return formattedDate;
+      },
+    },  
     
   ];
 

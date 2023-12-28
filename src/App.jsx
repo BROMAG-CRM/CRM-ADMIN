@@ -9,7 +9,7 @@ import { createBrowserRouter,createRoutesFromElements,Route,RouterProvider,} fro
 import Dashboard from "./components/Others/Dashboard"
 import UsersList from "./components/Others/UsersList"
 import Admin from "./components/Others/Admin";
-import UserLeadGeneration from "./components/Others/UserLeadGeneration";
+import UserLeadGeneration from "./components/LeadGenerationForm/UserLeadGeneration";
 import AccountsManagement from "./components/AccountsManagement/AccountsManagement";
 import LegalManagement from "./components/LegalManagement/LegalManagement";
 // import LeadGeneration from "./components/LeadGeneration";
@@ -91,11 +91,17 @@ import NotConnectedLeadsBdmIndia from "./components/Bdm/Tasks/India/NotConnected
 import BdmTasksBooks from "./components/Bdm/Tasks/Books/BdmTasksBooks";
 
 
+//Lead Generation Forms
+import FormsIndiaorBooks from "./components/LeadGenerationForm/Forms";
+import FormsIndia from "./components/LeadGenerationForm/FormsIndia/FormsIndia";
+import FormsBooks from "./components/LeadGenerationForm/FormsBooks/FormsBooks";
+import CompletedIndia from "./components/LeadGenerationForm/FormsIndia/Completed";
+import PendingIndia from "./components/LeadGenerationForm/FormsIndia/Pending";
 
 
 
+//dummy
 import MyReport from "./components/TeleSales/MyReport";
-
 import SalesBooks from "./components/TeleSales/SalesBooks";
 
 
@@ -195,6 +201,11 @@ const router=createBrowserRouter(
       <Route path="notconnected_leadsbdmindia" element={<NotConnectedLeadsBdmIndia/>} /> 
 
 
+      <Route path="forms" element={<FormsIndiaorBooks/>} /> 
+      <Route path="formsindia" element={<FormsIndia/>} /> 
+      <Route path="formsbooks" element={<FormsBooks/>} /> 
+      <Route path="pendingformsindia" element={<PendingIndia/>} /> 
+      <Route path="completedformsindia" element={<CompletedIndia/>} /> 
 
 
 
