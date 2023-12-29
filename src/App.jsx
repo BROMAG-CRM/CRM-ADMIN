@@ -93,8 +93,12 @@ import BdmTasksBooks from "./components/Bdm/Tasks/Books/BdmTasksBooks";
 
 //Lead Generation Forms
 import FormsIndiaorBooks from "./components/LeadGenerationForm/Forms";
-import FormsIndia from "./components/LeadGenerationForm/FormsIndia/FormsIndia";
+
 import FormsBooks from "./components/LeadGenerationForm/FormsBooks/FormsBooks";
+import CompletedBooks from "./components/LeadGenerationForm/FormsBooks/Completed"
+import PendingBooks from "./components/LeadGenerationForm/FormsBooks/Pending"
+
+import FormsIndia from "./components/LeadGenerationForm/FormsIndia/FormsIndia";
 import CompletedIndia from "./components/LeadGenerationForm/FormsIndia/Completed";
 import PendingIndia from "./components/LeadGenerationForm/FormsIndia/Pending";
 
@@ -206,6 +210,8 @@ const router=createBrowserRouter(
       <Route path="formsbooks" element={<FormsBooks/>} /> 
       <Route path="pendingformsindia" element={<PendingIndia/>} /> 
       <Route path="completedformsindia" element={<CompletedIndia/>} /> 
+      <Route path="completedformsbooks" element={<CompletedBooks/>} /> 
+      <Route path="pendingformsbooks" element={<PendingBooks/>} /> 
 
 
 

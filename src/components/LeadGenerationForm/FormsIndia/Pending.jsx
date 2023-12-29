@@ -27,7 +27,7 @@ function Pending() {
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getform/Partnership`, {
+const response = await axios.get(`${url}/getpendingform/india`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -73,6 +73,26 @@ const response = await axios.get(`${url}/getform/Partnership`, {
       console.error("Error deleting user:", error);
     }
   };
+
+
+
+      //business status
+      const handleBusinessStatus = async (record) => {
+        const id = record._id;
+    
+        const res = await axios.post(
+          `${url}/businessstatus`,
+          { userId: id, newBusinessStatus: "legalmanagement" ,leadStatus:"new-lead" },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(res);
+        setUpdated(!updated);
+      };
+  
 
 
 
@@ -181,7 +201,7 @@ const response = await axios.get(`${url}/getform/Partnership`, {
       },
     },
     {
-      title: <h1>FSS</h1>,
+      title: <h1>FSSAI</h1>,
       dataIndex: "fss",
       key: "fss",
       align: "center",
@@ -541,7 +561,7 @@ const response = await axios.get(`${url}/getform/Partnership`, {
             <div className="w-[14vw] ml-12 text-center">
             {data && data.length > 0 ? (
               data.map((res, i) => (
-                <div key={i}>
+                <div key={i} >
                   <p> Longitude:{res.latitude}</p>
                   <p> Latitude:{res.longitude}</p>
                   <p> Location Name:{res.locationName}</p>
@@ -577,10 +597,10 @@ const response = await axios.get(`${url}/getform/Partnership`, {
         align: "center",
         render: (data) => {
           return (
-            <>
+            <div>
               <EditOutlined
                 key={`edit-${data._id}`}
-                style={{ fontSize: '18px', marginRight: '15px', fontWeight: 'bold', cursor: 'pointer' }}
+                style={{ fontSize: '18px', marginRight: '20px', fontWeight: 'bold', cursor: 'pointer',}}
                 onClick={() => handleEdit(data._id)}
               />
               <DeleteOutlined
@@ -588,9 +608,24 @@ const response = await axios.get(`${url}/getform/Partnership`, {
                 style={{ fontSize: '18px', fontWeight: 'bold', cursor: 'pointer' }}
                 onClick={() => handleDelete(data._id)}
               />
-            </>
+            </div>
           );
         },
+      },
+      {
+        title: <h1>Move to Completed</h1>,
+        dataIndex: "businessStatus",
+        key: "businessStatus",
+        align: "center",
+        render: (data, record) => (
+          <Button
+            type="primary"
+            style={{ backgroundColor: "green" }}
+            onClick={() => handleBusinessStatus(record)}
+          >
+            Okay
+          </Button>
+        ),
       }, 
     
   ];
@@ -650,19 +685,90 @@ const response = await axios.get(`${url}/getform/Partnership`, {
       >
         {userData && (
           <Form form={form}>
-            <Form.Item label="panCard" name="panCard">
+            <Form.Item label="PanCard" name="panCard">
+            <img
+                      src={"panCard"}
+                      alt="avatar"
+                      style={{ width: "100%" }}
+                    />
               <Input />
             </Form.Item>
-            <Form.Item label="City" name="city">
+            <Form.Item label="GST Copy" name="gstCopy">
+              <Input />
+            </Form.Item>
+            <Form.Item label="FSSAI" name="fss">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Cancel Check" name="cancelCheck">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Table Count" name="tableCount">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Table Photos" name="tablePhotos">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Billing Software" name="billingSoftware">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Online Aggregator" name="onlineAggregator">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Aggregator List" name="onlineAggregatersList">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Two Wheeler Parking" name="twoWheelerparking">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Two Wheeler Slots" name="twoWheelerSlot">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Four Wheeler Parking" name="fourWheelerparking">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Four Wheeler Slots" name="fourWheelerSlot">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Restaurant Mobile Number" name="restaurantMobileNumber">
               <Input />
             </Form.Item>
             <Form.Item label="Email" name="email">
               <Input />
             </Form.Item>
-            <Form.Item label="Contact Number" name="mobileNumber">
+            <Form.Item label="Contact Person Name" name="contactPersonname">
               <Input />
             </Form.Item>
-            <Form.Item label="Password" name="password">
+            <Form.Item label="Contact Person Number" name="contactPersonNumber">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Designation" name="designation">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Domain" name="domain">
+              <Input />
+            </Form.Item>
+            <Form.Item label="tradeMark" name="tradeMark">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Trade Photos" name="tradePhotos">
+              <Input />
+            </Form.Item>
+            <Form.Item label="DLT Email" name="dldEmail">
+              <Input />
+            </Form.Item>
+            <Form.Item label="DLT Password" name="dldPassword">
+              <Input />
+            </Form.Item>
+            <Form.Item label="DLT" name="dld">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Status" name="status">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Address" name="address">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Auto Location" name="location">
               <Input />
             </Form.Item>
           </Form>
