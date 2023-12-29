@@ -10,11 +10,15 @@ import toast, { Toaster } from 'react-hot-toast';
 
 
 function UsersList() {
+  const { Search } = Input;
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [updated,setUpdated] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchPartner, setsearchPartner] = useState("");
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editModalData, setEditModalData] = useState(null);
 
 
 
@@ -40,7 +44,48 @@ function UsersList() {
     fetchData();
   }, [updated]);
 
- 
+
+ //search function
+  const handleSearchPartnership = (value) => {
+    const filteredData = data.filter((item) => {
+      console.log(value, item.city, "wehgjhv");
+      return item.name.toLowerCase().includes(value.toLowerCase());
+    });
+    setsearchPartner(filteredData);
+  }
+  const debouncedSearch = debounce(handleSearchPartnership, 300);
+
+
+
+  //delete function
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`${url}/deleteuser/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        toast.success('User deleted successfully');
+        setUpdated(!updated);
+      } else {
+        console.log("Unexpected response status:", response.status);
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+
+
+  //edit function
+  const handleEdit = (id) => {
+    const userData = data.filter((data)=>data._id === id)
+    setEditModalData(userData);
+    setEditModalVisible(true);
+  };
+
 
 
 
@@ -57,7 +102,7 @@ function UsersList() {
       },
     },
     {
-      title: <h1>User Id</h1>,
+      title: <h1>Employee Id</h1>,
       dataIndex: "uniqueId",
       key: "uniqueId",
       align: "center",
@@ -162,38 +207,18 @@ function UsersList() {
   ];
 
 
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editModalData, setEditModalData] = useState(null);
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await axios.delete(`${url}/deleteuser/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
   
-      if (response.status === 200) {
-        toast.success('User deleted successfully');
-        setUpdated(!updated);
-      } else {
-        console.log("Unexpected response status:", response.status);
-      }
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-  };
 
-  const handleEdit = (id) => {
-    const userData = data.filter((data)=>data._id === id)
-    setEditModalData(userData);
-    setEditModalVisible(true);
-  };
+
+
+
+
+
+
 
   const handleCancelEditModal = () => {
     setEditModalVisible(false);
   };
-
 
   function UserModal({ visible, onCancel, userData }) {
     const [form] = Form.useForm();
@@ -227,10 +252,6 @@ function UsersList() {
         console.error("Error updating user:", error);
       }
     };
-
-
- 
-    
 
     return (
       <Modal
@@ -285,9 +306,19 @@ function UsersList() {
 
       <div className="pl-6 w-[80vw]">
         <div className="pt-10">
+        <div className="flex items-center justify-between px-4">
+            <h1 className="text-center text-2xl pb-2">Users Details</h1>
+            <Search
+              placeholder="Search by name..."
+              onChange={(e) => debouncedSearch(e.target.value)}
+              enterButton
+              className="mt-4 w-[60%] mb-5"
+              size="large"
+            />
+          </div>
           <Table
             columns={columnsData}
-            dataSource={data}
+            dataSource={searchPartner.length > 0 ? searchPartner : data}
             scroll={{ x: 2500 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}

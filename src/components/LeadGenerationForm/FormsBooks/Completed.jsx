@@ -3,34 +3,30 @@ import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import ImageModal from "../Modals/ImageModal";
+import ImageModal from "../../Modals/ImageModal";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 
 
 
 
-function Proprietor() {
+function Completed() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate()
   const [selectedImage,setSelectedImage] = useState('')
   const [isImageModalOpen,setImageModalOpen] = useState(false)
-
- 
-
+  const [update,setUpdate]=useState(false)
+   
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getform/Proprietorship`, {
+const response = await axios.get(`${url}/getform/Private limited`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
 })
-
-console.log(response);
-console.log("responseeeeeee");
 
       setData(get(response, "data.data", []));
     } catch (err) {
@@ -44,8 +40,26 @@ console.log("responseeeeeee");
     fetchData();
   }, []);
 
+    //business status
+    const handleBusinessStatus = async (record) => {
+      const id = record._id;
+  
+      const res = await axios.post(
+        `${url}/businessstatus`,
+        { userId: id, newBusinessStatus: "legalmanagement" ,leadStatus:"new-lead" },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res);
+      setUpdate(!update);
+    };
 
-  const Proprietorcolumns = [
+
+
+  const Partnershipcolumns = [
     {
       title: <h1>S. No</h1>,
       dataIndex: "serialNumber",
@@ -54,6 +68,24 @@ console.log("responseeeeeee");
       render: (text, record, index) => {
         const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
         return (currentPage - 1) * pageSize + index + 1;
+      },
+    },
+    {
+      title: <h1>Employee Name</h1>,
+      dataIndex: "EmployeeName",
+      key: "EmployeeName",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>Employee City</h1>,
+      dataIndex: "city",
+      key: "city",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
       },
     },
     {
@@ -541,6 +573,21 @@ console.log("responseeeeeee");
         return formattedDate;
       },
     },  
+    {
+      title: <h1>Move to Tele Marketing</h1>,
+      dataIndex: "businessStatus",
+      key: "businessStatus",
+      align: "center",
+      render: (data, record) => (
+        <Button
+          type="primary"
+          style={{ backgroundColor: "green" }}
+          onClick={() => handleBusinessStatus(record)}
+        >
+          Okay
+        </Button>
+      ),
+    },
     
   ];
 
@@ -551,13 +598,13 @@ console.log("responseeeeeee");
   return (
     <>
 
-<div className="pl-[18vw]  pt-14 w-screen">
+<div className="pt-28 w-screen ml-2">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
-      <div className="pl-6 w-[80vw]">
+      <div className="w-[100vw]">
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
-        <div className="pt-7">
+        <div className="pt-3">
           <Table
-            columns={Proprietorcolumns}
+            columns={Partnershipcolumns}
             dataSource={data}
             scroll={{ x: 7000 }}
             ref={tableRef}
@@ -574,4 +621,4 @@ console.log("responseeeeeee");
   );
 }
 
-export default Proprietor;
+export default Completed;

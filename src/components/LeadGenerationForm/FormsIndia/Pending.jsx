@@ -1,36 +1,37 @@
-import { Button, Image, Table} from "antd";
+import { Button, Image, Table,Modal,Input,Form} from "antd";
 import axios from "axios";
 import { get} from "lodash";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import ImageModal from "../Modals/ImageModal";
+import ImageModal from "../../Modals/ImageModal";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import toast from "react-hot-toast";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
 
 
 
 
-function Proprietor() {
+function Pending() {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate()
   const [selectedImage,setSelectedImage] = useState('')
   const [isImageModalOpen,setImageModalOpen] = useState(false)
-
- 
+  const [form] = Form.useForm();
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editModalData, setEditModalData] = useState(null);
+  const [updated,setUpdated] = useState(false)
 
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getform/Proprietorship`, {
+const response = await axios.get(`${url}/getpendingform/india`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
 })
-
-console.log(response);
-console.log("responseeeeeee");
 
       setData(get(response, "data.data", []));
     } catch (err) {
@@ -45,7 +46,57 @@ console.log("responseeeeeee");
   }, []);
 
 
-  const Proprietorcolumns = [
+    //edit function
+    const handleEdit = (id) => {
+        const userData = data.filter((data)=>data._id === id)
+        setEditModalData(userData);
+        setEditModalVisible(true);
+      };
+
+
+    //delete function
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`${url}/deleteuser/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        toast.success('User deleted successfully');
+        setUpdated(!updated);
+      } else {
+        console.log("Unexpected response status:", response.status);
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+
+
+      //business status
+      const handleBusinessStatus = async (record) => {
+        const id = record._id;
+    
+        const res = await axios.post(
+          `${url}/businessstatus`,
+          { userId: id, newBusinessStatus: "legalmanagement" ,leadStatus:"new-lead" },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(res);
+        setUpdated(!updated);
+      };
+  
+
+
+
+  const Partnershipcolumns = [
     {
       title: <h1>S. No</h1>,
       dataIndex: "serialNumber",
@@ -150,7 +201,7 @@ console.log("responseeeeeee");
       },
     },
     {
-      title: <h1>FSS</h1>,
+      title: <h1>FSSAI</h1>,
       dataIndex: "fss",
       key: "fss",
       align: "center",
@@ -507,10 +558,10 @@ console.log("responseeeeeee");
       align: "center",
       render: (data) => {
         return (
-          <div className="w-[14vw] ml-12 text-center">
+            <div className="w-[14vw] ml-12 text-center">
             {data && data.length > 0 ? (
               data.map((res, i) => (
-                <div key={i}>
+                <div key={i} >
                   <p> Longitude:{res.latitude}</p>
                   <p> Latitude:{res.longitude}</p>
                   <p> Location Name:{res.locationName}</p>
@@ -524,25 +575,209 @@ console.log("responseeeeeee");
       },
     },
     {
-      title: <h1>Created At</h1>,
-      dataIndex: "createdDate",
-      key: "createdDate",
-      align: "center",
-      render: (data) => {
-        const formattedDate = new Date(data).toLocaleString('en-GB', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          hour12: true,
-        });
-        return formattedDate;
+        title: <h1>Created At</h1>,
+        dataIndex: "createdDate",
+        key: "createdDate",
+        align: "center",
+        render: (data) => {
+          const formattedDate = new Date(data).toLocaleString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true,
+          });
+          return formattedDate;
+        },
+      }, 
+      {
+        title: <h1>Actions</h1>,
+        align: "center",
+        render: (data) => {
+          return (
+            <div>
+              <EditOutlined
+                key={`edit-${data._id}`}
+                style={{ fontSize: '18px', marginRight: '20px', fontWeight: 'bold', cursor: 'pointer',}}
+                onClick={() => handleEdit(data._id)}
+              />
+              <DeleteOutlined
+                key={`delete-${data._id}`}
+                style={{ fontSize: '18px', fontWeight: 'bold', cursor: 'pointer' }}
+                onClick={() => handleDelete(data._id)}
+              />
+            </div>
+          );
+        },
       },
-    },  
+      {
+        title: <h1>Move to Completed</h1>,
+        dataIndex: "businessStatus",
+        key: "businessStatus",
+        align: "center",
+        render: (data, record) => (
+          <Button
+            type="primary"
+            style={{ backgroundColor: "green" }}
+            onClick={() => handleBusinessStatus(record)}
+          >
+            Okay
+          </Button>
+        ),
+      }, 
     
   ];
+
+
+  const handleCancelEditModal = () => {
+    setEditModalVisible(false);
+  };
+
+
+  function UserModal({ visible, onCancel, userData }) {
+    const [form] = Form.useForm();
+  
+    React.useEffect(() => {
+      if (visible) {
+        form.setFieldsValue(userData[0]);
+      }
+    }, [visible, userData, form]);
+
+  
+    const submitModal = async () => {
+      const updatedData = form.getFieldsValue();
+      const userId = userData[0]._id;
+    
+      try {
+        const response = await axios.post(`${url}/updateform/${userId}`, updatedData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+        if (response.status === 200) {
+          toast.success('Userdata updated successfully')
+        } else {
+          console.log("Unexpected response status:", response.status);
+        }
+        setUpdated(!updated)
+        onCancel();
+      } catch (error) {
+        console.error("Error updating user:", error);
+      }
+    };
+
+    return (
+      <Modal
+        title="Edit User"
+        open={visible}
+        onCancel={onCancel}
+        footer={[
+          <Button key="cancel" onClick={onCancel}>
+            Cancel
+          </Button>,
+          <Button key="update" onClick={submitModal}>
+            Update Changes
+          </Button>,
+        ]}
+      >
+        {userData && (
+          <Form form={form}>
+            <Form.Item label="PanCard" name="panCard">
+            <img
+                      src={"panCard"}
+                      alt="avatar"
+                      style={{ width: "100%" }}
+                    />
+              <Input />
+            </Form.Item>
+            <Form.Item label="GST Copy" name="gstCopy">
+              <Input />
+            </Form.Item>
+            <Form.Item label="FSSAI" name="fss">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Cancel Check" name="cancelCheck">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Table Count" name="tableCount">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Table Photos" name="tablePhotos">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Billing Software" name="billingSoftware">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Online Aggregator" name="onlineAggregator">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Aggregator List" name="onlineAggregatersList">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Two Wheeler Parking" name="twoWheelerparking">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Two Wheeler Slots" name="twoWheelerSlot">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Four Wheeler Parking" name="fourWheelerparking">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Four Wheeler Slots" name="fourWheelerSlot">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Restaurant Mobile Number" name="restaurantMobileNumber">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Email" name="email">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Contact Person Name" name="contactPersonname">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Contact Person Number" name="contactPersonNumber">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Designation" name="designation">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Domain" name="domain">
+              <Input />
+            </Form.Item>
+            <Form.Item label="tradeMark" name="tradeMark">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Trade Photos" name="tradePhotos">
+              <Input />
+            </Form.Item>
+            <Form.Item label="DLT Email" name="dldEmail">
+              <Input />
+            </Form.Item>
+            <Form.Item label="DLT Password" name="dldPassword">
+              <Input />
+            </Form.Item>
+            <Form.Item label="DLT" name="dld">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Status" name="status">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Address" name="address">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Auto Location" name="location">
+              <Input />
+            </Form.Item>
+          </Form>
+        )}
+      </Modal>
+    );
+  }
+
+
 
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
@@ -551,13 +786,13 @@ console.log("responseeeeeee");
   return (
     <>
 
-<div className="pl-[18vw]  pt-14 w-screen">
+<div className="pt-28 w-screen ml-2">
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
-      <div className="pl-6 w-[80vw]">
+      <div className="w-[100vw]">
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
-        <div className="pt-7">
+        <div className="pt-3">
           <Table
-            columns={Proprietorcolumns}
+            columns={Partnershipcolumns}
             dataSource={data}
             scroll={{ x: 7000 }}
             ref={tableRef}
@@ -569,9 +804,14 @@ console.log("responseeeeeee");
           />
         </div>
       </div>
+      <UserModal
+        visible={editModalVisible}
+        onCancel={handleCancelEditModal}
+        userData={editModalData}
+      />
     </div>
     </>
   );
 }
 
-export default Proprietor;
+export default Pending;

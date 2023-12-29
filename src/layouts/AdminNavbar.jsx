@@ -2,7 +2,7 @@ import { Button, Image, Menu, Dropdown, Space, Drawer } from "antd";
 import React, { useEffect, useState } from "react";
 import Logo from "../assets/logo1.png";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { get, isEmpty } from "lodash";
 import {
@@ -35,7 +35,7 @@ function AdminNavbar() {
   const nameMenu = (
     <Menu>
       <Menu.Item key="1" icon={<UserOutlined />}>
-      {get(user, "name", "")}
+        {get(user, "name", "")}
       </Menu.Item>
     </Menu>
   );
@@ -108,7 +108,7 @@ function AdminNavbar() {
 
   return (
     <div>
-      {user && user.role !== "employee" ? (
+      {user && user.role !== "field sales executive" ? (
         <div
           className={`w-screen px-20 z-50 fixed border-b shadow-md flex items-center justify-between h-[7.5vh] bg-black`}
         >
@@ -122,7 +122,7 @@ function AdminNavbar() {
           </div>
         </div>
       ) : (
-        <div className={`fixed w-screen z-40 h-[30vh] md:h-[45vh] !bg-black`}>
+        <div className={`fixed w-screen z-40 h-[17vh] md:h-[20vh] !bg-black`}>
           <div className="flex flex-col md:flex-row pt-2 items-center  !justify-between md:px-20">
             <div className="flex justify-between  px-2">
               <div>
@@ -150,6 +150,15 @@ function AdminNavbar() {
               </div>
             </div>
             <div className=" justify-center hidden sm:flex lg:gap-8 xl:20 md:w-[100vw] w-[100vw] lg:pl-[17vw] px-2 gap-10 md:gap-4">
+              <div className="!text-white">
+                <Link to="/forms">
+                  <Space>
+                    <h1 className="text-[10px] flex items-center justify-center md:text-[12px] lg:text-[14px] cursor-pointer">
+                      Forms
+                    </h1>
+                  </Space>
+                </Link>
+              </div>
               <div className="!text-white">
                 <Dropdown overlay={nameMenu}>
                   <a onClick={(e) => e.preventDefault()}>
@@ -215,14 +224,14 @@ function AdminNavbar() {
               </div>
             </div>
           </div>
-          <div>
-            <h1 className="text-white text-2xl md:text-4xl text-center pt-2 md:pt-14">
+          {/* <div>
+            <h1 className="text-white text-2xl md:text-4xl text-center pt-2 md:pt-5">
               Lead Generation Forms
             </h1>
             <p className="text-white text-center text-[14px] md:text-2xl tracking-wider pt-5 sm:text-sm">
               Collect leads effortlessly for our business
             </p>
-          </div>
+          </div> */}
         </div>
       )}
       <Drawer
@@ -234,6 +243,15 @@ function AdminNavbar() {
         placement="left"
       >
         <div className="flex flex-col justify-center px-2 gap-5 w-[70vw]">
+          <div className="!text-black">
+            <a onClick={(e) => e.preventDefault()}>
+              <Space>
+                <h1 className="text-[14px] flex justify-between gap-[10px] items-center">
+                  <span>Forms</span>
+                </h1>
+              </Space>
+            </a>
+          </div>
           <div className="!text-black">
             <Dropdown overlay={nameMenu}>
               <a onClick={(e) => e.preventDefault()}>
