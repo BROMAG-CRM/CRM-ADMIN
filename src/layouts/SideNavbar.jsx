@@ -42,10 +42,10 @@ useEffect(()=>{
 <div className="h-[100vh] fixed top-[7.5vh] bg-black flex flex-col justify-between lg:border-r">
 <div
   className={`w-[19vw] h-[92vh] overflow-y-scroll ${
-    user && user.role === "employee" ? "hidden" : "block"
+    user && user.role === "field sales executive" ? "hidden" : "block"
   }`}
 >
-  {user && user.role !== "employee" && (
+  {user && user.role !== "field sales executive" && (
     <Menu
       defaultSelectedKeys={get(location, "pathname", "/")}
       mode="inline"

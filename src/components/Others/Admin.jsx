@@ -104,7 +104,7 @@ function Admin() {
             label={<p>Role</p>}
           >
             <Select size="large" placeholder="Select a role...">
-              <Option value="employee">Employee</Option>
+              <Option value="field sales executive">Field Sales Executive</Option>
               <Option value="marketing executive">Marketing Executive</Option>
               <Option value="sales executive">Sales Executive</Option>
               <Option value="bdm executive">BDM Executive</Option>

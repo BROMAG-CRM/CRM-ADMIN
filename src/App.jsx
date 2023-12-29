@@ -9,7 +9,7 @@ import { createBrowserRouter,createRoutesFromElements,Route,RouterProvider,} fro
 import Dashboard from "./components/Others/Dashboard"
 import UsersList from "./components/Others/UsersList"
 import Admin from "./components/Others/Admin";
-import UserLeadGeneration from "./components/Others/UserLeadGeneration";
+import UserLeadGeneration from "./components/LeadGenerationForm/UserLeadGeneration";
 import AccountsManagement from "./components/AccountsManagement/AccountsManagement";
 import LegalManagement from "./components/LegalManagement/LegalManagement";
 // import LeadGeneration from "./components/LeadGeneration";
@@ -91,11 +91,21 @@ import NotConnectedLeadsBdmIndia from "./components/Bdm/Tasks/India/NotConnected
 import BdmTasksBooks from "./components/Bdm/Tasks/Books/BdmTasksBooks";
 
 
+//Lead Generation Forms
+import FormsIndiaorBooks from "./components/LeadGenerationForm/Forms";
+
+import FormsBooks from "./components/LeadGenerationForm/FormsBooks/FormsBooks";
+import CompletedBooks from "./components/LeadGenerationForm/FormsBooks/Completed"
+import PendingBooks from "./components/LeadGenerationForm/FormsBooks/Pending"
+
+import FormsIndia from "./components/LeadGenerationForm/FormsIndia/FormsIndia";
+import CompletedIndia from "./components/LeadGenerationForm/FormsIndia/Completed";
+import PendingIndia from "./components/LeadGenerationForm/FormsIndia/Pending";
 
 
 
+//dummy
 import MyReport from "./components/TeleSales/MyReport";
-
 import SalesBooks from "./components/TeleSales/SalesBooks";
 
 
@@ -195,6 +205,13 @@ const router=createBrowserRouter(
       <Route path="notconnected_leadsbdmindia" element={<NotConnectedLeadsBdmIndia/>} /> 
 
 
+      <Route path="forms" element={<FormsIndiaorBooks/>} /> 
+      <Route path="formsindia" element={<FormsIndia/>} /> 
+      <Route path="formsbooks" element={<FormsBooks/>} /> 
+      <Route path="pendingformsindia" element={<PendingIndia/>} /> 
+      <Route path="completedformsindia" element={<CompletedIndia/>} /> 
+      <Route path="completedformsbooks" element={<CompletedBooks/>} /> 
+      <Route path="pendingformsbooks" element={<PendingBooks/>} /> 
 
 
 
@@ -215,7 +232,7 @@ function DashboardOrUserLeadGeneration() {
     return <Loader />;
   }
 
-  if (user.role && user.role !== "employee") {
+  if (user.role && user.role !== "field sales executive") {
     console.log('Admin logged in');
     return <Dashboard />;
   }
