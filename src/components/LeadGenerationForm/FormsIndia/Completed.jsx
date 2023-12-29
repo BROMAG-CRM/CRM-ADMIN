@@ -22,7 +22,7 @@ function Completed() {
 
 const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getform/Private limited`, {
+const response = await axios.get(`${url}/getcompletedform/india`, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
@@ -46,7 +46,7 @@ const response = await axios.get(`${url}/getform/Private limited`, {
   
       const res = await axios.post(
         `${url}/businessstatus`,
-        { userId: id, newBusinessStatus: "legalmanagement" ,leadStatus:"new-lead" },
+        { userId: id, newBusinessStatus: "telemarketing" ,leadStatus:"new-lead" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
