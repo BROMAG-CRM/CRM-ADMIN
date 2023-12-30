@@ -1,6 +1,6 @@
-import { Button, Image, Table} from "antd";
+import { Button, Image, Table, Input} from "antd";
 import axios from "axios";
-import { get} from "lodash";
+import { debounce, get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageModal from "../Modals/ImageModal";
@@ -11,13 +11,15 @@ const token = localStorage.getItem("token");
 
 
 function PrivateLtd() {
+  const { Search } = Input;
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate()
   const [selectedImage,setSelectedImage] = useState('')
   const [isImageModalOpen,setImageModalOpen] = useState(false)
- 
+  const [searchPartner, setsearchPartner] = useState("");
+
 
 
 const fetchData = async () => {
@@ -27,8 +29,11 @@ const response = await axios.get(`${url}/getform/Private limited`, {
     Authorization: `Bearer ${token}`,
   },
 })
+const sortedData = get(response, "data.data", []).sort((a, b) =>
+new Date(b.createdDate) - new Date(a.createdDate)
+);
 
-      setData(get(response, "data.data", []));
+setData(sortedData);
     } catch (err) {
       console.log(err);
     }
@@ -37,6 +42,18 @@ const response = await axios.get(`${url}/getform/Private limited`, {
   useEffect(() => {
     fetchData();
   }, []);
+
+
+ //search function
+ const handleSearchPartnership = (value) => {
+  const filteredData = data.filter((item) => {
+    console.log(value, item.city, "wehgjhv");
+    return item.brandName.toLowerCase().includes(value.toLowerCase()) || item.EmployeeName.toLowerCase().includes(value.toLowerCase())
+  });
+  setsearchPartner(filteredData);
+}
+const debouncedSearch = debounce(handleSearchPartnership, 300);
+
 
 
   const pvtLmtdcolumns = [
@@ -50,6 +67,24 @@ const response = await axios.get(`${url}/getform/Private limited`, {
         return (currentPage - 1) * pageSize + index + 1;
       },
     },
+    {
+      title: <h1>Created At</h1>,
+      dataIndex: "createdDate",
+      key: "createdDate",
+      align: "center",
+      render: (data) => {
+        const formattedDate = new Date(data).toLocaleString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: true,
+        });
+        return formattedDate;
+      },
+    },  
     {
       title: <h1>Brand Name</h1>,
       dataIndex: "brandName",
@@ -583,24 +618,7 @@ const response = await axios.get(`${url}/getform/Private limited`, {
         );
       },
     },
-    {
-      title: <h1>Created At</h1>,
-      dataIndex: "createdDate",
-      key: "createdDate",
-      align: "center",
-      render: (data) => {
-        const formattedDate = new Date(data).toLocaleString('en-GB', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          hour12: true,
-        });
-        return formattedDate;
-      },
-    },      
+    
   ];
 
   const handleTableChange = (pagination) => {
@@ -614,10 +632,17 @@ const response = await axios.get(`${url}/getform/Private limited`, {
       <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
       <div className="pl-6 w-[80vw]">
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
+      <Search
+              placeholder="Search by Brand Name..."
+              onChange={(e) => debouncedSearch(e.target.value)}
+              enterButton
+              className="mt-4 w-[60%] mb-5 ml-5"
+              size="large"
+            />
         <div className="pt-7">
           <Table
             columns={pvtLmtdcolumns}
-            dataSource={data}
+            dataSource={searchPartner.length > 0 ? searchPartner : data}
             scroll={{ x: 7000 }}
             ref={tableRef}
             pagination={{ pageSize: 5 }}

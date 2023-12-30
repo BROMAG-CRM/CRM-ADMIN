@@ -40,7 +40,9 @@ function Pending() {
   const { Option } = Select;
   const [location, setLocation] = useState(null);
   const [imageUrls, setImageUrls] = useState({});
-
+  const [tableImages, setTableImages] = useState([]);
+  const [tradeImages, setTradeImages] = useState([]);
+  const [fileList, setFileList] = useState([]);
 
 
   const fetchData = async () => {
@@ -669,11 +671,15 @@ function Pending() {
     },
   ];
 
-
-
+  
 
   const handleChangeLead = ({ fileList, file }) => {
+    console.log(fileList);
+    console.log("fileList");
+
     const urls = fileList.map((file) => file.url).filter(Boolean);
+    console.log(urls)
+    console.log("urls")
     const fieldName = file.fieldName;
     setImageUrls((prevUrls) => ({
       ...prevUrls,
@@ -685,16 +691,19 @@ function Pending() {
 
   const customRequestLead = async ({ file, onSuccess, onError, fieldName }) => {
     try {
-
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${url}/uploadimage/${fieldName}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       const downloadURL = response.data.fileUrl;
 
@@ -718,44 +727,108 @@ function Pending() {
 
 
 
-  
- const getLocationName = async (latitude, longitude) => {
-  try {
-    const response = await axios.get(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-    );
+  const customRequest = async ({ file, onSuccess, onError, fieldName }) => {
 
-    const data = response.data;
-    const locationName = data.display_name;
-    return locationName;
-  } catch (error) {
-    console.error('Error getting location name:', error.message);
-    return null;
-  }
-};
 
+    try {
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const downloadURL = response.data.fileUrl;
+
+      onSuccess();
+      if (response.status === 200) {
+        message.success(`${fieldName} file uploaded successfully`);
+      }
+
+
+      setTableImages((prevUrls) => [...prevUrls, downloadURL]);
+    } catch (error) {
+      onError(error);
+      message.error(`${file.name} file upload failed.`);
+      console.error("Error uploading file to Firebase:", error);
+    }
+  };
+
+
+
+  const customRequestTrade = async ({ file, onSuccess, onError, fieldName }) => {
+   
+
+    try {
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+
+      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const downloadURL = response.data.fileUrl;
+
+      onSuccess();
+      if (response.status === 200) {
+        message.success(`${fieldName} file uploaded successfully`);
+      }
+      setTradeImages((prevUrls) => [...prevUrls, downloadURL]);
+      setFileList((prevList) => [
+        ...prevList,
+        { uid: file.uid, name: file.name, url: downloadURL },
+      ]);
+    } catch (error) {
+      onError(error);
+      message.error(`${file.name} file upload failed.`);
+      console.error("Error uploading file to Firebase:", error);
+    }
+  };
+
+
+
+  const getLocationName = async (latitude, longitude) => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+      );
+
+      const data = response.data;
+      const locationName = data.display_name;
+      return locationName;
+    } catch (error) {
+      console.error("Error getting location name:", error.message);
+      return null;
+    }
+  };
 
   const handleFetchLocation = async () => {
     try {
       console.log("0");
-  
+
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
           (position) => resolve(position),
           (error) => reject(error)
         );
       });
-  
+
       const { latitude, longitude } = position.coords;
       const locationName = await getLocationName(latitude, longitude);
       setLocation({ latitude, longitude, locationName });
-  
     } catch (error) {
-      console.error('Error:', error.message);
+      console.error("Error:", error.message);
     }
   };
-
-
 
   const handleCancelEditModal = () => {
     setEditModalVisible(false);
@@ -784,7 +857,7 @@ function Pending() {
 
       console.log(updatedData);
       console.log("updatedDataaaaaaa");
-      
+
       try {
         const response = await axios.post(
           `${url}/updateform/${userId}`,
@@ -809,6 +882,20 @@ function Pending() {
     };
 
     const normFile = (e) => {
+      if (Array.isArray(e)) {
+        return e;
+      }
+      return e && e.fileList;
+    };
+
+    const normFileTable = (e) => {
+      if (Array.isArray(e)) {
+        return e;
+      }
+      return e && e.fileList;
+    };
+  
+    const normFileTrade = (e) => {
       if (Array.isArray(e)) {
         return e;
       }
@@ -851,21 +938,20 @@ function Pending() {
               }`}
             >
               <Upload
-               name="cinNo" 
-               listType="CIN No"
-               customRequest={({ file, onSuccess, onError }) =>
-               customRequestLead({
-                 file,
-                 onSuccess,
-                 onError,
-                 fieldName: "cinNo",
-               })
-             }
-             accept="image/*" 
-               onChange={onUploadChange}
-
-                >
-                  {/* {imageUrls.cinNo ? (
+                name="cinNo"
+                listType="CIN No"
+                customRequest={({ file, onSuccess, onError }) =>
+                  customRequestLead({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "cinNo",
+                  })
+                }
+                accept="image/*"
+                onChange={onUploadChange}
+              >
+                {/* {imageUrls.cinNo ? (
                     <img
                       src={imageUrls.cinNo}
                       alt="avatar"
@@ -911,28 +997,28 @@ function Pending() {
                 name="panCard"
                 listType="picture"
                 customRequest={({ file, onSuccess, onError }) =>
-                customRequestLead({
-                  file,
-                  onSuccess,
-                  onError,
-                  fieldName: "panCard",
-                })
-              }
-              accept="image/*" 
+                  customRequestLead({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "panCard",
+                  })
+                }
+                accept="image/*"
                 onChange={onUploadChange}
               >
-                {imageUrls.cinNo ? (
-                    <img
-                      src={imageUrls.cinNo}
-                      alt="avatar"
-                      style={{ width: "10%", height:"" }}
-                    />
-                  ) : (
-                    <div>
-                      <PlusOutlined />
-                      <div style={{ marginTop: 8 }}>Upload</div>
-                    </div>
-                  )}
+                {imageUrls.panCard ? (
+                  <img
+                    src={imageUrls.panCard}
+                    alt="avatar"
+                    style={{ width: "10%", height: "" }}
+                  />
+                ) : (
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                )}
                 {/* <Button icon={<UploadOutlined />}>Click to upload</Button> */}
               </Upload>
             </Form.Item>
@@ -947,28 +1033,28 @@ function Pending() {
                 name="gstCopy"
                 listType="picture"
                 customRequest={({ file, onSuccess, onError }) =>
-                customRequestLead({
-                  file,
-                  onSuccess,
-                  onError,
-                  fieldName: "gstCopy",
-                })
-              }
-              accept="image/*" 
+                  customRequestLead({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "gstCopy",
+                  })
+                }
+                accept="image/*"
                 onChange={onUploadChange}
               >
-                 {imageUrls.gstCopy ? (
-                    <img
-                      src={imageUrls.gstCopy}
-                      alt="avatar"
-                      style={{ width: "10%", height:"" }}
-                    />
-                  ) : (
-                    <div>
-                      <PlusOutlined />
-                      <div style={{ marginTop: 8 }}>Upload</div>
-                    </div>
-                  )}
+                {imageUrls.gstCopy ? (
+                  <img
+                    src={imageUrls.gstCopy}
+                    alt="avatar"
+                    style={{ width: "10%", height: "" }}
+                  />
+                ) : (
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                )}
                 {/* <Button icon={<UploadOutlined />}>Click to upload</Button> */}
               </Upload>
             </Form.Item>
@@ -979,8 +1065,33 @@ function Pending() {
               valuePropName="fss"
               getValueFromEvent={normFile}
             >
-              <Upload name="FSSAI" listType="fss" onChange={onUploadChange}>
-                <Button icon={<UploadOutlined />}>Click to upload</Button>
+              <Upload
+                name="FSSAI"
+                listType="fss"
+                customRequest={({ file, onSuccess, onError }) =>
+                  customRequestLead({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "fss",
+                  })
+                }
+                accept="image/*"
+                onChange={onUploadChange}
+              >
+                {imageUrls.fss ? (
+                  <img
+                    src={imageUrls.fss}
+                    alt="avatar"
+                    style={{ width: "10%", height: "" }}
+                  />
+                ) : (
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                )}
+                {/* <Button icon={<UploadOutlined />}>Click to upload</Button> */}
               </Upload>
             </Form.Item>
 
@@ -993,9 +1104,30 @@ function Pending() {
               <Upload
                 name="cancelCheck"
                 listType="Cancel Check"
+                customRequest={({ file, onSuccess, onError }) =>
+                  customRequestLead({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "cancelCheck",
+                  })
+                }
+                accept="image/*"
                 onChange={onUploadChange}
               >
-                <Button icon={<UploadOutlined />}>Click to upload</Button>
+                 {imageUrls.cancelCheck ? (
+                  <img
+                    src={imageUrls.cancelCheck}
+                    alt="avatar"
+                    style={{ width: "10%", height: "" }}
+                  />
+                ) : (
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                )}
+                {/* <Button icon={<UploadOutlined />}>Click to upload</Button> */}
               </Upload>
             </Form.Item>
 
@@ -1006,16 +1138,34 @@ function Pending() {
             <Form.Item
               label="Table Photos"
               name="tablePhotos"
-              valuePropName="tablePhotos"
-              getValueFromEvent={normFile}
+              valuePropName="fileList"
+              getValueFromEvent={normFileTable}
             >
               <Upload
                 name="tablePhotos"
-                listType="Table Photos"
-                onChange={onUploadChange}
+                listType="picture-card"
+                className="avatar-uploader"
+                onChange={handleChangeLead}
+                fileList={fileList}
+                showUploadList={{
+                  showRemoveIcon: true,
+                }}
                 multiple={true}
+                customRequest={({ file, onSuccess, onError }) =>
+                  customRequest({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "tablePhotos",
+                  })
+                }
               >
-                <Button icon={<UploadOutlined />}>Click to upload</Button>
+             {fileList.length >= 5 ? null : (
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                )}
               </Upload>
             </Form.Item>
 
@@ -1089,17 +1239,34 @@ function Pending() {
 
             <Form.Item
               label="Trade Photos"
-              name="tradePhotos"
-              valuePropName="tradePhotos"
-              getValueFromEvent={normFile}
+              name="tradeMarkPhotos"
+              valuePropName="fileList"
+              getValueFromEvent={normFileTrade}
             >
               <Upload
-                name="tradePhotos"
-                listType="tradePhotos"
-                onChange={onUploadChange}
+                name="tradeMarkPhotos"
+                listType="picture-card"
+                className="avatar-uploader"
+                fileList={fileList}
                 multiple={true}
+                showUploadList={{
+                  showRemoveIcon: true,
+                }}
+                customRequest={({ file, onSuccess, onError }) =>
+                customRequestTrade({
+                  file,
+                  onSuccess,
+                  onError,
+                  fieldName: "tradeMarkPhotos",
+                })
+              }
               >
-                <Button icon={<UploadOutlined />}>Click to upload</Button>
+                    {fileList.length >= 5 ? null : (
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                )}
               </Upload>
             </Form.Item>
 
@@ -1109,7 +1276,6 @@ function Pending() {
                 <Option value="no">No</Option>
               </Select>
             </Form.Item>
-
 
             <Form.Item label="DLT Email" name="dldEmail">
               <Input />
@@ -1130,12 +1296,11 @@ function Pending() {
               <Input />
             </Form.Item>
 
-        <Form.Item>
-        <Button onClick={handleFetchLocation}>
-          Fetch Current Location
-        </Button>
-      </Form.Item>
-
+            <Form.Item>
+              <Button onClick={handleFetchLocation}>
+                Fetch Current Location
+              </Button>
+            </Form.Item>
 
             <Form.Item>
               <Button type="primary" htmlType="submit">
