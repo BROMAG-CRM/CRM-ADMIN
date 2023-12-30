@@ -43,7 +43,7 @@ const response = await axios.get(`${url}/getpendingform/india`, {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [updated]);
 
 
     //edit function
@@ -82,7 +82,7 @@ const response = await axios.get(`${url}/getpendingform/india`, {
     
         const res = await axios.post(
           `${url}/businessstatus`,
-          { userId: id, newBusinessStatus: "legalmanagement" ,leadStatus:"new-lead" },
+          { userId: id, newBusinessStatus: "completed" ,leadStatus:"new-lead" },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -649,6 +649,9 @@ const response = await axios.get(`${url}/getpendingform/india`, {
     const submitModal = async () => {
       const updatedData = form.getFieldsValue();
       const userId = userData[0]._id;
+
+      console.log("userrrdata");
+      console.log(updatedData);
     
       try {
         const response = await axios.post(`${url}/updateform/${userId}`, updatedData, {

@@ -38,7 +38,7 @@ function UserLeadGeneration() {
   const user = useSelector((state) => state.user.user);
   console.log("detailssss");
   console.log(user);
-  const [imageUrl, setImageUrl] = useState(null);
+  // const [imageUrl, setImageUrl] = useState(null);
   const [firmDetail, setFirmDetail] = useState("");
   const [onlineAggregater, setOnlineAggregater] = useState("");
   const [imageUrls, setImageUrls] = useState({});
@@ -123,8 +123,8 @@ function UserLeadGeneration() {
   //   }
   // };
 
-  const 
-  handleChangeLead = ({ fileList, file }) => {
+
+  const handleChangeLead = ({ fileList, file }) => {
     const urls = fileList.map((file) => file.url).filter(Boolean);
     const fieldName = file.fieldName;
     setImageUrls((prevUrls) => ({
