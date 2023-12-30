@@ -49,7 +49,7 @@ function UsersList() {
   const handleSearchPartnership = (value) => {
     const filteredData = data.filter((item) => {
       console.log(value, item.city, "wehgjhv");
-      return item.name.toLowerCase().includes(value.toLowerCase());
+      return item.uniqueId.toLowerCase().includes(value.toLowerCase()) || item.name.toLowerCase().includes(value.toLowerCase());
     });
     setsearchPartner(filteredData);
   }
@@ -222,6 +222,8 @@ function UsersList() {
 
   function UserModal({ visible, onCancel, userData }) {
     const [form] = Form.useForm();
+
+    
   
     React.useEffect(() => {
       if (visible) {
