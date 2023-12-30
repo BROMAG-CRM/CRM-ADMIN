@@ -38,7 +38,7 @@ function UserLeadGeneration() {
   const user = useSelector((state) => state.user.user);
   console.log("detailssss");
   console.log(user);
-  const [imageUrl, setImageUrl] = useState(null);
+  // const [imageUrl, setImageUrl] = useState(null);
   const [firmDetail, setFirmDetail] = useState("");
   const [onlineAggregater, setOnlineAggregater] = useState("");
   const [imageUrls, setImageUrls] = useState({});
@@ -123,8 +123,8 @@ function UserLeadGeneration() {
   //   }
   // };
 
-  const 
-  handleChangeLead = ({ fileList, file }) => {
+
+  const handleChangeLead = ({ fileList, file }) => {
     const urls = fileList.map((file) => file.url).filter(Boolean);
     const fieldName = file.fieldName;
     setImageUrls((prevUrls) => ({
@@ -278,7 +278,7 @@ function UserLeadGeneration() {
             gstCopy: imageUrls?.gstCopy,
             cancelCheck: imageUrls?.cancelCheck,
             EmployeeName: get(user, "name", ""),
-            city: get(user, "city", ""),
+            // city: get(user, "city", ""),
             state: get(user, "state", ""),
             adminId: get(user, "adminId", ""),
             employeeId: get(user, "userId", "")
@@ -1054,12 +1054,12 @@ function UserLeadGeneration() {
               label={<p>Table Photos</p>}
               valuePropName="fileList"
               getValueFromEvent={normFileTable}
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: "Table photos is required",
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: true,
+                  message: "Table photos is required",
+                },
+              ]}
             >
               <Upload
                 name="logo"
@@ -1091,7 +1091,7 @@ function UserLeadGeneration() {
             <Form.Item
               name="billingSoftware"
               label={<p>Billing Software</p>}
-              // rules={[{ required: true, message: "Firm option is required" }]}
+              rules={[{ required: true, message: "Firm option is required" }]}
             >
               <Select placeholder={"Select billing software..."} size="large">
                 <Select.Option value={"yes"}>Yes</Select.Option>
@@ -1101,9 +1101,9 @@ function UserLeadGeneration() {
             <Form.Item
               name="onlineAggregater"
               label={<p>Online Aggregator</p>}
-              // rules={[
-              //   { required: true, message: "aggregator option is required" },
-              // ]}
+              rules={[
+                { required: true, message: "aggregator option is required" },
+              ]}
             >
               <Select
                 onChange={(e) => {
@@ -1280,10 +1280,10 @@ function UserLeadGeneration() {
               <Form.Item
                 name="restaurantMobileNumber"
                 rules={[
-                  // {
-                  //   required: true,
-                  //  message: "Restaurant number is required",
-                  // }, 
+                  {
+                    required: true,
+                   message: "Restaurant number is required",
+                  }, 
                   () => ({
                     validator(_, value) {
                       if (!value) {
@@ -1318,7 +1318,7 @@ function UserLeadGeneration() {
               </Form.Item>
               <Form.Item
                 name="email"
-                // rules={[{ required: true, message: "Email is required" }]}
+                rules={[{ required: true, message: "Email is required" }]}
                 label={<p>Email</p>}
               >
                 <Input type="email" size="large" placeholder="Enter email..." />
@@ -1327,10 +1327,10 @@ function UserLeadGeneration() {
             <Form.Item
               name="contactPersonNumber"
               rules={[
-                // {
-                //   required: true,
-                //   message: "Contact person number is required",
-                // },
+                {
+                  required: true,
+                  message: "Contact person number is required",
+                },
                 () => ({
                   validator(_, value) {
                     if (!value) {
@@ -1364,18 +1364,18 @@ function UserLeadGeneration() {
             <Form.Item
               name="contactPersonname"
               label={<p>Contact Person Name</p>}
-              // rules={[
-              //   { required: true, message: "Contact person name is required" },
-              // ]}
+              rules={[
+                { required: true, message: "Contact person name is required" },
+              ]}
             >
               <Input type="text" size="large" placeholder="Enter name..." />
             </Form.Item>
             <Form.Item
               name="designation"
               label={<p>Designation</p>}
-              // rules={[
-              //   { required: true, message: "Designation is required" },
-              // ]}
+              rules={[
+                { required: true, message: "Designation is required" },
+              ]}
             >
               <Input
                 type="text"
@@ -1410,7 +1410,7 @@ function UserLeadGeneration() {
             <Form.Item
               name={"domain"}
               label={<p>Domain</p>}
-              // rules={[{ required: true, message: "Domain is required" }]}
+              rules={[{ required: true, message: "Domain is required" }]}
             >
               <Select
                 onChange={(e) => {
@@ -1431,19 +1431,19 @@ function UserLeadGeneration() {
                   ? "block"
                   : "hidden"
               }`}
-              // rules={[
-              //   {
-              //     required: showDomainNameInput === "yes" ? true : false,
-              //     message: "Domain name is required",
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: showDomainNameInput === "yes" ? true : false,
+                  message: "Domain name is required",
+                },
+              ]}
             >
               <Input type="text" placeholder="Domain name" size="large" />
             </Form.Item>
             <Form.Item
               name={"tradeMark"}
               label={<p>Trade Mark</p>}
-              // rules={[{ required: true, message: "Trade mark is required" }]}
+              rules={[{ required: true, message: "Trade mark is required" }]}
             >
               <Select
                 onChange={(e) => {
@@ -1466,12 +1466,12 @@ function UserLeadGeneration() {
                   ? "block"
                   : "hidden"
               }`}
-              // rules={[
-              //   {
-              //     required: showTradeMarkInput === "yes" ? true : false,
-              //     message: "Trade Photoos is required",
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: showTradeMarkInput === "yes" ? true : false,
+                  message: "Trade Photoos is required",
+                },
+              ]}
             >
               <Upload
                 name="logo"
@@ -1503,7 +1503,7 @@ function UserLeadGeneration() {
             <Form.Item
               name={"dld"}
               label={<p>DLT</p>}
-              // rules={[{ required: true, message: "DLD is required" }]}
+              rules={[{ required: true, message: "DLT is required" }]}
             >
               <Select
                 onChange={(e) => {
@@ -1524,12 +1524,12 @@ function UserLeadGeneration() {
                   ? "block"
                   : "hidden"
               }`}
-              // rules={[
-              //   {
-              //     required: showDLDInput === "yes" ? true : false,
-              //     message: "Entity is required",
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: showDLDInput === "yes" ? true : false,
+                  message: "Entity is required",
+                },
+              ]}
             >
               <Input type="text" placeholder="Entity no" size="large" />
             </Form.Item>
@@ -1541,12 +1541,12 @@ function UserLeadGeneration() {
                   ? "block"
                   : "hidden"
               }`}
-              // rules={[
-              //   {
-              //     required: showDLDInput === "yes" ? true : false,
-              //     message: "DLD email is required",
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: showDLDInput === "yes" ? true : false,
+                  message: "DLD email is required",
+                },
+              ]}
             >
               <Input type="text" placeholder="Dld email" size="large" />
             </Form.Item>
@@ -1558,19 +1558,19 @@ function UserLeadGeneration() {
                   ? "block"
                   : "hidden"
               }`}
-              // rules={[
-              //   {
-              //     required: showDLDInput === "yes" ? true : false,
-              //     message: "DLD password is required",
-              //   },
-              // ]}
+              rules={[
+                {
+                  required: showDLDInput === "yes" ? true : false,
+                  message: "DLD password is required",
+                },
+              ]}
             >
               <Input type="text" placeholder="Dld password" size="large" />
             </Form.Item>
             <Form.Item
               name="status"
               label={<p>Status</p>}
-              // rules={[{ required: true, message: "Status is required" }]}
+              rules={[{ required: true, message: "Status is required" }]}
             >
               <Select placeholder="Choose status..." size="large">
                 <Select.Option value="Hot">Hot</Select.Option>
@@ -1605,7 +1605,7 @@ function UserLeadGeneration() {
             <Form.Item
               label={<p>Door No</p>}
               name="doorNo"
-              // rules={[{ required: true, message: "Door no is required" }]}
+              rules={[{ required: true, message: "Door no is required" }]}
             >
               <Input type="text" placeholder="Door no..." size="large" />
             </Form.Item>
@@ -1613,35 +1613,35 @@ function UserLeadGeneration() {
             <Form.Item
               label={<p>Area Name</p>}
               name="areaName"
-              // rules={[{ required: true, message: "Area name is required" }]}
+              rules={[{ required: true, message: "Area name is required" }]}
             >
               <Input type="text" placeholder="Area name..." size="large" />
             </Form.Item>
             <Form.Item
               label={<p>Land Mark</p>}
               name="landMark"
-              // rules={[{ required: true, message: "Landmark is required" }]}
+              rules={[{ required: true, message: "Landmark is required" }]}
             >
               <Input type="text" placeholder="Landmark..." size="large" />
             </Form.Item>
             <Form.Item
               label={<p>City</p>}
               name="locationCity"
-              // rules={[{ required: true, message: "City is required" }]}
+              rules={[{ required: true, message: "City is required" }]}
             >
               <Input type="text" placeholder="city..." size="large" />
             </Form.Item>
             <Form.Item
               label={<p>Pincode</p>}
               name="pinCode"
-              // rules={[{ required: true, message: "Pincode is required" }]}
+              rules={[{ required: true, message: "Pincode is required" }]}
             >
               <Input type="text" placeholder="Pincode..." size="large" />
             </Form.Item>
             <Form.Item
               label={<p>State</p>}
               name="state"
-              // rules={[{ required: true, message: "State is required" }]}
+              rules={[{ required: true, message: "State is required" }]}
             >
               <Input type="text" placeholder="State..." size="large" />
             </Form.Item>
