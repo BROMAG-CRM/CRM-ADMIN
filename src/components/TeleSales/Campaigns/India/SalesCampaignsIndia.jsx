@@ -7,11 +7,7 @@ import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
 function SalesCampaignsIndia() {
-  const [newLeadsCount, setNewLeadsCount] = useState();  
-  const [openedCount, setOpenedCount] = useState();  
-  const [followUpCount, setFollowUpCount] = useState();
-  const [connectedCount, setConnectedCount] = useState();
-  const [notConnectedCount, setNotConnectedCount] = useState();
+  const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
   const navigate = useNavigate()
 
@@ -26,12 +22,8 @@ function SalesCampaignsIndia() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setNewLeadsCount(get(response, "data.data.newLeadsCount"));
-      setOpenedCount(get(response, "data.data.openedCount"));
-      setFollowUpCount(get(response, "data.data.followUpCount"));
-      setConnectedCount(get(response, "data.data.connectedCount"));
-      setNotConnectedCount(get(response, "data.data.notConnectedCount"));
       setCities(get(response, "data.data.uniqueCities"));
+      setData(get(response, "data.data.forms"));
     } catch (err) {
       console.log(err);
     }
@@ -54,62 +46,91 @@ function SalesCampaignsIndia() {
 
             {cities.map((city) => (
               <div key={city} className="mb-6">
-              <p className="text- text-2xl font-semibold flex mt-2 mb-3">
-                {city} Leads
-              </p>
-              <div className="flex flex-col lg:flex-row justify-around gap-5">
-                <div
-                  className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
-                >
-                  <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    New Leads
-                  </p>
-                  <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    {newLeadsCount}
-                  </p>
-                </div>
-                <div
-                  className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
-                >
-                  <p className="text-white text-xl flex font-extrabold items-center justify-center">
-                    Opened
-                  </p>
-                  <p className="text-white text-xl flex font-extrabold items-center justify-center">
-                    {openedCount}
-                  </p>
-                </div>
-                <div
-                  className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
-                >
-                  <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    Follow Up
-                  </p>
-                  <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    {followUpCount}
-                  </p>
-                </div>
-                <div
-                  className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
-                >
-                  <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    Connected
-                  </p>
-                  <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    {connectedCount}
-                  </p>
-                </div>
-                <div
-                  className="w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md"
-                >
-                  <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    Not Connected
-                  </p>
-                  <p className="text-white text-xl font-extrabold flex items-center justify-center">
-                    {notConnectedCount}
-                  </p>
+                <p className="text- text-2xl font-semibold flex mt-2 mb-3">
+                  {city} Leads
+                </p>
+                <div className="flex flex-col lg:flex-row justify-around gap-5">
+                  <div className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md">
+                    <p className="text-white text-xl font-extrabold flex items-center justify-center">
+                      New Leads
+                    </p>
+                    <p className="text-white text-xl font-extrabold flex items-center justify-center">
+                      {
+                        data.filter((form) =>
+                          form.address.some(
+                            (address) =>
+                              address.locationCity === city &&
+                              form.leadStatus === "new-lead"
+                          )
+                        ).length
+                      }
+                    </p>
+                  </div>
+                  <div className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md">
+                    <p className="text-white text-xl flex font-extrabold items-center justify-center">
+                      Opened
+                    </p>
+                    <p className="text-white text-xl flex font-extrabold items-center justify-center">
+                      {
+                        data.filter((form) =>
+                          form.address.some(
+                            (address) =>
+                              address.locationCity === city &&
+                              (form.leadStatus === "connected" ||
+                                form.leadStatus === "follow-up" ||
+                                form.leadStatus === "not-connected")
+                          )
+                        ).length
+                      }
+                    </p>
+                  </div>
+                  <div className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md">
+                    <p className="text-white text-xl font-extrabold flex items-center justify-center">
+                      Follow Up
+                    </p>
+                    <p className="text-white text-xl font-extrabold flex items-center justify-center">
+                    {
+                        data.filter((form) =>
+                          form.address.some(
+                            (address) =>
+                              address.locationCity === city &&
+                              form.leadStatus === "follow-up"
+                          )
+                        ).length
+                      }                    </p>
+                  </div>
+                  <div className="mb-4 lg:mb-0 w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md">
+                    <p className="text-white text-xl font-extrabold flex items-center justify-center">
+                      Connected
+                    </p>
+                    <p className="text-white text-xl font-extrabold flex items-center justify-center">
+                    {
+                        data.filter((form) =>
+                          form.address.some(
+                            (address) =>
+                              address.locationCity === city &&
+                              form.leadStatus === "connected"
+                          )
+                        ).length
+                      }                    </p>
+                  </div>
+                  <div className="w-full lg:w-1/4 bg-amber-600 border cursor-pointer border-gray-300 p-4 rounded-md transition-transform duration-300 transform hover:scale-105 hover:shadow-md">
+                    <p className="text-white text-xl font-extrabold flex items-center justify-center">
+                      Not Connected
+                    </p>
+                    <p className="text-white text-xl font-extrabold flex items-center justify-center">
+                    {
+                        data.filter((form) =>
+                          form.address.some(
+                            (address) =>
+                              address.locationCity === city &&
+                              form.leadStatus === "not-connected"
+                          )
+                        ).length
+                      }                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
             ))}
           </div>
         </div>

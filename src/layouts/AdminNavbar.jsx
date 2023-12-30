@@ -150,7 +150,7 @@ function AdminNavbar() {
               </div>
             </div>
             <div className=" justify-center hidden sm:flex lg:gap-8 xl:20 md:w-[100vw] w-[100vw] lg:pl-[17vw] px-2 gap-10 md:gap-4">
-              <div className="!text-white">
+              {/* <div className="!text-white">
                 <Link to="/forms">
                   <Space>
                     <h1 className="text-[10px] flex items-center justify-center md:text-[12px] lg:text-[14px] cursor-pointer">
@@ -158,7 +158,7 @@ function AdminNavbar() {
                     </h1>
                   </Space>
                 </Link>
-              </div>
+              </div> */}
               <div className="!text-white">
                 <Dropdown overlay={nameMenu}>
                   <a onClick={(e) => e.preventDefault()}>
@@ -243,7 +243,7 @@ function AdminNavbar() {
         placement="left"
       >
         <div className="flex flex-col justify-center px-2 gap-5 w-[70vw]">
-          <div className="!text-black">
+          {/* <div className="!text-black">
             <a onClick={(e) => e.preventDefault()}>
               <Space>
                 <h1 className="text-[14px] flex justify-between gap-[10px] items-center">
@@ -251,7 +251,7 @@ function AdminNavbar() {
                 </h1>
               </Space>
             </a>
-          </div>
+          </div> */}
           <div className="!text-black">
             <Dropdown overlay={nameMenu}>
               <a onClick={(e) => e.preventDefault()}>
