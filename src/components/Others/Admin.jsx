@@ -26,56 +26,57 @@ function Admin() {
   };
 
   return (
-    <div className="pl-[18vw]  pt-14 w-screen">
-      <div className="w-[80vw] pl-20 pt-6 bg-white-70 shadow-md"></div>
-      <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md">
-        <h1 className="font-semibold">Add Employee Details</h1>
-        <Form
-          className="grid grid-cols-2 gap-x-20 pt-5 w-[80%]"
-          layout="vertical"
-          onFinish={handleFinish}
-          form={form}
+    <div className="pl-[18vw] pt-14 pb-20 overflow-y-auto">
+    <div className="pl-6 pr-4 bg-white-70 shadow-md">
+      <h1 className="font-semibold text-2xl md:text-3xl">Add Employee Details</h1>
+      <Form
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5 w-full md:w-[80%]"
+        layout="vertical"
+        onFinish={handleFinish}
+        form={form}
+      >
+        <Form.Item
+          name="name"
+          label={<p>Employee Name</p>}
+          rules={[{ required: true, message: "Name is required" }]}
         >
-          <Form.Item
-            name="name"
-            label={<p>Employee Name</p>}
-            rules={[{ required: true, message: "Name is required" }]}
-          >
-            <Input type="text" size="large" placeholder="Enter name..." />
-          </Form.Item>
-          <Form.Item
-            name="mobileNumber"
-            rules={[
-              {
-                required: true,
-                message: "number is required",
+          <Input type="text" size="large" placeholder="Enter name..." />
+        </Form.Item>
+
+        {/* Each form item will now take the full width on small screens */}
+        <Form.Item
+          name="mobileNumber"
+          rules={[
+            {
+              required: true,
+              message: "Number is required",
+            },
+            () => ({
+              validator(_, value) {
+                if (!value) {
+                  return Promise.reject();
+                }
+                if (isNaN(value)) {
+                  return Promise.reject("Mobile number has to be a number.");
+                }
+                if (value.length < 10) {
+                  return Promise.reject(
+                    "Mobile number can't be less than 10 digits"
+                  );
+                }
+                if (value.length > 10) {
+                  return Promise.reject(
+                    "Mobile number can't be more than 10 digits"
+                  );
+                }
+                return Promise.resolve();
               },
-              () => ({
-                validator(_, value) {
-                  if (!value) {
-                    return Promise.reject();
-                  }
-                  if (isNaN(value)) {
-                    return Promise.reject("Mobile number has to be a number.");
-                  }
-                  if (value.length < 10) {
-                    return Promise.reject(
-                      "Mobile number can't be less than 10 digits"
-                    );
-                  }
-                  if (value.length > 10) {
-                    return Promise.reject(
-                      "Mobile number can't be more than 10 digits"
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              }),
-            ]}
-            label={<p>Contact Number</p>}
-          >
-            <Input type="text" size="large" placeholder="Enter mobile no..." />
-          </Form.Item>
+            }),
+          ]}
+          label={<p>Contact Number</p>}
+        >
+          <Input type="text" size="large" placeholder="Enter mobile no..." />
+        </Form.Item>
           <Form.Item
             name="email"
             label={
