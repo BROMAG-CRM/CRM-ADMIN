@@ -1,4 +1,4 @@
-import { Button, Image, Table, Input} from "antd";
+import { Button, Image, Table, Input, Select} from "antd";
 import axios from "axios";
 import { debounce, get} from "lodash";
 import { useEffect, useState, useRef } from "react";
@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import ImageModal from "../Modals/ImageModal";
 const url = import.meta.env.VITE_REACT_APP_URL;
 const token = localStorage.getItem("token");
+const { Option } = Select;
 
 
 
@@ -19,6 +20,7 @@ function PrivateLtd() {
   const [selectedImage,setSelectedImage] = useState('')
   const [isImageModalOpen,setImageModalOpen] = useState(false)
   const [searchPartner, setsearchPartner] = useState("");
+  const [updated,setUpdated] = useState(false)
 
 
 
@@ -41,7 +43,26 @@ setData(sortedData);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [updated]);
+
+
+//status function
+const handleStatusChange = async(value, record) => {
+
+  console.log(value);
+  console.log(record);
+
+    await axios.post(`${url}/updatestatus`,{value:value,id:record._id}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    setUpdated(!updated)
+  
+}
+
+
 
 
  //search function
@@ -84,7 +105,16 @@ const debouncedSearch = debounce(handleSearchPartnership, 300);
         });
         return formattedDate;
       },
-    },  
+    },
+    {
+      title: <h1>Employee Name</h1>,
+      dataIndex: "EmployeeName",
+      key: "EmployeeName",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },   
     {
       title: <h1>Brand Name</h1>,
       dataIndex: "brandName",
@@ -572,6 +602,26 @@ const debouncedSearch = debounce(handleSearchPartnership, 300);
       },
     },
     {
+      title: <h1>Update Status</h1>,
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      render: (data, record) => (
+        <>
+          <Select
+            placeholder="Select Status"
+            value={data}
+            onChange={(value) => handleStatusChange(value, record)}
+            style={{ width: 100 }} 
+          >
+            <Option value="Hot">Hot</Option>
+            <Option value="Warm">Warm</Option>
+            <Option value="Cold">Cold</Option>
+          </Select>
+        </>
+      ),
+    },
+    {
       title: <h1>Address</h1>,
       dataIndex: "address",
       key: "address",
@@ -633,7 +683,7 @@ const debouncedSearch = debounce(handleSearchPartnership, 300);
       <div className="pl-6 w-[80vw]">
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
       <Search
-              placeholder="Search by Brand Name..."
+              placeholder="Search by Brand Name or Employee Name..."
               onChange={(e) => debouncedSearch(e.target.value)}
               enterButton
               className="mt-4 w-[60%] mb-5 ml-5"
