@@ -25,7 +25,7 @@ function TeleMarketing() {
                     key={index}
                     className={`p-4 h-36 sm:h-48 border bg-amber-600 flex flex-col justify-center items-center rounded-2xl hover:bg-amber-700 hover:shadow-md hover:scale-105 transition-transform duration-1000`}
                   >
-                    <h2 className="text-white text-lg sm:text-2xl font-semibold mb-2 cursor-pointer">
+                    <h2 className="text-white text-2xl font-semibold mb-2 cursor-pointer">
                       {names[index]}
                     </h2>
                     <Icon className="text-white cursor-pointer" style={{ fontSize: '3rem', sm: { fontSize: '3rem' } }} />

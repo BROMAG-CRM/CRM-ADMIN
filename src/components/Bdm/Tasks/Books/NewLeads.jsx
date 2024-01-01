@@ -3,7 +3,6 @@ import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
 import FollowUpModal from "../../../Modals/FollowUpModal";
 import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
@@ -15,6 +14,7 @@ const { Option } = Select;
 
 
 function NewLeads() {
+  const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [activeRow, setActiveRow] = useState(null);

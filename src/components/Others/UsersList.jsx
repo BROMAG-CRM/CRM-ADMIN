@@ -4,7 +4,6 @@ import axios from "axios";
 import { get, debounce } from "lodash";
 import React, { useEffect, useState, useRef } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
 import toast, { Toaster } from 'react-hot-toast';
 
 
@@ -19,6 +18,10 @@ function UsersList() {
   const [searchPartner, setsearchPartner] = useState("");
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editModalData, setEditModalData] = useState(null);
+  const token = localStorage.getItem("token");
+  console.log(token)
+  console.log("token")
+
 
 
 
@@ -29,7 +32,6 @@ function UsersList() {
           Authorization: `Bearer ${token}`,
         },
       });
-
       const sortedData = get(response, "data.data", []).sort((a, b) =>
         new Date(b.joiningDate) - new Date(a.joiningDate)
       );
@@ -39,6 +41,8 @@ function UsersList() {
       console.log(err);
     }
   };
+
+
 
   useEffect(() => {
     fetchData();
@@ -311,7 +315,7 @@ function UsersList() {
         <div className="flex items-center justify-between px-4">
             <h1 className="text-center text-2xl pb-2">Users Details</h1>
             <Search
-              placeholder="Search by name..."
+              placeholder="Search by Name or Employee Id..."
               onChange={(e) => debouncedSearch(e.target.value)}
               enterButton
               className="mt-4 w-[60%] mb-5"

@@ -16,10 +16,10 @@ import { useEffect, useState, useRef } from "react";
 import FeatureModal from "../../../Modals/FeatureModal";
 import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
 import { UploadOutlined, CameraOutlined } from '@ant-design/icons';
 
 function Connected() {
+  const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);

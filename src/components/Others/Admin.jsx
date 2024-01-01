@@ -26,9 +26,9 @@ function Admin() {
   };
 
   return (
-    <div className="pl-[18vw] pt-14 pb-20 overflow-y-auto">
+    <div className="pl-[20vw] pt-14 pb-20 overflow-y-auto">
     <div className="pl-6 pr-4 bg-white-70 shadow-md">
-      <h1 className="font-semibold text-2xl md:text-3xl">Add Employee Details</h1>
+      <h1 className="font-semibold text-2xl md:text-3xl mt-3">Add Employee Details</h1>
       <Form
         className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-5 w-full md:w-[80%]"
         layout="vertical"

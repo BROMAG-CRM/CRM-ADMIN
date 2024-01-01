@@ -19,6 +19,8 @@ function Login() {
   const handleFinish = async (value) => {
     try {
        const result= await axios.post(`${url}/getuser`,value)
+       console.log(result);
+       console.log("result");
        localStorage.setItem("token",get(result,"data.message",""))
        Cookies.set("token", get(result, "data.message"), { secure: true, sameSite: "Strict" });
        fetchData();

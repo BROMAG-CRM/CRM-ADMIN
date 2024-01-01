@@ -105,8 +105,8 @@ import PendingIndia from "./components/LeadGenerationForm/FormsIndia/Pending";
 
 
 //dummy
-import MyReport from "./components/TeleSales/MyReport";
-import SalesBooks from "./components/TeleSales/SalesBooks";
+// import MyReport from "./components/TeleSales/MyReport";
+// import SalesBooks from "./components/TeleSales/SalesBooks";
 
 
 
@@ -148,8 +148,8 @@ const router=createBrowserRouter(
 
       <Route path="campaignindiaorbooks" element={<Campaigns/>} />
       <Route path="leadsindiaorbooks" element={<Tasks/>} />
-      <Route path="myreport" element={<MyReport/>} />
-      <Route path="taskbooks" element={<SalesBooks/>} />  
+      {/* <Route path="myreport" element={<MyReport/>} />
+      <Route path="taskbooks" element={<SalesBooks/>} />   */}
 
 
       <Route path="partnership" element={<Partnership/>} />
