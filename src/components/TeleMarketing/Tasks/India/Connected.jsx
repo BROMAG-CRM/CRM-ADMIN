@@ -17,9 +17,9 @@ import FeatureModal from "../../../Modals/FeatureModal";
 import { useNavigate } from "react-router-dom";
 import CallRecordModal from "../../../Modals/CallRecordModal";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
 
 function Connected() {
+  const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
