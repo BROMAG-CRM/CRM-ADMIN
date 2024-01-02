@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
 import { get } from "lodash";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
 function BdmCampaignsIndia() {
+  const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
   const navigate = useNavigate();

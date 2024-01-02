@@ -4,12 +4,12 @@ import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
 
 
 
 
 function NotConnected() {
+  const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
