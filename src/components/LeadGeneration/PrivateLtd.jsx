@@ -5,13 +5,13 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageModal from "../Modals/ImageModal";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
 const { Option } = Select;
 
 
 
 
 function PrivateLtd() {
+  const token = localStorage.getItem("token");
   const { Search } = Input;
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
