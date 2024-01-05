@@ -8,12 +8,12 @@ import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
 import { UploadOutlined } from "@ant-design/icons";
 import CallRecordModal from "../../../Modals/CallRecordModal";
-const { Option } = Select;
 
 
 
 
 function NewLeads() {
+  const { Option } = Select;
   const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const tableRef = useRef(null);

@@ -11,7 +11,6 @@ import UsersList from "./components/Others/UsersList"
 import Admin from "./components/Others/Admin";
 import UserLeadGeneration from "./components/LeadGenerationForm/UserLeadGeneration";
 import AccountsManagement from "./components/AccountsManagement/AccountsManagement";
-import LegalManagement from "./components/LegalManagement/LegalManagement";
 // import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Others/Loader";
 
@@ -102,19 +101,31 @@ import FormsIndia from "./components/LeadGenerationForm/FormsIndia/FormsIndia";
 import CompletedIndia from "./components/LeadGenerationForm/FormsIndia/Completed";
 import PendingIndia from "./components/LeadGenerationForm/FormsIndia/Pending";
 
-
-
-//dummy
-// import MyReport from "./components/TeleSales/MyReport";
-// import SalesBooks from "./components/TeleSales/SalesBooks";
-
-
-
 //Lead Generation
 import LeaadGenerationNew from "./components/LeadGeneration/LeadGenerationNew";
 import Partnership from "./components/LeadGeneration/Partnership";
 import PrivateLtd from "./components/LeadGeneration/PrivateLtd";
 import Proprietor from "./components/LeadGeneration/Proprietor";
+
+
+
+//Legal Management
+import LegalManagement from "./components/LegalManagement/LegalManagement"
+import CampaignsLegal from "./components/LegalManagement/Campaigns/Campaigns"
+import TaskLegal from "./components/LegalManagement/Tasks/Tasks"
+
+//Legal Campaigns(India)
+import LegalCampaignsIndia from "./components/LegalManagement/Campaigns/India/LegalCampaignsIndia"
+
+//Legal Campaigns(Books)
+import LegalCampaignsBooks from "./components/LegalManagement/Campaigns/Books/LegalCampaignsBooks"
+
+//Legal Tasks(India)
+import LegalTasksIndia from "./components/LegalManagement/Tasks/India/IndiaTasksLegal"
+
+//Legal Tasks(Books)
+import LegalTasksBooks from "./components/LegalManagement/Tasks/Books/BooksTasksLegal"
+
 
 
 
@@ -148,8 +159,6 @@ const router=createBrowserRouter(
 
       <Route path="campaignindiaorbooks" element={<Campaigns/>} />
       <Route path="leadsindiaorbooks" element={<Tasks/>} />
-      {/* <Route path="myreport" element={<MyReport/>} />
-      <Route path="taskbooks" element={<SalesBooks/>} />   */}
 
 
       <Route path="partnership" element={<Partnership/>} />
@@ -212,6 +221,16 @@ const router=createBrowserRouter(
       <Route path="completedformsindia" element={<CompletedIndia/>} /> 
       <Route path="completedformsbooks" element={<CompletedBooks/>} /> 
       <Route path="pendingformsbooks" element={<PendingBooks/>} /> 
+
+
+
+      <Route path="legaltasksindiaorbooks" element={<TaskLegal/>} /> 
+      <Route path="legalcampaignindiaorbooks" element={<CampaignsLegal/>} /> 
+      <Route path="legaltasksbooks" element={<LegalTasksBooks/>} /> 
+      <Route path="legaltasksindia" element={<LegalTasksIndia/>} /> 
+      <Route path="legalcampaignsindia" element={<LegalCampaignsIndia/>} /> 
+      <Route path="legalcampaignsbooks" element={<LegalCampaignsBooks/>} /> 
+
 
 
 

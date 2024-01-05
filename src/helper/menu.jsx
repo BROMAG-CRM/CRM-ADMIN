@@ -77,3 +77,16 @@ export const adminItems = [
       getItem(<a href="mailto:example@example.com" className="text-[10px] lg:text-[14px]">Email</a>, '/email'),
     ]),
   ];
+
+
+
+  export const legalItems = [
+    getItem(<NavLink to='/' className="text-[10px] lg:text-[14px]">Dashboard</NavLink>, '/', <DashboardCustomizeIcon className='!text-[17px] !text-[#CD5C08]'/>),
+    getItem(<NavLink to='leadgeneration' className="text-[10px] lg:text-[14px]">Lead Generation</NavLink>, '/leadgeneration', <AccountCircleIcon  className='!text-[17px] !text-[#CD5C08]'/>),
+    getItem(<NavLink to='legalmanagement' className="text-[10px] lg:text-[14px]">Legal Management</NavLink>, '/legalmanagement', <PolicyIcon  className='!text-[17px] !text-[#CD5C08]'/>),
+    getItem(<div className='text-[10px] lg:text-[14px]'>Support</div>, 'sub3', <SupportAgentIcon className='!text-[17px] !text-[#CD5C08]' />, [
+      getItem(<a href="tel:+9150289762" className="text-[10px] lg:text-[14px]">Call</a>, '/call'),
+      getItem(<a href="https://wa.me/9150289762" className="text-[10px] lg:text-[14px]">Whatsapp</a>, '/whatsapp'),
+      getItem(<a href="mailto:example@example.com" className="text-[10px] lg:text-[14px]">Email</a>, '/email'),
+    ]),
+  ];

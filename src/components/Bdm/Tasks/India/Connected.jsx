@@ -318,7 +318,7 @@ const locationAutoFetch = async (record) => {
       },
     },
     {
-      title: <h1>Upload A Selfi Image</h1>,
+      title: <h1>Upload Selfi Image</h1>,
       dataIndex: "photo",
       key: "photo",
       align: "center",
@@ -381,34 +381,11 @@ const locationAutoFetch = async (record) => {
           }
         };
     
-        const openCamera = () => {
-          // Trigger the input file click event
-          const inputElement = document.getElementById('cameraInput');
-          if (inputElement) {
-            inputElement.click();
-          }
-        };
-    
         return (
           <div>
             <Upload {...props} customRequest={onUpload} showUploadList={false}>
               <Button icon={<UploadOutlined />}>Upload Photo</Button>
             </Upload>
-    
-            {/* Hidden input element for camera capture */}
-            <input
-              type="file"
-              accept="image/*"
-              capture="camera"
-              id="cameraInput"
-              style={{ display: 'none' }}
-              onChange={onUpload}
-            />
-    
-            {/* Button to trigger camera capture */}
-            <Button icon={<CameraOutlined />} onClick={openCamera}>
-              Take Photo
-            </Button>
           </div>
         );
       },
