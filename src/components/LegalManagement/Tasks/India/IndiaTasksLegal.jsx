@@ -204,10 +204,13 @@ function Connected() {
       form.resetFields(["pdfDocument", "featureDescription", "selectedDate"]);
       handleModalClose();
 
-      const followUpDate = values?.selectedDate?.format("YYYY-MM-DD");
-      const description = values?.featureDescription;
-      const file = values?.pdfDocument[0]?.originFileObj;
+
+      const followUpDate = values?.selectedDate?.format("YYYY-MM-DD") ? values?.selectedDate?.format("YYYY-MM-DD") : "" 
+      const description = values?.featureDescription ? values?.featureDescription : ""
+      const file = values && values.file && values.file.length > 0 ? values.file[0].originFileObj : null;
       const id = selectedRowData?._id;
+
+      console.log(file);
 
       const formData = new FormData();
       formData.append("file", file);
@@ -217,16 +220,14 @@ function Connected() {
       formData.append("location", JSON.stringify(location));
 
       try {
-        const response = await axios.post(
-          `${url}/uploadagreement/${id}`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        console.log("backend");
+        await axios.post(`${url}/uploadagreement/${id}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
         setLocation(null);
         setUpdate(!update);
 
@@ -931,48 +932,53 @@ function Connected() {
           ]}
         >
           <Form form={form} layout="vertical">
-            <Form.Item
-              label={`Upload ${
-                selectedField === "legalSelfie" ? "Image" : "PDF Document"
-              }`}
-              name="file"
-              valuePropName="fileList"
-              getValueFromEvent={(e) => e.fileList}
-              rules={[
-                {
-                  validator: (_, value) => {
-                    if (value.length > 1) {
-                      return Promise.reject(
-                        new Error(
-                          `Please upload only one ${
-                            selectedField === "legalSelfie"
-                              ? "image"
-                              : "PDF document"
-                          }.`
-                        )
-                      );
-                    }
-                    return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              <Upload
-                customRequest={customRequest}
-                showUploadList={{
-                  showPreviewIcon: true,
-                  showDownloadIcon: false,
-                  showRemoveIcon: true,
-                }}
-                onPreview={handlePreview}
-                fileList={form.getFieldValue("file")}
-                onChange={onChange}
-                maxCount={1}
-                accept={acceptFileType}
-              >
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-              </Upload>
-            </Form.Item>
+          <Form.Item
+  label={`Upload ${
+    selectedField === "legalSelfie" ? "Image" : "PDF Document"
+  }`}
+  name="file"
+  valuePropName="fileList"
+  getValueFromEvent={(e) => e.fileList} // Directly return the fileList
+  rules={[
+    {
+      validator: (_, value) => {
+        if (!value || value.length === 0) {
+          // If no file is selected, consider it valid
+          return Promise.resolve();
+        }
+
+        if (value.length > 1) {
+          return Promise.reject(
+            new Error(
+              `Please upload only one ${
+                selectedField === "legalSelfie" ? "image" : "PDF document"
+              }.`
+            )
+          );
+        }
+
+        return Promise.resolve();
+      },
+    },
+  ]}
+>
+  <Upload
+    customRequest={customRequest}
+    showUploadList={{
+      showPreviewIcon: true,
+      showDownloadIcon: false,
+      showRemoveIcon: true,
+    }}
+    onPreview={handlePreview}
+    fileList={form.getFieldValue("file")}
+    onChange={onChange}
+    maxCount={1}
+    accept={acceptFileType}
+  >
+    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+  </Upload>
+</Form.Item>
+
 
             <Form.Item label="Agreement Description" name="featureDescription">
               <Input.TextArea />
