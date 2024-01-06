@@ -204,13 +204,17 @@ function Connected() {
       form.resetFields(["pdfDocument", "featureDescription", "selectedDate"]);
       handleModalClose();
 
+      console.log(selectedField);
+      console.log("selectedField");
+      console.log(values);
+      console.log("values");
+
+
 
       const followUpDate = values?.selectedDate?.format("YYYY-MM-DD") ? values?.selectedDate?.format("YYYY-MM-DD") : "" 
       const description = values?.featureDescription ? values?.featureDescription : ""
       const file = values && values.file && values.file.length > 0 ? values.file[0].originFileObj : null;
       const id = selectedRowData?._id;
-
-      console.log(file);
 
       const formData = new FormData();
       formData.append("file", file);
@@ -220,7 +224,6 @@ function Connected() {
       formData.append("location", JSON.stringify(location));
 
       try {
-        console.log("backend");
         await axios.post(`${url}/uploadagreement/${id}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -513,7 +516,7 @@ function Connected() {
             pointerEvents: data?.document ? "none" : "auto",
           }}
           disabled={data?.document ? true : false}
-          onClick={() => handleButtonClick(record, "uploadadditionalAgreement")}
+          onClick={() => handleButtonClick(record, "additionalAgreement")}
         >
           {data?.document ? "Uploaded" : "Upload"}
         </Button>
@@ -733,10 +736,14 @@ function Connected() {
       render: (data, record) => (
         <Button
           type="primary"
-          style={{ backgroundColor: "green" }}
+          style={{
+            backgroundColor: data?.document ? "white" : "green",
+            pointerEvents: data?.document ? "none" : "auto",
+          }}
+          disabled={data?.document ? true : false}
           onClick={() => handleButtonClick(record, "legalSelfie")}
         >
-          Upload
+          {data?.document ? "Uploaded" : "Upload"}
         </Button>
       ),
     },
