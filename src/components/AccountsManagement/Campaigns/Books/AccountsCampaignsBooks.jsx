@@ -5,7 +5,7 @@ import { get } from "lodash";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function LegalCampaignsBooks() {
+function AccountsCampaignsBooks() {
   const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
@@ -18,7 +18,7 @@ function LegalCampaignsBooks() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/legalcampaignsbooks`, {
+      const response = await axios.get(`${url}/accountcampaignsbooks`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -43,7 +43,13 @@ function LegalCampaignsBooks() {
               </h1>
             </div>
         
-            {cities.map((city) => (
+            {cities.length === 0 ? (
+              <p className="text-center text-xl font-semibold text-gray-500">
+                No data found.
+              </p>
+            ) : (
+            
+            cities.map((city) => (
               <div key={city} className="mb-6">
                 <p className="text- text-2xl font-semibold flex mt-2 mb-3">
                   {city} Leads
@@ -133,7 +139,7 @@ function LegalCampaignsBooks() {
                   </div>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
       </div>
@@ -141,4 +147,4 @@ function LegalCampaignsBooks() {
   );
 }
 
-export default LegalCampaignsBooks;
+export default AccountsCampaignsBooks;

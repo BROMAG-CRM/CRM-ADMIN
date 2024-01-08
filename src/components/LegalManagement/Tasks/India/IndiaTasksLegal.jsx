@@ -19,7 +19,6 @@ import {
   EyeOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-// import moment from "moment";
 import ImageModal from "../../../Modals/ImageModal";
 import PdfViewerModal from "../../../Modals/PDFModal";
 import { useSelector } from "react-redux";
@@ -98,28 +97,7 @@ function Connected() {
       const locationName = await getLocationName(latitude, longitude);
       setLocation({ latitude, longitude, locationName });
 
-      // if (location) {
-      //   console.log("3");
-      //   const formData = {
-      //     location: location,
-      //   };
 
-      //   console.log("4");
-      //   console.log(formData);
-
-      //   await axios.post(`${url}/updatelegallocation/${record._id}`, formData, {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   });
-
-      //   console.log("5");
-      //   notification.success({
-      //     message: "Location fetched successfully",
-      //   });
-
-      //   setUpdate(!update);
-      // }
     } catch (error) {
       console.error("Error:", error.message);
     }
@@ -133,7 +111,7 @@ function Connected() {
       `${url}/businessstatus`,
       {
         userId: id,
-        newBusinessStatus: "legalmanagement",
+        newBusinessStatus: "accountsmanagement",
         leadStatus: "new-lead",
       },
       {
@@ -146,30 +124,6 @@ function Connected() {
     setUpdate(!update);
   };
 
-  // //Date function
-  // const handleDateChange = async (date, record) => {
-  //   // Send the selected date to your backend API
-  //   try {
-  //     const response = await axios.post(
-  //       `${url}/setlegaldate`, // Replace with your actual backend API endpoint
-  //       {
-  //         id: record._id,
-  //         selectedDate: date.format("YYYY-MM-DD"), // Adjust the date format as needed
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     setUpdate(!update);
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
 
   //pdf view
   const downloadPDF = (fileUrl, fileName) => {
@@ -209,11 +163,16 @@ function Connected() {
       console.log(values);
       console.log("values");
 
-
-
-      const followUpDate = values?.selectedDate?.format("YYYY-MM-DD") ? values?.selectedDate?.format("YYYY-MM-DD") : "" 
-      const description = values?.featureDescription ? values?.featureDescription : ""
-      const file = values && values.file && values.file.length > 0 ? values.file[0].originFileObj : null;
+      const followUpDate = values?.selectedDate?.format("YYYY-MM-DD")
+        ? values?.selectedDate?.format("YYYY-MM-DD")
+        : "";
+      const description = values?.featureDescription
+        ? values?.featureDescription
+        : "";
+      const file =
+        values && values.file && values.file.length > 0
+          ? values.file[0].originFileObj
+          : null;
       const id = selectedRowData?._id;
 
       const formData = new FormData();
@@ -729,7 +688,7 @@ function Connected() {
       },
     },
     {
-      title: <h1>Upload Selfi Image</h1>,
+      title: <h1>Upload Selfie Image</h1>,
       dataIndex: "legalSelfie",
       key: "uploadlegalSelfie",
       align: "center",
@@ -748,7 +707,7 @@ function Connected() {
       ),
     },
     {
-      title: <h1>Selfi Image</h1>,
+      title: <h1>Selfie Image</h1>,
       dataIndex: "legalSelfie",
       key: "legalSelfie",
       align: "center",
@@ -867,7 +826,6 @@ function Connected() {
         column.key === "whoWeAre" ||
         column.key === "termsAndConditions" ||
         column.key === "businessStatus"
-        // column.key === "legalFollowUpDate"
       );
     }
     if (role === "legal management executive") {
@@ -881,7 +839,6 @@ function Connected() {
         column.key === "uploadadditionalAgreement" ||
         column.key === "uploadwhoWeAre" ||
         column.key === "uploadtermsAndConditions"
-        // column.key === "legalFollowUpDate"
       );
     }
   });
@@ -939,53 +896,54 @@ function Connected() {
           ]}
         >
           <Form form={form} layout="vertical">
-          <Form.Item
-  label={`Upload ${
-    selectedField === "legalSelfie" ? "Image" : "PDF Document"
-  }`}
-  name="file"
-  valuePropName="fileList"
-  getValueFromEvent={(e) => e.fileList} // Directly return the fileList
-  rules={[
-    {
-      validator: (_, value) => {
-        if (!value || value.length === 0) {
-          // If no file is selected, consider it valid
-          return Promise.resolve();
-        }
+            <Form.Item
+              label={`Upload ${
+                selectedField === "legalSelfie" ? "Image" : "PDF Document"
+              }`}
+              name="file"
+              valuePropName="fileList"
+              getValueFromEvent={(e) => e.fileList} // Directly return the fileList
+              rules={[
+                {
+                  required: true,
+                  validator: (_, value) => {
+                    if (!value || value.length === 0) {
+                      return Promise.reject(new Error("Please upload a document."));
+                    }
 
-        if (value.length > 1) {
-          return Promise.reject(
-            new Error(
-              `Please upload only one ${
-                selectedField === "legalSelfie" ? "image" : "PDF document"
-              }.`
-            )
-          );
-        }
+                    if (value.length > 1) {
+                      return Promise.reject(
+                        new Error(
+                          `Please upload only one ${
+                            selectedField === "legalSelfie"
+                              ? "image"
+                              : "PDF document"
+                          }.`
+                        )
+                      );
+                    }
 
-        return Promise.resolve();
-      },
-    },
-  ]}
->
-  <Upload
-    customRequest={customRequest}
-    showUploadList={{
-      showPreviewIcon: true,
-      showDownloadIcon: false,
-      showRemoveIcon: true,
-    }}
-    onPreview={handlePreview}
-    fileList={form.getFieldValue("file")}
-    onChange={onChange}
-    maxCount={1}
-    accept={acceptFileType}
-  >
-    <Button icon={<UploadOutlined />}>Click to Upload</Button>
-  </Upload>
-</Form.Item>
-
+                    return Promise.resolve();
+                  },
+                },
+              ]}
+            >
+              <Upload
+                customRequest={customRequest}
+                showUploadList={{
+                  showPreviewIcon: true,
+                  showDownloadIcon: false,
+                  showRemoveIcon: true,
+                }}
+                onPreview={handlePreview}
+                fileList={form.getFieldValue("file")}
+                onChange={onChange}
+                maxCount={1}
+                accept={acceptFileType}
+              >
+                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+              </Upload>
+            </Form.Item>
 
             <Form.Item label="Agreement Description" name="featureDescription">
               <Input.TextArea />

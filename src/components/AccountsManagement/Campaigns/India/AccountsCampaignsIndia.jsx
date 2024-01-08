@@ -5,12 +5,11 @@ import { get } from "lodash";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function LegalCampaignsBooks() {
+function AccountsCampaignsIndia() {
   const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -18,7 +17,7 @@ function LegalCampaignsBooks() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/legalcampaignsbooks`, {
+      const response = await axios.get(`${url}/accountcampaignsindia`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -30,20 +29,30 @@ function LegalCampaignsBooks() {
     }
   };
 
-
   return (
     <div className="pl-[18vw]  pt-7 w-screen">
       <div className="pl-6 w-[80vw]">
         <div>
           <div className="w-full mx-auto mt-8">
-          <Button className="text-white bg-black mb-4" onClick={() => navigate(-1)}>Go Back</Button>
+            <Button
+              className="text-white bg-black mb-4"
+              onClick={() => navigate(-1)}
+            >
+              Go Back
+            </Button>
+
             <div className="text-center mb-6 w-full">
               <h1 className="text-3xl font-semibold bg-black text-white p-5 w-full">
                 My Campaigns
               </h1>
             </div>
-        
-            {cities.map((city) => (
+            {cities.length === 0 ? (
+              <p className="text-center text-xl font-semibold text-gray-500">
+                No data found.
+              </p>
+            ) : (
+            
+            cities.map((city) => (
               <div key={city} className="mb-6">
                 <p className="text- text-2xl font-semibold flex mt-2 mb-3">
                   {city} Leads
@@ -59,7 +68,7 @@ function LegalCampaignsBooks() {
                           form.address.some(
                             (address) =>
                               address.locationCity === city &&
-                              form.booksLeadStatus === "new-lead"
+                              form.leadStatus === "new-lead"
                           )
                         ).length
                       }
@@ -75,9 +84,9 @@ function LegalCampaignsBooks() {
                           form.address.some(
                             (address) =>
                               address.locationCity === city &&
-                              (form.booksLeadStatus === "connected" ||
-                                form.booksLeadStatus === "follow-up" ||
-                                form.booksLeadStatus === "not-connected")
+                              (form.leadStatus === "connected" ||
+                                form.leadStatus === "follow-up" ||
+                                form.leadStatus === "not-connected")
                           )
                         ).length
                       }
@@ -93,7 +102,7 @@ function LegalCampaignsBooks() {
                           form.address.some(
                             (address) =>
                               address.locationCity === city &&
-                              form.booksLeadStatus === "follow-up"
+                              form.leadStatus === "follow-up"
                           )
                         ).length
                       }{" "}
@@ -109,7 +118,7 @@ function LegalCampaignsBooks() {
                           form.address.some(
                             (address) =>
                               address.locationCity === city &&
-                              form.booksLeadStatus === "connected"
+                              form.leadStatus === "connected"
                           )
                         ).length
                       }{" "}
@@ -125,7 +134,7 @@ function LegalCampaignsBooks() {
                           form.address.some(
                             (address) =>
                               address.locationCity === city &&
-                              form.booksLeadStatus === "not-connected"
+                              form.leadStatus === "not-connected"
                           )
                         ).length
                       }{" "}
@@ -133,7 +142,7 @@ function LegalCampaignsBooks() {
                   </div>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
       </div>
@@ -141,4 +150,4 @@ function LegalCampaignsBooks() {
   );
 }
 
-export default LegalCampaignsBooks;
+export default AccountsCampaignsIndia;

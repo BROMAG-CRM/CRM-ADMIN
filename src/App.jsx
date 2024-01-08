@@ -10,7 +10,6 @@ import Dashboard from "./components/Others/Dashboard"
 import UsersList from "./components/Others/UsersList"
 import Admin from "./components/Others/Admin";
 import UserLeadGeneration from "./components/LeadGenerationForm/UserLeadGeneration";
-import AccountsManagement from "./components/AccountsManagement/AccountsManagement";
 // import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Others/Loader";
 
@@ -128,6 +127,24 @@ import LegalTasksBooks from "./components/LegalManagement/Tasks/Books/BooksTasks
 
 
 
+//Accounts Management
+import AccountsManagement from "./components/AccountsManagement/AccountsManagement";
+import CampaignsAccounts from "./components/AccountsManagement/Campaigns/Campaigns"
+import TaskAccounts from "./components/AccountsManagement/Tasks/Tasks"
+
+//Accounts Campaigns(India)
+import AccountsCampaignsIndia from "./components/AccountsManagement/Campaigns/India/AccountsCampaignsIndia";
+
+//Accounts Campaigns(Books)
+import AccountsCampaignsBooks from "./components/AccountsManagement/Campaigns/Books/AccountsCampaignsBooks";
+
+//Accounts Tasks(India)
+import AccountsTasksIndia from "./components/AccountsManagement/Tasks/India/IndiaTasksAccounts"
+
+//Accounts Tasks(Books)
+import AccountsTasksBooks from "./components/AccountsManagement/Tasks/Books/BooksTasksAccounts"
+
+
 
 
 const router=createBrowserRouter(
@@ -231,6 +248,14 @@ const router=createBrowserRouter(
       <Route path="legalcampaignsindia" element={<LegalCampaignsIndia/>} /> 
       <Route path="legalcampaignsbooks" element={<LegalCampaignsBooks/>} /> 
 
+
+      
+      <Route path='accountscampaignindiaorbooks' element={<CampaignsAccounts/>} />
+      <Route path='accountstasksindiaorbooks' element={<TaskAccounts/>} />
+      <Route path='accountscampaignsindia' element={<AccountsCampaignsIndia/>} />
+      <Route path='accountscampaignsbooks' element={<AccountsCampaignsBooks/>} />
+      <Route path='accountstasksindia' element={<AccountsTasksIndia/>} />
+      <Route path='accountstasksbooks' element={<AccountsTasksBooks/>} />
 
 
 
