@@ -44,7 +44,13 @@ function SalesCampaignsIndia() {
 
             </div>
 
-            {cities.map((city) => (
+            {cities.length === 0 ? (
+              <p className="text-center text-xl font-semibold text-gray-500">
+                No data found.
+              </p>
+            ) : (
+            
+            cities.map((city) => (
               <div key={city} className="mb-6">
                 <p className="text- text-2xl font-semibold flex mt-2 mb-3">
                   {city} Leads
@@ -131,7 +137,7 @@ function SalesCampaignsIndia() {
                   </div>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
       </div>

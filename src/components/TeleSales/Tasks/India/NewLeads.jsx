@@ -9,6 +9,7 @@ import FeatureModal from "../../../Modals/FeatureModal";
 import { UploadOutlined } from "@ant-design/icons";
 import CallRecordModal from "../../../Modals/CallRecordModal";
 import VideoRecordsModal from "../../../Modals/VideoRecordsModal";
+import { useSelector } from "react-redux";
 const { Option } = Select;
 
 
@@ -34,6 +35,7 @@ function NewLeads() {
   const [selectedFeatures,setSelectedFeatures] = useState([])
   const [isVideoRecordsModalOpen,setVideoRecordsModalOpen] = useState(false)
   const [selectedVideoRecords,setSelectedVideoRecords] = useState([])  
+  let role = useSelector((state) => state?.user?.user?.role);
 
 
 
@@ -252,10 +254,10 @@ const handleFollowUpModalClose = async () => {
     {
       title: <h1>Add Features</h1>,
       dataIndex: "videoFeatures",
-      key: "videoFeatures",
+      key: "addvideoFeatures",
       align: "center",
       render: (data, record) => (
-        <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
+        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleButtonClick(record)}>
           Add
         </Button>
       ),
@@ -288,7 +290,7 @@ const handleFollowUpModalClose = async () => {
     {
       title: <h1>Upload Video Record</h1>,
       dataIndex: "videoRecord",
-      key: "videoRecord",
+      key: "uploadvideoRecord",
       align: "center",
       render: (data, record) => {
         const props = {
@@ -349,7 +351,7 @@ const handleFollowUpModalClose = async () => {
         return (
           <div>
            
-              <Upload {...props} customRequest={onUpload} showUploadList={false}>
+              <Upload {...props} customRequest={onUpload} showUploadList={false} accept="video/*" >
                 <Button icon={<UploadOutlined />}>Upload Video</Button>
               </Upload>
             
@@ -428,6 +430,41 @@ const handleFollowUpModalClose = async () => {
       
   ];
 
+
+
+  const columnss = columnsData.filter((column) => {
+    if(role === "sales executive"){
+      return (
+        column.key === "serialNumber" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "addvideoFeatures" ||
+        column.key === "uploadvideoRecord" ||
+        column.key === "status"
+      );
+    }
+    if (role === "admin") {
+      return (
+        column.key === "serialNumber" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "videoFeatures" ||
+        column.key === "videoRecord" ||
+        column.key === "businessStatus" 
+      );
+    }
+  })
+
+
+
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
   };
@@ -441,7 +478,7 @@ const handleFollowUpModalClose = async () => {
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
         <div className="pt-7">
           <Table
-            columns={columnsData}
+            columns={columnss}
             dataSource={data}
             scroll={{ x: 3000 }}
             ref={tableRef}

@@ -26,7 +26,6 @@ import { useSelector } from "react-redux";
 function Connected() {
   const [form] = Form.useForm();
   const token = localStorage.getItem("token");
-  // const role = useSelector((state) => state.user.user.role);
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,8 +43,7 @@ function Connected() {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
 
-  console.log(role);
-  console.log("role");
+
 
   const fetchData = async () => {
     try {
