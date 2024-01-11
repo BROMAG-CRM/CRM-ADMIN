@@ -8,7 +8,7 @@ import {
   Space,
   Tabs,
   notification,
-  Spin
+  Spin,
 } from "antd";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -30,9 +30,8 @@ import {
 import axios from "axios";
 const url = import.meta.env.VITE_REACT_APP_URL;
 import { get } from "lodash";
-import { EnvironmentOutlined } from '@ant-design/icons';
-
-
+import { EnvironmentOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 function UserLeadGeneration() {
   const user = useSelector((state) => state.user.user);
@@ -53,6 +52,7 @@ function UserLeadGeneration() {
     firmOption: "",
   });
   const [tableImages, setTableImages] = useState([]);
+  const [menuImages, setMenuImages] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [twowheelparking, setTwoWheelparking] = useState([]);
   const [fourwheelparking, setFourWheelparking] = useState([]);
@@ -60,11 +60,42 @@ function UserLeadGeneration() {
   const [showTradeMarkInput, setShowTradeMarkInput] = useState("");
   const [showDLDInput, setShowDLDInput] = useState("");
   const [tradeImages, setTradeImages] = useState([]);
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
   const [location, setLocation] = useState(null);
+  const navigate = useNavigate();
+  const [updateButton,setUpdateButton] = useState(false)
+  const [leadId,setLeadId] = useState(null)
+
+  const id = localStorage.getItem("id");
+  console.log(id);
+  console.log(leadId);
+  console.log("dddddd");
 
 
+  // Assuming this code is within the 'createnewlead' route or component
+
+const queryParams = new URLSearchParams(window.location.search);
+
+// Retrieving the values of 'param1' and 'id' from the query string
+const param1 = queryParams.get('param1');
+const urlId = queryParams.get('id');
+
+console.log(param1); // Output: editwholeform
+console.log(urlId);
+console.log("urldata");
+
+
+
+  const normFile = (e, fieldName) => {
+    const fileList = e && e.fileList ? e.fileList : e || [];
+
+    if (Array.isArray(fileList)) {
+      return fileList.map((file) => ({ ...file, fieldName }));
+    }
+
+    return [];
+  };
 
 
   const normFileTable = (e) => {
@@ -75,21 +106,30 @@ function UserLeadGeneration() {
   };
 
 
+  const normFileTrade = (e) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  };
+
+
 
   const customRequest = async ({ file, onSuccess, onError, fieldName }) => {
-
-
     try {
-
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${url}/uploadimage/${fieldName}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       const downloadURL = response.data.fileUrl;
 
@@ -98,8 +138,14 @@ function UserLeadGeneration() {
         message.success(`${fieldName} file uploaded successfully`);
       }
 
+      if(fieldName==='tablePhotos'){
+        setTableImages((prevUrls) => [...prevUrls, downloadURL]);
+      }
+      if(fieldName==='menuPhotos'){
+        setMenuImages((prevUrls) => [...prevUrls, downloadURL]);
+        console.log(menuImages);
+      }
 
-      setTableImages((prevUrls) => [...prevUrls, downloadURL]);
     } catch (error) {
       onError(error);
       message.error(`${file.name} file upload failed.`);
@@ -107,8 +153,6 @@ function UserLeadGeneration() {
     }
   };
 
-  
-  console.log(tableImages, "imahes");
 
   // const handleRemove = async (file) => {
   //   const storageRef = ref(storage, `table-images/${file.name}`);
@@ -124,29 +168,22 @@ function UserLeadGeneration() {
   // };
 
 
-  const handleChangeLead = ({ fileList, file }) => {
-    const urls = fileList.map((file) => file.url).filter(Boolean);
-    const fieldName = file.fieldName;
-    setImageUrls((prevUrls) => ({
-      ...prevUrls,
-      [fieldName]: urls[0],
-    }));
-  };
-
-
 
   const customRequestLead = async ({ file, onSuccess, onError, fieldName }) => {
     try {
-
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${url}/uploadimage/${fieldName}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       const downloadURL = response.data.fileUrl;
 
@@ -171,6 +208,46 @@ function UserLeadGeneration() {
 
 
 
+  const customRequestTrade = async ({
+    file,
+    onSuccess,
+    onError,
+    fieldName,
+  }) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post(
+        `${url}/uploadimage/${fieldName}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const downloadURL = response.data.fileUrl;
+
+      onSuccess();
+      if (response.status === 200) {
+        message.success(`${fieldName} file uploaded successfully`);
+      }
+      setTradeImages((prevUrls) => [...prevUrls, downloadURL]);
+      setFileList((prevList) => [
+        ...prevList,
+        { uid: file.uid, name: file.name, url: downloadURL },
+      ]);
+    } catch (error) {
+      onError(error);
+      message.error(`${file.name} file upload failed.`);
+      console.error("Error uploading file to Firebase:", error);
+    }
+  };
+
+
   // const handleRemoveLead = async ({ file, fieldName }) => {
   //   const storageRef = ref(storage, `lead-images/${fieldName}/${file.name}`);
 
@@ -190,25 +267,12 @@ function UserLeadGeneration() {
 
 
 
-  const normFile = (e, fieldName) => {
-    const fileList = e && e.fileList ? e.fileList : e || [];
-
-    if (Array.isArray(fileList)) {
-      return fileList.map((file) => ({ ...file, fieldName }));
-    }
-
-    return [];
-  };
-
-
-
   const handleButtonClick = async (e) => {
     try {
       setLoading(true);
       const leadFormValues = await leadForm.validateFields();
-  
+
       console.log(firmDetail, "detail");
-  
 
       // if (
       //   firmDetail === "Private limited"
@@ -242,10 +306,10 @@ function UserLeadGeneration() {
       //     adminId: get(user, "adminId", ""),
       //     employeeId: get(user, "userId", "")
       //   };
-  
+
       //   console.log(formData);
       //   console.log("loopppppp");
-  
+
       //   const response = await axios.post(
       //     `${url}/createform`,
       //     formData,
@@ -255,110 +319,111 @@ function UserLeadGeneration() {
       //       },
       //     }
       //   );
-  
+
       //   localStorage.setItem("id", response.data.data);
       //   notification.success({
       //     message: "Lead data submitted successfully",
       //   });
-  
+
       //   leadForm.resetFields();
       //   setImageUrls({});
       //   setLoading(false);
       // }
 
-
       const formData = {
-            brandName: leadFormValues.brandName,
-            firmName: leadFormValues.firmName,
-            firmOption: leadFormValues.firmOption,
-            cinNo: imageUrls?.cinNo,
-            director: imageUrls?.director,
-            fss: imageUrls?.fss,
-            panCard: imageUrls?.panCard,
-            gstCopy: imageUrls?.gstCopy,
-            cancelCheck: imageUrls?.cancelCheck,
-            EmployeeName: get(user, "name", ""),
-            // city: get(user, "city", ""),
-            state: get(user, "state", ""),
-            adminId: get(user, "adminId", ""),
-            employeeId: get(user, "userId", "")
-          };
-    
-          console.log(formData);
-          console.log("loopppppp");
-    
-          const response = await axios.post(
-            `${url}/createform`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-    
-          localStorage.setItem("id", response.data.data);
-          notification.success({
-            message: "Lead data submitted successfully",
-          });
-    
-          leadForm.resetFields();
-          setImageUrls({});
-          setLoading(false);
+        brandName: leadFormValues.brandName,
+        firmName: leadFormValues.firmName,
+        firmOption: leadFormValues.firmOption,
+        cinNo: imageUrls?.cinNo,
+        director: imageUrls?.director,
+        fss: imageUrls?.fss,
+        panCard: imageUrls?.panCard,
+        gstCopy: imageUrls?.gstCopy,
+        cancelCheck: imageUrls?.cancelCheck,
+        EmployeeName: get(user, "name", ""),
+        // city: get(user, "city", ""),
+        state: get(user, "state", ""),
+        adminId: get(user, "adminId", ""),
+        employeeId: get(user, "userId", ""),
+      };
 
+      console.log(formData);
+      console.log("loopppppp");
+
+      if(updateButton){
+        const response = await axios.post(`${url}/resetform/${leadId}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        localStorage.setItem("id", response.data.data);
+        notification.success({
+          message: "Lead data updated successfully",
+        });
+
+        
+        // leadForm.resetFields();
+        setImageUrls({});
+        setLoading(false);
+      }else{
+        const response = await axios.post(`${url}/createform`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        localStorage.setItem("id", response.data.data);
+        setLeadId(response.data.data)
+        notification.success({
+          message: "Lead data submitted successfully",
+        });
+        setUpdateButton(true)
+        // leadForm.resetFields();
+        setImageUrls({});
+        setLoading(false);
+      }
+
+      
 
 
     } catch (error) {
       const errorMessages = {};
-  
+
       if (error.errorFields) {
         error.errorFields.forEach(({ name, errors }) => {
           errorMessages[name[0]] = errors[0];
         });
-  
+
         message.error(
           `give all required fields: ${Object.values(errorMessages).join(", ")}`
         );
       }
-  
+
       setLoading(false);
     }
   };
-  
-
-
-
 
   const handleFinishContact = async (value) => {
     const id = localStorage.getItem("id");
-  
+
     try {
       console.log("kooppppp");
       console.log(value);
-  
-      await axios.put(
-        `${url}/updateform/${id}`,
-        value,  
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
+
+      await axios.put(`${url}/updateform/${id}`, value, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       notification.success({
         message: "Contact details submitted successfully",
       });
-  
+
       contactForm.resetFields();
     } catch (err) {
       console.log(err);
     }
   };
-  
-
-
-
 
   const handleFinishStatus = async (val) => {
     const id = localStorage.getItem("id");
@@ -375,24 +440,20 @@ function UserLeadGeneration() {
         tradeMark: val.tradeMark,
         tradePhotos: tradeImages,
       };
-  
+
       console.log("goooppp");
       console.log(formData);
-  
-      await axios.put(
-        `${url}/updateform/${id}`,
-        formData,  
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
+
+      await axios.put(`${url}/updateform/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       notification.success({
         message: "Status submitted successfully",
       });
-  
+
       statusForm.resetFields();
       setTradeImages([]);
       setLoading(false);
@@ -401,17 +462,19 @@ function UserLeadGeneration() {
       setLoading(false);
     }
   };
-  
-
-
 
   const handleFinishRestaurant = async (values) => {
+
+    setLoading(true);
+
+
     const id = localStorage.getItem("id");
     console.log(values, id, tableImages, "erkjwhekjj");
     try {
       const formData = {
         tableCount: values.tableCount,
         tablePhotos: tableImages,
+        menuPhotos: menuImages,
         billingSoftware: values.billingSoftware,
         onlineAggregator: values.onlineAggregater,
         onlineAggregatersList: values.onlineAggregatersList,
@@ -420,73 +483,37 @@ function UserLeadGeneration() {
         twoWheelerSlot: values.twoWheelerSlot,
         fourWheelerSlot: values.fourWheelerSlot,
       };
-  
+
       console.log("soooopp");
       console.log(formData);
-  
-      await axios.put(
-        `${url}/updateform/${id}`,
-        formData,  
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
+
+      await axios.put(`${url}/updateform/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       notification.success({
         message: "Restaurant data submitted successfully",
       });
-  
+
       restaurantForm.resetFields();
       setTableImages([]);
     } catch (err) {
       console.log(err);
     }
   };
-  
 
 
-  const normFileTrade = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
+  const handleChangeLead = ({ fileList, file }) => {
+    const urls = fileList.map((file) => file.url).filter(Boolean);
+    const fieldName = file.fieldName;
+    setImageUrls((prevUrls) => ({
+      ...prevUrls,
+      [fieldName]: urls[0],
+    }));
   };
 
-  const customRequestTrade = async ({ file, onSuccess, onError, fieldName }) => {
-   
-
-    try {
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-
-      const response = await axios.post(`${url}/uploadimage/${fieldName}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      const downloadURL = response.data.fileUrl;
-
-      onSuccess();
-      if (response.status === 200) {
-        message.success(`${fieldName} file uploaded successfully`);
-      }
-      setTradeImages((prevUrls) => [...prevUrls, downloadURL]);
-      setFileList((prevList) => [
-        ...prevList,
-        { uid: file.uid, name: file.name, url: downloadURL },
-      ]);
-    } catch (error) {
-      onError(error);
-      message.error(`${file.name} file upload failed.`);
-      console.error("Error uploading file to Firebase:", error);
-    }
-  };
 
 
   const getLocationName = async (latitude, longitude) => {
@@ -494,18 +521,16 @@ function UserLeadGeneration() {
       const response = await axios.get(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
       );
-  
+
       const data = response.data;
       const locationName = data.display_name;
       return locationName;
     } catch (error) {
-      console.error('Error getting location name:', error.message);
+      console.error("Error getting location name:", error.message);
       return null;
     }
   };
 
-
-  
   const handleFinishLocation = async (val) => {
     try {
       console.log("0");
@@ -519,35 +544,31 @@ function UserLeadGeneration() {
             const locationName = await getLocationName(latitude, longitude);
             console.log("1.7");
             setLocation({ latitude, longitude, locationName });
-              if (location) {
+            if (location) {
               console.log("2");
               const id = localStorage.getItem("id");
               const formData = {
                 address: val,
-                location:location
+                location: location,
               };
               console.log("3");
               console.log(formData);
-  
-              await axios.put(
-                `${url}/updateform/${id}`,
-                formData,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
+
+              await axios.put(`${url}/updateform/${id}`, formData, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
               console.log("4");
               notification.success({
                 message: "Location data submitted successfully",
               });
-  
+
               locationForm.resetFields();
             }
           },
           (error) => {
-            console.error('Error getting location:', error.message);
+            console.error("Error getting location:", error.message);
           }
         );
       }
@@ -555,8 +576,6 @@ function UserLeadGeneration() {
       console.log(err);
     }
   };
-  
-  
 
   // const onRemoveTrade = async (file) => {
   //   const storageRef = ref(storage, `trade-images/${file.name}`);
@@ -583,7 +602,7 @@ function UserLeadGeneration() {
           {/* <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1> */}
           <Form
             layout="vertical"
-            className="pt-5 xsm:!w-[100vw] md:w-[65vw] lg:w-[50vw]"
+            className="mt-5 xsm:!w-[100vw] md:w-[65vw] lg:w-[50vw]"
             form={leadForm}
           >
             <Form.Item
@@ -639,8 +658,12 @@ function UserLeadGeneration() {
                 allowClear={true}
               >
                 <Select.Option value={"Partnership"}>Partnership</Select.Option>
-                <Select.Option value={"Proprietorship"}>Proprietorship</Select.Option>
-                <Select.Option value={"Private limited"}>Private limited </Select.Option>
+                <Select.Option value={"Proprietorship"}>
+                  Proprietorship
+                </Select.Option>
+                <Select.Option value={"Private limited"}>
+                  Private limited{" "}
+                </Select.Option>
               </Select>
             </Form.Item>
             <div
@@ -949,7 +972,7 @@ function UserLeadGeneration() {
                 onClick={handleButtonClick}
                 className="bg-green-500 w-[100px] !text-white font-semibol"
               >
-                Submit
+               {updateButton?'Update':'Submit'}
               </Button>
             </Form.Item>
           </Form>
@@ -958,21 +981,19 @@ function UserLeadGeneration() {
     },
     {
       key: "2",
-      label: <div className="font-extrabold text-lg ">Restaurant Details</div>, 
+      label: <div className="font-extrabold text-lg ">Restaurant Details</div>,
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
           {/* <h1 className="text-2xl text-center hidden md:block">Restaurant Details</h1> */}
           <Form
             layout="vertical"
             name="dynamic_form_nest_item"
-            className="pt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
+            className="mt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
             onFinish={handleFinishRestaurant}
             form={restaurantForm}
           >
             <p className="pb-2 md:pl-16">Add Table Counts</p>
-            <Form.List
-              name="tableCount"
-            >
+            <Form.List name="tableCount">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
@@ -1071,14 +1092,53 @@ function UserLeadGeneration() {
                 }}
                 multiple={true}
                 customRequest={({ file, onSuccess, onError }) =>
-                customRequest({
-                  file,
-                  onSuccess,
-                  onError,
-                  fieldName: "tablePhotos",
-                })
-              }                
-              // onRemove={(file) => handleRemove(file)}
+                  customRequest({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "tablePhotos",
+                  })
+                }
+                // onRemove={(file) => handleRemove(file)}
+              >
+                {fileList.length >= 5 ? null : (
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                )}
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              name={"menuPhotos"}
+              label={<p>Menu</p>}
+              valuePropName="fileList"
+              getValueFromEvent={normFileTable}
+              rules={[
+                {
+                  required: true,
+                  message: "Menu photos is required",
+                },
+              ]}
+            >
+              <Upload
+                name="logo"
+                listType="picture-card"
+                className="avatar-uploader"
+                fileList={fileList}
+                showUploadList={{
+                  showRemoveIcon: true,
+                }}
+                multiple={true}
+                customRequest={({ file, onSuccess, onError }) =>
+                  customRequest({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "menuPhotos",
+                  })
+                }
+                // onRemove={(file) => handleRemove(file)}
               >
                 {fileList.length >= 5 ? null : (
                   <div>
@@ -1266,13 +1326,13 @@ function UserLeadGeneration() {
     },
     {
       key: "3",
-      label: <div className="font-extrabold text-lg ">Contact Details</div> ,
+      label: <div className="font-extrabold text-lg ">Contact Details</div>,
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
           {/* <h1 className="text-2xl text-center hidden md:block">Contact Details</h1> */}
           <Form
             layout="vertical"
-            className="pt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
+            className="mt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
             onFinish={handleFinishContact}
             form={contactForm}
           >
@@ -1282,8 +1342,8 @@ function UserLeadGeneration() {
                 rules={[
                   {
                     required: true,
-                   message: "Restaurant number is required",
-                  }, 
+                    message: "Restaurant number is required",
+                  },
                   () => ({
                     validator(_, value) {
                       if (!value) {
@@ -1347,7 +1407,9 @@ function UserLeadGeneration() {
                       );
                     }
                     if (value.length > 10) {
-                      return Promise.reject("Mobile number can't be more than 5 digits");
+                      return Promise.reject(
+                        "Mobile number can't be more than 5 digits"
+                      );
                     }
                     return Promise.resolve();
                   },
@@ -1373,9 +1435,7 @@ function UserLeadGeneration() {
             <Form.Item
               name="designation"
               label={<p>Designation</p>}
-              rules={[
-                { required: true, message: "Designation is required" },
-              ]}
+              rules={[{ required: true, message: "Designation is required" }]}
             >
               <Input
                 type="text"
@@ -1397,13 +1457,13 @@ function UserLeadGeneration() {
     },
     {
       key: "4",
-      label: <div className="font-extrabold text-lg ">Status</div> ,
+      label: <div className="font-extrabold text-lg ">Status</div>,
       children: (
-        <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
+        <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
           {/* <h1 className="text-center text-2xl hidden md:block">Status</h1> */}
           <Form
             layout="vertical"
-            className="pt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
+            className=" xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
             onFinish={handleFinishStatus}
             form={statusForm}
           >
@@ -1483,13 +1543,13 @@ function UserLeadGeneration() {
                 }}
                 multiple={true}
                 customRequest={({ file, onSuccess, onError }) =>
-                customRequestTrade({
-                  file,
-                  onSuccess,
-                  onError,
-                  fieldName: "tradeMarkPhotos",
-                })
-              }
+                  customRequestTrade({
+                    file,
+                    onSuccess,
+                    onError,
+                    fieldName: "tradeMarkPhotos",
+                  })
+                }
                 // onRemove={(file) => onRemoveTrade(file)}
               >
                 {fileList.length >= 5 ? null : (
@@ -1594,11 +1654,11 @@ function UserLeadGeneration() {
       key: "5",
       label: <div className="font-extrabold text-lg ">Location</div>,
       children: (
-        <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
+        <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
           {/* <h1 className="text-center text-2xl hidden md:block">Location</h1> */}
           <Form
             layout="vertical"
-            className="pt-5 xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
+            className=" xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
             form={locationForm}
             onFinish={handleFinishLocation}
           >
@@ -1645,13 +1705,13 @@ function UserLeadGeneration() {
             >
               <Input type="text" placeholder="State..." size="large" />
             </Form.Item>
-            <Form.Item className="flex items-start justify-start">
-           </Form.Item>
+            <Form.Item className="flex items-start justify-start"></Form.Item>
             <Form.Item className="flex items-end justify-end">
-            <Button
+              <Button
                 htmlType="submit"
                 className="bg-green-500 w-[170px] !text-white font-semibol"
-              >Submit
+              >
+                Submit
               </Button>
             </Form.Item>
           </Form>
@@ -1661,17 +1721,28 @@ function UserLeadGeneration() {
   ];
 
   return (
-    <div className="lg:w-[100vw]">
-      <div className="lg:flex lg:items-center lg:justify-center bg-white pl-2 shadow-2xl rounded-lg lg:!w-[100vw] ">
-        <Spin spinning={loading}>
-        <Tabs
-          defaultActiveKey="1"
-          items={items}
-          className="mt-[17vh] md:mt-[20vh]"
-        />
-        </Spin>
+    <>
+      <div>
+          {" "}
+          <Button
+            className="text-white bg-black ml-5 mt-20"
+            onClick={() => navigate(-1)}
+          >
+            Go Back
+          </Button>
+        </div>{" "}
+      <div className="lg:w-[100vw]">
+        <div className="lg:flex lg:items-center lg:justify-center bg-white shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
+          <Spin spinning={loading}>
+            <Tabs
+              defaultActiveKey="1"
+              items={items}
+              className="mt-[3vh] md:mt-[3vh]"
+            />
+          </Spin>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

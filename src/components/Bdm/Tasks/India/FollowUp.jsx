@@ -7,6 +7,8 @@ import FollowUpModal from "../../../Modals/FollowUpModal";
 import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
 import { UploadOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import ImageModal from "../../../Modals/ImageModal";
 const { Option } = Select;
 
 
@@ -31,6 +33,12 @@ function FollowUp() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [location, setLocation] = useState(null);
+  let role = useSelector((state) => state?.user?.user?.role);
+  const [isImageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
+
+
 
 
 const fetchData = async () => {
@@ -315,10 +323,10 @@ const handleAddFeature = async() => {
     {
       title: <h1>Add Features</h1>,
       dataIndex: "bdmFeatures",
-      key: "bdmFeatures",
+      key: "addbdmFeatures",
       align: "center",
       render: (data, record) => (
-        <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
+        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleButtonClick(record)}>
           Add
         </Button>
       ),
@@ -349,9 +357,9 @@ const handleAddFeature = async() => {
       },
     },
     {
-      title: <h1>Upload Selfi Image</h1>,
-      dataIndex: "photo",
-      key: "photo",
+      title: <h1>Upload Selfie Image</h1>,
+      dataIndex: "bdmSelfie",
+      key: "uploadbdmselfie",
       align: "center",
       render: (data, record) => {
         const props = {
@@ -422,9 +430,41 @@ const handleAddFeature = async() => {
       },
     },
     {
+      title: <h1>Selfie Image</h1>,
+      dataIndex: "bdmSelfie",
+      key: "bdmSelfie",
+      align: "center",
+      render: (data) => {
+        if (!data) {
+          console.error("Invalid or empty data:", data);
+          return null;
+        }
+        const handleViewImage = (imageUrl) => {
+          console.log(imageUrl);
+          console.log("View Image");
+      
+          setSelectedImage(imageUrl);
+          setImageModalOpen(true);
+        };
+      
+        const handleCloseImageModal = () => {
+          setImageModalOpen(false);
+          setSelectedImage(null);
+        };
+      
+        return (
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewImage(data)}>View Image</Button>
+            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+          </div>
+        );
+
+      },
+    },
+    {
       title: <h1>Fetch Current Location</h1>,
       dataIndex: "locationBdm",
-      key: "locationBdm",
+      key: "fetchlocationBdm",
       align: "center",
       render: (data, record) => (
         <Button
@@ -479,6 +519,49 @@ const handleAddFeature = async() => {
   ];
 
 
+
+  const columnss = columnsData.filter((column) => {
+    if(role === "bdm executive"){
+      return (
+        column.key === "serialNumber" ||
+        column.key === "followupDate" ||
+        column.key === "followupTime" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "addbdmFeatures" ||
+        column.key === "uploadbdmselfie" ||
+        column.key === "leadStatus" ||
+        column.key === "fetchlocationBdm" ||
+        column.key === "locationBdm" 
+
+      );
+    }
+    if (role === "admin") {
+      return (
+        column.key === "serialNumber" ||
+        column.key === "followupDate" ||
+        column.key === "followupTime" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "bdmFeatures" ||
+        column.key === "bdmSelfie" ||
+        column.key === "locationBdm" 
+
+      );
+    }
+  })
+
+
+
+
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
   };
@@ -492,7 +575,7 @@ const handleAddFeature = async() => {
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
         <div className="pt-7">
           <Table
-            columns={columnsData}
+            columns={columnss}
             dataSource={data}
             scroll={{ x: 2500 }}
             ref={tableRef}

@@ -10,6 +10,7 @@ import Dashboard from "./components/Others/Dashboard"
 import UsersList from "./components/Others/UsersList"
 import Admin from "./components/Others/Admin";
 import UserLeadGeneration from "./components/LeadGenerationForm/UserLeadGeneration";
+import LeadFormNew from "./components/LeadGenerationForm/LeadFormNew";
 // import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Others/Loader";
 
@@ -152,6 +153,7 @@ const router=createBrowserRouter(
     <>
     <Route path="/" element={<RootLayout/>}>
       <Route index path="/" element={<DashboardOrUserLeadGeneration/>}/>
+      <Route index path="/createnewlead" element={<UserLeadGeneration/>}/>
       <Route  path="admin" element={<Admin />}/>
       <Route  path="leadgeneration" element={<LeaadGenerationNew/>}/>
       <Route  path="accountsmanagement" element={<AccountsManagement/>}/>
@@ -282,7 +284,7 @@ function DashboardOrUserLeadGeneration() {
   }
 
   console.log('Regular user logged in');
-  return <UserLeadGeneration />;
+  return <LeadFormNew />;
 }
 
 
