@@ -81,6 +81,7 @@ function Connected() {
       return null;
     }
   };
+  
 
   const locationAutoFetch = async () => {
     try {

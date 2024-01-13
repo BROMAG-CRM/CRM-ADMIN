@@ -24,7 +24,7 @@ function LeadFormNew() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/getform/Partnership`, {
+      const response = await axios.get(`${url}/getformforemployee`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -89,7 +89,7 @@ function LeadFormNew() {
   //edit function
   const handleEdit = (id) => {
     // const userData = data.filter((data)=>data._id === id)
-    const url = `/createnewlead?param1=editwholeform&id=${encodeURIComponent(id)}`;
+    const url = `/editleadform?param1=editwholeform&id=${encodeURIComponent(id)}`;
 
     // Navigating to the new URL
     navigate(url)

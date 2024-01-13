@@ -10,7 +10,7 @@ import {
   notification,
   Spin,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   MinusCircleOutlined,
@@ -65,6 +65,10 @@ function UserLeadGeneration() {
   const [location, setLocation] = useState(null);
   const navigate = useNavigate();
   const [updateButton,setUpdateButton] = useState(false)
+  const [restaurantUpdateButton,setRestaurantUpdateButton] = useState(false)
+  const [contactUpdateButton,setContactUpdateButton] = useState(false)
+  const [statusUpdateButton,setStatusUpdateButton] = useState(false)
+  const [locationUpdateButton,setLocationUpdateButton] = useState(false)
   const [leadId,setLeadId] = useState(null)
 
   const id = localStorage.getItem("id");
@@ -73,17 +77,7 @@ function UserLeadGeneration() {
   console.log("dddddd");
 
 
-  // Assuming this code is within the 'createnewlead' route or component
 
-const queryParams = new URLSearchParams(window.location.search);
-
-// Retrieving the values of 'param1' and 'id' from the query string
-const param1 = queryParams.get('param1');
-const urlId = queryParams.get('id');
-
-console.log(param1); // Output: editwholeform
-console.log(urlId);
-console.log("urldata");
 
 
 
@@ -269,6 +263,7 @@ console.log("urldata");
 
   const handleButtonClick = async (e) => {
     try {
+
       setLoading(true);
       const leadFormValues = await leadForm.validateFields();
 
@@ -341,7 +336,6 @@ console.log("urldata");
         gstCopy: imageUrls?.gstCopy,
         cancelCheck: imageUrls?.cancelCheck,
         EmployeeName: get(user, "name", ""),
-        // city: get(user, "city", ""),
         state: get(user, "state", ""),
         adminId: get(user, "adminId", ""),
         employeeId: get(user, "userId", ""),
@@ -351,12 +345,12 @@ console.log("urldata");
       console.log("loopppppp");
 
       if(updateButton){
-        const response = await axios.post(`${url}/resetform/${leadId}`, formData, {
+        await axios.post(`${url}/resetform/${leadId}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        localStorage.setItem("id", response.data.data);
+        // localStorage.setItem("id", response.data.data);
         notification.success({
           message: "Lead data updated successfully",
         });
@@ -365,6 +359,7 @@ console.log("urldata");
         // leadForm.resetFields();
         setImageUrls({});
         setLoading(false);
+
       }else{
         const response = await axios.post(`${url}/createform`, formData, {
           headers: {
@@ -402,74 +397,15 @@ console.log("urldata");
     }
   };
 
-  const handleFinishContact = async (value) => {
-    const id = localStorage.getItem("id");
 
-    try {
-      console.log("kooppppp");
-      console.log(value);
-
-      await axios.put(`${url}/updateform/${id}`, value, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      notification.success({
-        message: "Contact details submitted successfully",
-      });
-
-      contactForm.resetFields();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleFinishStatus = async (val) => {
-    const id = localStorage.getItem("id");
-    setLoading(true);
-    try {
-      const formData = {
-        dld: val.dld,
-        dldEmail: val.dldEmail,
-        dldPassword: val.dldPassword,
-        domain: val.domain,
-        domainName: val.domainName,
-        entityNo: val.entityno,
-        status: val.status,
-        tradeMark: val.tradeMark,
-        tradePhotos: tradeImages,
-      };
-
-      console.log("goooppp");
-      console.log(formData);
-
-      await axios.put(`${url}/updateform/${id}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      notification.success({
-        message: "Status submitted successfully",
-      });
-
-      statusForm.resetFields();
-      setTradeImages([]);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
 
   const handleFinishRestaurant = async (values) => {
 
-    setLoading(true);
-
+    // setLoading(true);
 
     const id = localStorage.getItem("id");
     console.log(values, id, tableImages, "erkjwhekjj");
+
     try {
       const formData = {
         tableCount: values.tableCount,
@@ -487,22 +423,143 @@ console.log("urldata");
       console.log("soooopp");
       console.log(formData);
 
-      await axios.put(`${url}/updateform/${id}`, formData, {
+      if(restaurantUpdateButton){
+        await axios.post(`${url}/resetform/${leadId}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        notification.success({
+          message: "Restaurant data updated successfully",
+        });
+  
+        restaurantForm.resetFields();
+        setTableImages([]);
+        setMenuImages([])
+      }else{
+        await axios.put(`${url}/updateform/${id}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        notification.success({
+          message: "Restaurant data submitted successfully",
+        });
+        setRestaurantUpdateButton(true)
+        // restaurantForm.resetFields();
+        setTableImages([]);
+        setMenuImages([])
+      }
+
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+
+  const handleFinishContact = async (value) => {
+    const id = localStorage.getItem("id");
+
+    try {
+      console.log("kooppppp");
+      console.log(value);
+
+    if(contactUpdateButton){
+
+      await axios.post(`${url}/resetform/${leadId}`, value, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       notification.success({
-        message: "Restaurant data submitted successfully",
+        message: "Contact details updated successfully",
       });
 
-      restaurantForm.resetFields();
-      setTableImages([]);
+      // contactForm.resetFields();
+    }else{
+      
+      await axios.put(`${url}/updateform/${leadId}`, value, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      notification.success({
+        message: "Contact details submitted successfully",
+      });
+      setContactUpdateButton(true)
+      // contactForm.resetFields();
+    }
+
     } catch (err) {
       console.log(err);
     }
   };
+
+
+
+  const handleFinishStatus = async (val) => {
+    const id = localStorage.getItem("id");
+    // setLoading(true);
+    try {
+      const formData = {
+        dld: val.dld,
+        dldEmail: val.dldEmail,
+        dldPassword: val.dldPassword,
+        domain: val.domain,
+        domainName: val.domainName,
+        entityNo: val.entityno,
+        status: val.status,
+        tradeMark: val.tradeMark,
+        tradePhotos: tradeImages,
+      };
+
+      console.log("goooppp");
+      console.log(formData);
+
+      if(statusUpdateButton){
+        await axios.post(`${url}/resetform/${leadId}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        notification.success({
+          message: "Status updated successfully",
+        });
+  
+        // statusForm.resetFields();
+        setTradeImages([]);
+        setLoading(false);
+      }else{
+        await axios.put(`${url}/updateform/${id}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        notification.success({
+          message: "Status submitted successfully",
+        });
+  
+        // statusForm.resetFields();
+        setStatusUpdateButton(true)
+        setTradeImages([]);
+        setLoading(false);
+      }
+
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
+  };
+
+
 
 
   const handleChangeLead = ({ fileList, file }) => {
@@ -531,47 +588,63 @@ console.log("urldata");
     }
   };
 
+
+
+
+  const locationAutoFetch = async () => {
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => resolve(position),
+          (error) => reject(error)
+        );
+      });
+
+      const { latitude, longitude } = position.coords;
+      const locationName = await getLocationName(latitude, longitude);
+      setLocation({ latitude, longitude, locationName });
+
+
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
+
+
+
   const handleFinishLocation = async (val) => {
     try {
-      console.log("0");
-
-      if (navigator.geolocation) {
-        console.log("1");
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            console.log("1.5");
-            const { latitude, longitude } = position.coords;
-            const locationName = await getLocationName(latitude, longitude);
-            console.log("1.7");
-            setLocation({ latitude, longitude, locationName });
-            if (location) {
-              console.log("2");
               const id = localStorage.getItem("id");
               const formData = {
                 address: val,
                 location: location,
               };
-              console.log("3");
-              console.log(formData);
 
-              await axios.put(`${url}/updateform/${id}`, formData, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              console.log("4");
-              notification.success({
-                message: "Location data submitted successfully",
-              });
+              if(locationUpdateButton){
+                await axios.post(`${url}/resetform/${id}`, formData, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                });
+                notification.success({
+                  message: "Location data updated successfully",
+                });
+  
+                // locationForm.resetFields();
+              }else{
+                await axios.put(`${url}/updateform/${id}`, formData, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                });
+                notification.success({
+                  message: "Location data submitted successfully",
+                });
+                setLocationUpdateButton(true)
+                // locationForm.resetFields();
+              }
 
-              locationForm.resetFields();
-            }
-          },
-          (error) => {
-            console.error("Error getting location:", error.message);
-          }
-        );
-      }
+
     } catch (err) {
       console.log(err);
     }
@@ -593,6 +666,10 @@ console.log("urldata");
   //   }
   // };
 
+
+
+
+
   const items = [
     {
       key: "1",
@@ -604,7 +681,7 @@ console.log("urldata");
             layout="vertical"
             className="mt-5 xsm:!w-[100vw] md:w-[65vw] lg:w-[50vw]"
             form={leadForm}
-          >
+            >
             <Form.Item
               name="brandName"
               label={<p>Brand Name</p>}
@@ -968,14 +1045,14 @@ console.log("urldata");
             </div>
             <Form.Item className="flex items-end justify-end">
               <Button
-                type="primary"
+                // type="primary"
                 onClick={handleButtonClick}
                 className="bg-green-500 w-[100px] !text-white font-semibol"
               >
                {updateButton?'Update':'Submit'}
               </Button>
             </Form.Item>
-          </Form>
+          </Form> 
         </div>
       ),
     },
@@ -1317,7 +1394,7 @@ console.log("urldata");
                 htmlType="submit"
                 className="bg-green-500 w-[100px] !text-white font-semibol"
               >
-                Submit
+               {restaurantUpdateButton?'Update':'Submit'}
               </Button>
             </Form.Item>
           </Form>
@@ -1384,6 +1461,54 @@ console.log("urldata");
                 <Input type="email" size="large" placeholder="Enter email..." />
               </Form.Item>
             </Form.Item>
+
+
+            <p className="pb-2 ">Add Social Media links</p>
+            <Form.List name="socialMedia">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <Space
+                      key={key}
+                      className="!mb-8 flex flex-col md:flex-row items-center "
+                      align="baseline"
+                    >
+                      <Form.Item
+                        {...restField}
+                        name={[name, "socialMedia"]}
+                        // rules={[
+                        //   {
+                        //     required: true,
+                        //     message: "Table count is required",
+                        //   },
+                        // ]}
+                        label={<p>Social Media Link</p>}
+                        className="w-[100%] lg:w-[20vw]"
+                      >
+                        <Input
+                          placeholder={`Link count ${name + 1}...`}
+                          size="large"
+                        />
+                      </Form.Item>
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add More
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+
+
+
             <Form.Item
               name="contactPersonNumber"
               rules={[
@@ -1448,7 +1573,7 @@ console.log("urldata");
                 htmlType="submit"
                 className="bg-green-500 w-[100px] !text-white font-semibol"
               >
-                Submit
+               {contactUpdateButton?'Update':'Submit'}
               </Button>
             </Form.Item>
           </Form>
@@ -1643,7 +1768,7 @@ console.log("urldata");
                 htmlType="submit"
                 className="bg-green-500 w-[100px] !text-white font-semibol"
               >
-                Submit
+               {statusUpdateButton?'Update':'Submit'}
               </Button>
             </Form.Item>
           </Form>
@@ -1705,13 +1830,28 @@ console.log("urldata");
             >
               <Input type="text" placeholder="State..." size="large" />
             </Form.Item>
-            <Form.Item className="flex items-start justify-start"></Form.Item>
+            <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <h1>{location?.locationName}</h1>
+            </Form.Item>
             <Form.Item className="flex items-end justify-end">
               <Button
                 htmlType="submit"
                 className="bg-green-500 w-[170px] !text-white font-semibol"
               >
-                Submit
+               {locationUpdateButton?'Update':'Submit'}
               </Button>
             </Form.Item>
           </Form>

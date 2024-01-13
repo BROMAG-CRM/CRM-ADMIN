@@ -80,6 +80,7 @@ const ImageModal = ({ isOpen, onClose, imageUrl }) => {
               <Button onClick={() => downloadImage(image)} style={{ marginTop: '10px' }}>
                 Download
               </Button>
+              
             </div>
           ))
         ) : (

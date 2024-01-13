@@ -11,6 +11,7 @@ import UsersList from "./components/Others/UsersList"
 import Admin from "./components/Others/Admin";
 import UserLeadGeneration from "./components/LeadGenerationForm/UserLeadGeneration";
 import LeadFormNew from "./components/LeadGenerationForm/LeadFormNew";
+import EditLeadForm from "./components/LeadGenerationForm/EditLeadForm";
 // import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Others/Loader";
 
@@ -154,6 +155,7 @@ const router=createBrowserRouter(
     <Route path="/" element={<RootLayout/>}>
       <Route index path="/" element={<DashboardOrUserLeadGeneration/>}/>
       <Route index path="/createnewlead" element={<UserLeadGeneration/>}/>
+      <Route index path="/editleadform" element={<EditLeadForm/>}/>
       <Route  path="admin" element={<Admin />}/>
       <Route  path="leadgeneration" element={<LeaadGenerationNew/>}/>
       <Route  path="accountsmanagement" element={<AccountsManagement/>}/>
