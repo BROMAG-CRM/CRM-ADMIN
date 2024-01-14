@@ -1536,7 +1536,7 @@ import {
                 </Form.Item>
                 <Form.Item
                   name="email"
-                  rules={[{ required: true, message: "Email is required" }]}
+                  // rules={[{ required: true, message: "Email is required" }]}
                   label={<p>Email</p>}
                   initialValue={data?.email}
                 >
