@@ -1455,7 +1455,7 @@ function UserLeadGeneration() {
               </Form.Item>
               <Form.Item
                 name="email"
-                rules={[{ required: true, message: "Email is required" }]}
+                // rules={[{ required: true, message: "Email is required" }]}
                 label={<p>Email</p>}
               >
                 <Input type="email" size="large" placeholder="Enter email..." />
