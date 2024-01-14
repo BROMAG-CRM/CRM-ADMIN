@@ -1069,14 +1069,14 @@ function UserLeadGeneration() {
             onFinish={handleFinishRestaurant}
             form={restaurantForm}
           >
-            <p className="pb-2 md:pl-16">Add Table Counts</p>
+            <p className="pb-2">Add Table Counts</p>
             <Form.List name="tableCount">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
                     <Space
                       key={key}
-                      className="!mb-8 flex flex-col md:flex-row items-center justify-center"
+                      className="flex flex-col md:flex-row items-center justify-center"
                       align="baseline"
                     >
                       <Form.Item
@@ -1453,62 +1453,7 @@ function UserLeadGeneration() {
                   placeholder="Enter mobile no..."
                 />
               </Form.Item>
-              <Form.Item
-                name="email"
-                // rules={[{ required: true, message: "Email is required" }]}
-                label={<p>Email</p>}
-              >
-                <Input type="email" size="large" placeholder="Enter email..." />
-              </Form.Item>
-            </Form.Item>
-
-
-            <p className="pb-2 ">Add Social Media links</p>
-            <Form.List name="socialMedia">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map(({ key, name, ...restField }) => (
-                    <Space
-                      key={key}
-                      className="!mb-8 flex flex-col md:flex-row items-center "
-                      align="baseline"
-                    >
-                      <Form.Item
-                        {...restField}
-                        name={[name, "socialMedia"]}
-                        // rules={[
-                        //   {
-                        //     required: true,
-                        //     message: "Table count is required",
-                        //   },
-                        // ]}
-                        label={<p>Social Media Link</p>}
-                        className="w-[100%] lg:w-[20vw]"
-                      >
-                        <Input
-                          placeholder={`Link count ${name + 1}...`}
-                          size="large"
-                        />
-                      </Form.Item>
-                      <MinusCircleOutlined onClick={() => remove(name)} />
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => add()}
-                      block
-                      icon={<PlusOutlined />}
-                    >
-                      Add More
-                    </Button>
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
-
-
-
+             
             <Form.Item
               name="contactPersonNumber"
               rules={[
@@ -1548,6 +1493,7 @@ function UserLeadGeneration() {
                 placeholder="Enter mobile no..."
               />
             </Form.Item>
+
             <Form.Item
               name="contactPersonname"
               label={<p>Contact Person Name</p>}
@@ -1557,6 +1503,7 @@ function UserLeadGeneration() {
             >
               <Input type="text" size="large" placeholder="Enter name..." />
             </Form.Item>
+            
             <Form.Item
               name="designation"
               label={<p>Designation</p>}
@@ -1567,7 +1514,62 @@ function UserLeadGeneration() {
                 size="large"
                 placeholder="Enter designation..."
               />
+              </Form.Item>
+
+               <Form.Item
+                name="email"
+                // rules={[{ required: true, message: "Email is required" }]}
+                label={<p>Email</p>}
+              >
+                <Input type="email" size="large" placeholder="Enter email..." />
             </Form.Item>
+            
+            </Form.Item>
+            <p className="pb-2 ">Add Social Media links</p>
+            <Form.List name="socialMedia">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <Space
+                      key={key}
+                      className="flex flex-col md:flex-row items-center "
+                      align="baseline"
+                    >
+                      
+                      <Form.Item
+                        {...restField}
+                        name={[name, "socialMedia"]}
+                        // rules={[
+                        //   {
+                        //     required: true,
+                        //     message: "Table count is required",
+                        //   },
+                        // ]}
+                        label={<p>Social Media Link</p>}
+                        className="w-[100%] lg:w-[20vw]"
+                      >
+                        <Input
+                          placeholder={`Link count ${name + 1}...`}
+                          size="large"
+                        />
+                      </Form.Item>
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add More
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+
             <Form.Item className="flex items-end justify-end">
               <Button
                 htmlType="submit"
@@ -1576,6 +1578,8 @@ function UserLeadGeneration() {
                {contactUpdateButton?'Update':'Submit'}
               </Button>
             </Form.Item>
+
+            
           </Form>
         </div>
       ),
