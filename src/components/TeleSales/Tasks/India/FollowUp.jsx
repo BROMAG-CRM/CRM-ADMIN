@@ -8,6 +8,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
 import VideoRecordsModal from "../../../Modals/VideoRecordsModal";
+import { useSelector } from "react-redux";
 const { Option } = Select;
 
 
@@ -32,7 +33,10 @@ function FollowUp() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [isVideoRecordsModalOpen,setVideoRecordsModalOpen] = useState(false)
-  const [selectedVideoRecords,setSelectedVideoRecords] = useState([])  
+  const [selectedVideoRecords,setSelectedVideoRecords] = useState([]) 
+  let role = useSelector((state) => state?.user?.user?.role);
+
+  
 
 const fetchData = async () => {
     try {
@@ -247,7 +251,7 @@ const handleAddFeature = async() => {
     {
       title: <h1>Add Features</h1>,
       dataIndex: "videoFeatures",
-      key: "videoFeatures",
+      key: "addvideoFeatures",
       align: "center",
       render: (data, record) => (
         <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
@@ -283,7 +287,7 @@ const handleAddFeature = async() => {
     {
       title: <h1>Upload Video Record</h1>,
       dataIndex: "videoRecord",
-      key: "videoRecord",
+      key: "uploadvideoRecord",
       align: "center",
       render: (data, record) => {
         const props = {
@@ -344,7 +348,7 @@ const handleAddFeature = async() => {
         return (
           <div>
            
-              <Upload {...props} customRequest={onUpload} showUploadList={false}>
+              <Upload {...props} customRequest={onUpload} showUploadList={false} accept='video/*'>
                 <Button icon={<UploadOutlined />}>Upload Video</Button>
               </Upload>
             
@@ -410,6 +414,43 @@ const handleAddFeature = async() => {
   ];
 
 
+
+  const columnss = columnsData.filter((column) => {
+    if(role === "sales executive"){
+      return (
+        column.key === "serialNumber" ||
+        column.key === "followupDate" ||
+        column.key === "followupTime" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "addvideoFeatures" ||
+        column.key === "uploadvideoRecord" ||
+        column.key === "leadStatus"
+      );
+    }
+    if (role === "admin") {
+      return (
+        column.key === "serialNumber" ||
+        column.key === "followupDate" ||
+        column.key === "followupTime" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "videoFeatures" ||
+        column.key === "videoRecord" 
+      );
+    }
+  })  
+
+
+
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
   };
@@ -423,7 +464,7 @@ const handleAddFeature = async() => {
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
         <div className="pt-7">
           <Table
-            columns={columnsData}
+            columns={columnss}
             dataSource={data}
             scroll={{ x: 2500 }}
             ref={tableRef}

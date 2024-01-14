@@ -8,6 +8,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
 import CallRecordModal from "../../../Modals/CallRecordModal";
+import { useSelector } from "react-redux";
 const { Option } = Select;
 
 
@@ -33,6 +34,7 @@ function FollowUp() {
   const [isModalOpen,setModalOpen] = useState(false)
   const [isCallRecordsModalOpen,setCallRecordsModalOpen] = useState(false)
   const [selectedCallRecords,setSelectedCallRecords] = useState([])
+  let role = useSelector((state) => state?.user?.user?.role);
 
 
 
@@ -249,10 +251,10 @@ const handleAddFeature = async() => {
     {
       title: <h1>Add Features</h1>,
       dataIndex: "features",
-      key: "features",
+      key: "addfeatures",
       align: "center",
       render: (data, record) => (
-        <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
+        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleButtonClick(record)}>
           Add
         </Button>
       ),
@@ -289,7 +291,7 @@ const handleAddFeature = async() => {
     {
       title: <h1>Upload Call Record</h1>,
       dataIndex: "audio",
-      key: "audio",
+      key: "uploadaudio",
       align: "center",
       render: (data, record) => {
         const props = {
@@ -350,7 +352,7 @@ const handleAddFeature = async() => {
         return (
           <div>
            
-              <Upload {...props} customRequest={onUpload} showUploadList={false}>
+              <Upload {...props} customRequest={onUpload} showUploadList={false} accept="audio/*">
                 <Button icon={<UploadOutlined />}>Upload Audio</Button>
               </Upload>
             
@@ -413,6 +415,42 @@ const handleAddFeature = async() => {
   ];
 
 
+  const columnss = columnsData.filter((column) => {
+    if(role === "marketing executive"){
+      return (
+        column.key === "serialNumber" ||
+        column.key === "brandName" ||
+        column.key === "followupDate" ||
+        column.key === "followupTime" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "addfeatures" ||
+        column.key === "uploadaudio" ||
+        column.key === "leadStatus"
+      );
+    }
+    if (role === "admin") {
+      return (
+        column.key === "serialNumber" ||
+        column.key === "brandName" ||
+        column.key === "followupDate" ||
+        column.key === "followupTime" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "features" ||
+        column.key === "callRecord"
+
+      );
+    }
+  })
+
+
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
   };
@@ -426,7 +464,7 @@ const handleAddFeature = async() => {
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
         <div className="pt-7">
           <Table
-            columns={columnsData}
+            columns={columnss}
             dataSource={data}
             scroll={{ x: 3000 }}
             ref={tableRef}

@@ -1,4 +1,4 @@
-import { Table,Select, Button, Modal, Form, Input, notification} from "antd";
+import { Table,Select, Button, Modal, Form, Input, notification, Upload, message} from "antd";
 import axios from "axios";
 import { get} from "lodash";
 import { useEffect, useState, useRef } from "react";
@@ -6,6 +6,9 @@ const url = import.meta.env.VITE_REACT_APP_URL;
 import FollowUpModal from "../../../Modals/FollowUpModal";
 import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
+import { UploadOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import ImageModal from "../../../Modals/ImageModal";
 const { Option } = Select;
 
 
@@ -30,6 +33,12 @@ function FollowUp() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [location, setLocation] = useState(null);
+  let role = useSelector((state) => state?.user?.user?.role);
+  const [isImageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
+
+
 
 
 const fetchData = async () => {
@@ -314,10 +323,10 @@ const handleAddFeature = async() => {
     {
       title: <h1>Add Features</h1>,
       dataIndex: "bdmFeatures",
-      key: "bdmFeatures",
+      key: "addbdmFeatures",
       align: "center",
       render: (data, record) => (
-        <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
+        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleButtonClick(record)}>
           Add
         </Button>
       ),
@@ -348,9 +357,114 @@ const handleAddFeature = async() => {
       },
     },
     {
+      title: <h1>Upload Selfie Image</h1>,
+      dataIndex: "bdmSelfie",
+      key: "uploadbdmselfie",
+      align: "center",
+      render: (data, record) => {
+        const props = {
+          name: "file",
+          action: `${url}/uploadselfiphoto/${record._id}`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          onChange(info) {
+            if (info.file.status !== "uploading") {
+              console.log(info.file, info.fileList);
+            }
+            if (info.file.status === "done") {
+              message.success(`${info.file.name} file uploaded successfully`);
+            } else if (info.file.status === "error") {
+              message.error(`${info.file.name} file upload failed.`);
+            }
+          },
+        };
+    
+        const onUpload = async (options) => {
+          const { file } = options;
+    
+          const formData = new FormData();
+          formData.append("file", file);
+    
+          try {
+            const response = await axios.post(
+              `${url}/uploadselfiphoto/${record._id}`,
+              formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+    
+            const newFileUrl = response.data.fileUrl;
+            setupdated(!updated);
+    
+            // Update the data state with the new photo file URL
+            setData((prevData) => {
+              const newData = prevData.map((item) =>
+                item._id === record._id
+                  ? {
+                      ...item,
+                      photo: newFileUrl,
+                    }
+                  : item
+              );
+              return newData;
+            });
+    
+            message.success(`${file.name} file uploaded successfully`);
+          } catch (error) {
+            message.error(`${file.name} file upload failed.`);
+          }
+        };
+    
+        return (
+          <div>
+            <Upload {...props} customRequest={onUpload} showUploadList={false}>
+              <Button icon={<UploadOutlined />}>Upload Photo</Button>
+            </Upload>
+          </div>
+        );
+      },
+    },
+    {
+      title: <h1>Selfie Image</h1>,
+      dataIndex: "bdmSelfie",
+      key: "bdmSelfie",
+      align: "center",
+      render: (data) => {
+        if (!data) {
+          console.error("Invalid or empty data:", data);
+          return null;
+        }
+        const handleViewImage = (imageUrl) => {
+          console.log(imageUrl);
+          console.log("View Image");
+      
+          setSelectedImage(imageUrl);
+          setImageModalOpen(true);
+        };
+      
+        const handleCloseImageModal = () => {
+          setImageModalOpen(false);
+          setSelectedImage(null);
+        };
+      
+        return (
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewImage(data)}>View Image</Button>
+            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+          </div>
+        );
+
+      },
+    },
+    {
       title: <h1>Fetch Current Location</h1>,
       dataIndex: "locationBdm",
-      key: "locationBdm",
+      key: "fetchlocationBdm",
       align: "center",
       render: (data, record) => (
         <Button
@@ -405,6 +519,49 @@ const handleAddFeature = async() => {
   ];
 
 
+
+  const columnss = columnsData.filter((column) => {
+    if(role === "bdm executive"){
+      return (
+        column.key === "serialNumber" ||
+        column.key === "followupDate" ||
+        column.key === "followupTime" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "addbdmFeatures" ||
+        column.key === "uploadbdmselfie" ||
+        column.key === "leadStatus" ||
+        column.key === "fetchlocationBdm" ||
+        column.key === "locationBdm" 
+
+      );
+    }
+    if (role === "admin") {
+      return (
+        column.key === "serialNumber" ||
+        column.key === "followupDate" ||
+        column.key === "followupTime" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "bdmFeatures" ||
+        column.key === "bdmSelfie" ||
+        column.key === "locationBdm" 
+
+      );
+    }
+  })
+
+
+
+
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
   };
@@ -418,7 +575,7 @@ const handleAddFeature = async() => {
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
         <div className="pt-7">
           <Table
-            columns={columnsData}
+            columns={columnss}
             dataSource={data}
             scroll={{ x: 2500 }}
             ref={tableRef}

@@ -5,7 +5,7 @@ import { get } from "lodash";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function BdmCampaignsIndia() {
+function LegalCampaignsIndia() {
   const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
@@ -17,7 +17,7 @@ function BdmCampaignsIndia() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/bdmcampaignsindia`, {
+      const response = await axios.get(`${url}/legalcampaignsindia`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -46,13 +46,7 @@ function BdmCampaignsIndia() {
                 My Campaigns
               </h1>
             </div>
-            {cities.length === 0 ? (
-              <p className="text-center text-xl font-semibold text-gray-500">
-                No data found.
-              </p>
-            ) : (
-            
-            cities.map((city) => (
+            {cities.map((city) => (
               <div key={city} className="mb-6">
                 <p className="text- text-2xl font-semibold flex mt-2 mb-3">
                   {city} Leads
@@ -142,7 +136,7 @@ function BdmCampaignsIndia() {
                   </div>
                 </div>
               </div>
-            )))}
+            ))}
           </div>
         </div>
       </div>
@@ -150,4 +144,4 @@ function BdmCampaignsIndia() {
   );
 }
 
-export default BdmCampaignsIndia;
+export default LegalCampaignsIndia;

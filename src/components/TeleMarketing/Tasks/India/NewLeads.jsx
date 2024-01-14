@@ -8,12 +8,13 @@ import { useNavigate } from "react-router-dom";
 import FeatureModal from "../../../Modals/FeatureModal";
 import { UploadOutlined } from "@ant-design/icons";
 import CallRecordModal from "../../../Modals/CallRecordModal";
-const { Option } = Select;
+import { useSelector } from "react-redux";
 
 
 
 
 function NewLeads() {
+  const { Option } = Select;
   const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
@@ -33,6 +34,7 @@ function NewLeads() {
   const [selectedFeatures,setSelectedFeatures] = useState([])
   const [selectedCallRecords,setSelectedCallRecords] = useState([])
   const [isCallRecordsModalOpen,setCallRecordsModalOpen] = useState(false)
+  let role = useSelector((state) => state?.user?.user?.role);
 
 
 
@@ -228,10 +230,10 @@ const handleAddFeature = async() => {
     {
       title: <h1>Add Introduction</h1>,
       dataIndex: "introduction",
-      key: "introduction",
+      key: "addintroduction",
       align: "center",
       render: (data, record) => (
-        <Button type="primary" style={{ backgroundColor: "blueviolet" }} onClick={() => handleButtonClick(record)}>
+        <Button type="primary" style={{ backgroundColor: "green" }} onClick={() => handleButtonClick(record)}>
           Add
         </Button>
       ),
@@ -268,7 +270,7 @@ const handleAddFeature = async() => {
     {
       title: <h1>Upload Call Record</h1>,
       dataIndex: "audio",
-      key: "audio",
+      key: "uploadaudio",
       align: "center",
       render: (data, record) => {
         const props = {
@@ -331,14 +333,14 @@ const handleAddFeature = async() => {
 
         return (
           <div>
-            <Upload {...props} customRequest={onUpload} showUploadList={false}>
+            <Upload {...props} customRequest={onUpload} showUploadList={false} accept="audio/*">
               <Button icon={<UploadOutlined />}>Upload Audio</Button>
             </Upload>
           </div>
         );
       },
     },
-    {
+    { 
       title: <h1>Play Call Records</h1>,
       dataIndex: 'callRecord',
       key: 'callRecord',
@@ -370,8 +372,8 @@ const handleAddFeature = async() => {
     },
     {
       title: <h1>Status</h1>,
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "leadStatus",
+      key: "leadStatus",
       align: "center",
       render: (data, record) => (
         <>
@@ -390,6 +392,38 @@ const handleAddFeature = async() => {
       
   ];
 
+
+  const columnss = columnsData.filter((column) => {
+    if(role === "marketing executive"){
+      return (
+        column.key === "serialNumber" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "addintroduction" ||
+        column.key === "uploadaudio" ||
+        column.key === "leadStatus"
+      );
+    }
+    if (role === "admin") {
+      return (
+        column.key === "serialNumber" ||
+        column.key === "brandName" ||
+        column.key === "restaurantMobileNumber" ||
+        column.key === "firmName" ||
+        column.key === "contactPersonname" ||
+        column.key === "designation" ||
+        column.key === "contactPersonNumber" ||
+        column.key === "introduction" ||
+        column.key === "callRecord"
+
+      );
+    }
+  })
+
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
   };
@@ -403,7 +437,7 @@ const handleAddFeature = async() => {
       <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
         <div className="pt-7">
           <Table
-            columns={columnsData}
+            columns={columnss}
             dataSource={data}
             scroll={{ x: 3000 }}
             ref={tableRef}
