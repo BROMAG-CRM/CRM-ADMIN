@@ -1,6 +1,6 @@
 import { Menu } from 'antd'
 import { useEffect } from 'react'
-import { adminItems,marketingItems,salesItems,bdmItems } from '../helper/menu'
+import { adminItems,marketingItems,salesItems,bdmItems,legalItems,accountsItems } from '../helper/menu'
 import {get} from "lodash"
 import axios from 'axios'
 const url = import.meta.env.VITE_REACT_APP_URL;
@@ -58,6 +58,10 @@ useEffect(()=>{
           ? bdmItems
           : user.role === "marketing executive"
           ? marketingItems
+          : user.role === "legal management executive"
+          ? legalItems
+          : user.role === "accounts management executive"
+          ? accountsItems
           : [] // Set a default value or an empty array for unknown roles
       }
     />

@@ -109,6 +109,8 @@ function Admin() {
               <Option value="marketing executive">Marketing Executive</Option>
               <Option value="sales executive">Sales Executive</Option>
               <Option value="bdm executive">BDM Executive</Option>
+              <Option value="legal management executive">Legal Management Executive</Option>
+              <Option value="accounts management executive">Accounts Management Executive</Option>
             </Select>
           </Form.Item>
           <Form.Item
