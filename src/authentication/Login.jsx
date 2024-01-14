@@ -67,11 +67,11 @@ function Login() {
 
   return (
     <div className="w-screen h-[100vh] bg-black flex flex-col md:flex-row  items-center justify-between ">
-      <div className="text-white border-b-2 md:border-b-0 md:border-r-2 h-[30vh] w-[100vw] md:h-[70vh] border-slate-400 flex items-center justify-center  md:w-[45%]">
+      <div className="text-white border-b-2 md:border-b-0 md:border-r-2 h-[20vh] w-[100vw] md:h-[70vh] border-slate-400 flex items-center justify-center  md:w-[45%]">
         <img src={Logo} className="w-[20vw]" />
       </div>
 
-      <div className="md:pr-32 pb-4  pt-5 md:pt-0 md:pb-0">
+      <div className="md:pr-32 md:pb-4  pb-10 md:pt-0">
         <Form
           className="w-[80vw] md:w-[35vw] lg:w-[30vw] xl:w-[24vw] rounded-md bg-white/20 shadow-md backdrop-blur-sm flex flex-col  px-4 gap-4 py-5 !text-white"
           layout="vertical"

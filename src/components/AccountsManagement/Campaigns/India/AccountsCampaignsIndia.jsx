@@ -5,7 +5,7 @@ import { get } from "lodash";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
-function BdmCampaignsIndia() {
+function AccountsCampaignsIndia() {
   const token = localStorage.getItem("token");
   const [data, setData] = useState([]);
   const [cities, setCities] = useState([]);
@@ -17,7 +17,7 @@ function BdmCampaignsIndia() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${url}/bdmcampaignsindia`, {
+      const response = await axios.get(`${url}/accountcampaignsindia`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -150,4 +150,4 @@ function BdmCampaignsIndia() {
   );
 }
 
-export default BdmCampaignsIndia;
+export default AccountsCampaignsIndia;
