@@ -41,6 +41,7 @@ function LeadFormNew() {
   };
 
   console.log(data);
+  console.log('data');
 
   useEffect(() => {
     fetchData();
@@ -75,8 +76,7 @@ function LeadFormNew() {
     const filteredData = data.filter((item) => {
       console.log(value, item.city, "wehgjhv");
       return (
-        item.brandName.toLowerCase().includes(value.toLowerCase()) ||
-        item.EmployeeName.toLowerCase().includes(value.toLowerCase())
+        item.brandName.toLowerCase().includes(value.toLowerCase())
       );
     });
     setsearchPartner(filteredData);
@@ -487,6 +487,30 @@ function LeadFormNew() {
       },
     },
     {
+      title: <h1>Social Media Links</h1>,
+      dataIndex: "socialMedia",
+      key: "socialMedia",
+      align: "center",
+      render: (data) => {
+        return (
+          <>
+            {data.map((link, i) => (
+              <div className="flex gap-2" key={i}>
+                <a
+                  href={link.socialMedia}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="truncate-link"
+                >
+                  Link-{link.socialMedia}
+                </a>
+              </div>
+            ))}
+          </>
+        );
+      },
+    },    
+    {
       title: <h1>Contact Person Name</h1>,
       dataIndex: "contactPersonname",
       key: "contactPersonname",
@@ -715,7 +739,7 @@ function LeadFormNew() {
         </div>
         <div className="p-5 w-[100vw]">
           <Search
-            placeholder="Search by Brand Name or Employee Name..."
+            placeholder="Search by Brand Name..."
             onChange={(e) => debouncedSearch(e.target.value)}
             enterButton
             className="mt-4 w-[60%] mb-5 ml-5"

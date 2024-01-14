@@ -421,6 +421,30 @@ const debouncedSearch = debounce(handleSearchPartnership, 300);
       },
     },
     {
+      title: <h1>Social Media Links</h1>,
+      dataIndex: "socialMedia",
+      key: "socialMedia",
+      align: "center",
+      render: (data) => {
+        return (
+          <>
+            {data.map((link, i) => (
+              <div className="flex gap-2" key={i}>
+                <a
+                  href={link.socialMedia}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="truncate-link"
+                >
+                  Link-{link.socialMedia}
+                </a>
+              </div>
+            ))}
+          </>
+        );
+      },
+    },    
+    {
       title: <h1>Contact Person Name</h1>,
       dataIndex: "contactPersonname",
       key: "contactPersonname",
