@@ -31,7 +31,7 @@ import {
   const url = import.meta.env.VITE_REACT_APP_URL;
   import { get } from "lodash";
   import { EnvironmentOutlined } from "@ant-design/icons";
-  import { useNavigate } from "react-router-dom";
+  import { useLocation, useNavigate } from "react-router-dom";
   
   function EditLeadForm() {
     const user = useSelector((state) => state.user.user);
@@ -62,7 +62,7 @@ import {
     const [tradeImages, setTradeImages] = useState([]);
     const [loading, setLoading] = useState(false);
     const token = localStorage.getItem("token");
-    const [location, setLocation] = useState(null);
+    const [locationn, setLocation] = useState(null);
     const navigate = useNavigate();
     const [updateButton,setUpdateButton] = useState(false)
     const [restaurantUpdateButton,setRestaurantUpdateButton] = useState(false)
@@ -78,17 +78,11 @@ import {
     console.log("dddddd");
   
   
-    // Assuming this code is within the 'createnewlead' route or component
-  
-  const queryParams = new URLSearchParams(window.location.search);
-  
-  // Retrieving the values of 'param1' and 'id' from the query string
-  const param1 = queryParams.get('param1');
-  const urlId = queryParams.get('id');
-  
-  console.log(param1); // Output: editwholeform
-  console.log(urlId);
-  console.log("urldata");
+  const location = useLocation();
+  const urlId = location.state?.urlId ;
+
+    console.log(urlId);
+    console.log("urlId");
   
   
   const fetchData = async () => {
@@ -656,7 +650,7 @@ import {
                 const id = localStorage.getItem("id");
                 const formData = {
                   address: val,
-                  location: location,
+                  location: locationn,
                 };
   
                 if(locationUpdateButton){
@@ -721,7 +715,7 @@ import {
     const items = [
       {
         key: "1",
-        label: <div className="font-extrabold text-lg">Lead Generation</div>,
+        label: <div className="font-extrabold text-lg ml-20 md:ml-0">Lead Generation</div>,
         children: (
           <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
             {/* <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1> */}
@@ -1493,7 +1487,7 @@ import {
               onFinish={handleFinishContact}
               form={contactForm}
             >
-              <Form.Item>
+              {/* <Form.Item> */}
                 <Form.Item
                   name="restaurantMobileNumber"
                   initialValue={data?.restaurantMobileNumber}
@@ -1536,59 +1530,8 @@ import {
                 </Form.Item>
 
                 
-                <Form.Item
-                  name="email"
-                  // rules={[{ required: true, message: "Email is required" }]}
-                  label={<p>Email</p>}
-                  initialValue={data?.email}
-                >
-                  <Input type="email" size="large" placeholder="Enter email..." />
-                </Form.Item>
-              </Form.Item>
 
-              <p className="pb-2">Add Social Media links</p>
-            <Form.List name="socialMedia">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map(({ key, name, ...restField }) => (
-                    <Space
-                      key={key}
-                      className="flex flex-col md:flex-row items-center "
-                      align="baseline"
-                    >
-                      <Form.Item
-                        {...restField}
-                        name={[name, "socialMedia"]}
-                        // rules={[
-                        //   {
-                        //     required: true,
-                        //     message: "Table count is required",
-                        //   },
-                        // ]}
-                        label={<p>Social Media Link</p>}
-                        className="w-[100%] lg:w-[20vw]"
-                      >
-                        <Input
-                          placeholder={`Link count ${name + 1}...`}
-                          size="large"
-                        />
-                      </Form.Item>
-                      <MinusCircleOutlined onClick={() => remove(name)} />
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => add()}
-                      block
-                      icon={<PlusOutlined />}
-                    >
-                      Add More
-                    </Button>
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
+              {/* </Form.Item> */}
 
 
               <Form.Item
@@ -1653,7 +1596,61 @@ import {
                   placeholder="Enter designation..."
                 />
               </Form.Item>
-              <Form.Item className="flex items-end justify-end">
+
+
+              <Form.Item
+                  name="email"
+                  // rules={[{ required: true, message: "Email is required" }]}
+                  label={<p>Email</p>}
+                  initialValue={data?.email}
+                >
+                  <Input type="email" size="large" placeholder="Enter email..." />
+                </Form.Item>
+
+
+              <p className="pb-2">Add Social Media links</p>
+            <Form.List name="socialMedia">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <Space
+                      key={key}
+                      className="flex flex-col md:flex-row items-center "
+                      align="baseline"
+                    >
+                      <Form.Item
+                        {...restField}
+                        name={[name, "socialMedia"]}
+                        // rules={[
+                        //   {
+                        //     required: true,
+                        //     message: "Table count is required",
+                        //   },
+                        // ]}
+                        label={<p>Social Media Link</p>}
+                        className="w-[100%] lg:w-[20vw]"
+                      >
+                        <Input
+                          placeholder={`Link count ${name + 1}...`}
+                          size="large"
+                        />
+                      </Form.Item>
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add More
+                    </Button>
+                  </Form.Item>
+
+
+                  <Form.Item className="flex items-end justify-end">
                 <Button
                   htmlType="submit"
                   className="bg-green-500 w-[100px] !text-white font-semibol"
@@ -1661,6 +1658,14 @@ import {
                  {contactUpdateButton?'Update':'Submit'}
                 </Button>
               </Form.Item>
+
+
+                </>
+              )}
+            </Form.List>
+
+
+
             </Form>
              ) : (
   
@@ -1964,7 +1969,7 @@ import {
                 </Button>
               </Form.Item>
               <Form.Item>
-                <h1>{location?.locationName}</h1>
+                <h1>{locationn?.locationName}</h1>
               </Form.Item>
               <Form.Item className="flex items-end justify-end">
                 <Button
@@ -1993,26 +1998,26 @@ import {
   
     return (
       <>
-        <div>
-            {" "}
-            <Button
-              className="text-white bg-black ml-5 mt-20"
-              onClick={() => navigate(-1)}
-            >
-              Go Back
-            </Button>
-          </div>{" "}
-        <div className="lg:w-[100vw]">
-          <div className="lg:flex lg:items-center lg:justify-center bg-white shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
-            <Spin spinning={loading}>
-              <Tabs
-                defaultActiveKey="1"
-                items={items}
-                className="mt-[3vh] md:mt-[3vh]"
-              />
-            </Spin>
-          </div>
+      <div className=" ml-16 md:ml-72">
+          {" "}
+          <Button
+            className="text-white bg-black ml-5 mt-20"
+            onClick={() => navigate(-1)}
+          >
+            Go Back
+          </Button>
+        </div>{" "}
+      <div className="lg:w-[100vw]">
+        <div className="lg:flex lg:items-center lg:justify-center shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
+          <Spin spinning={loading}>
+            <Tabs
+              defaultActiveKey="1"
+              items={items}
+              className="mt-[3vh] md:mt-[3vh]"
+            />
+          </Spin>
         </div>
+      </div>
       </>
     );
   }

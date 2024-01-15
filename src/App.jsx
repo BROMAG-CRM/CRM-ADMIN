@@ -9,9 +9,9 @@ import { createBrowserRouter,createRoutesFromElements,Route,RouterProvider,} fro
 import Dashboard from "./components/Others/Dashboard"
 import UsersList from "./components/Others/UsersList"
 import Admin from "./components/Others/Admin";
-import UserLeadGeneration from "./components/LeadGenerationForm/UserLeadGeneration";
-import LeadFormNew from "./components/LeadGenerationForm/LeadFormNew";
-import EditLeadForm from "./components/LeadGenerationForm/EditLeadForm";
+
+
+
 // import LeadGeneration from "./components/LeadGeneration";
 import Loader from "./components/Others/Loader";
 
@@ -91,18 +91,28 @@ import NotConnectedLeadsBdmIndia from "./components/Bdm/Tasks/India/NotConnected
 import BdmTasksBooks from "./components/Bdm/Tasks/Books/BdmTasksBooks";
 
 
-//Lead Generation Forms
-import FormsIndiaorBooks from "./components/LeadGenerationForm/Forms";
+//Lead Generation Forms Employee
+// import FormsIndiaorBooks from "./components/LeadGenerationForm/Forms";
+import UserLeadGeneration from "./components/LeadGenerationForm/Forms/LeadGenerationForm";
+// import LeadFormNew from "./components/LeadGenerationForm/LeadFormNew";
+import EditLeadForm from "./components/LeadGenerationForm/Forms/EditLeadGenerationForm";
+import EmployeeDashboard from "./components/LeadGenerationForm/EmployeeDashboard";
+import EmployeeForms from "./components/LeadGenerationForm/Tables/EmployeeTables";
+//Tables
+import EmployeePartnership from "./components/LeadGenerationForm/Tables/Partnership"
+import EmployeePrivateLtd from "./components/LeadGenerationForm/Tables/PrivateLtd"
+import EmployeeProprietor from "./components/LeadGenerationForm/Tables/Proprietor"
 
-import FormsBooks from "./components/LeadGenerationForm/FormsBooks/FormsBooks";
-import CompletedBooks from "./components/LeadGenerationForm/FormsBooks/Completed"
-import PendingBooks from "./components/LeadGenerationForm/FormsBooks/Pending"
 
-import FormsIndia from "./components/LeadGenerationForm/FormsIndia/FormsIndia";
-import CompletedIndia from "./components/LeadGenerationForm/FormsIndia/Completed";
-import PendingIndia from "./components/LeadGenerationForm/FormsIndia/Pending";
+// import FormsBooks from "./components/LeadGenerationForm/FormsBooks/FormsBooks";
+// import CompletedBooks from "./components/LeadGenerationForm/FormsBooks/Completed"
+// import PendingBooks from "./components/LeadGenerationForm/FormsBooks/Pending"
 
-//Lead Generation
+// import FormsIndia from "./components/LeadGenerationForm/FormsIndia/FormsIndia";
+// import CompletedIndia from "./components/LeadGenerationForm/FormsIndia/Completed";
+// import PendingIndia from "./components/LeadGenerationForm/FormsIndia/Pending";
+
+//Lead Generation Admin
 import LeaadGenerationNew from "./components/LeadGeneration/LeadGenerationNew";
 import Partnership from "./components/LeadGeneration/Partnership";
 import PrivateLtd from "./components/LeadGeneration/PrivateLtd";
@@ -235,13 +245,13 @@ const router=createBrowserRouter(
       <Route path="notconnected_leadsbdmindia" element={<NotConnectedLeadsBdmIndia/>} /> 
 
 
-      <Route path="forms" element={<FormsIndiaorBooks/>} /> 
-      <Route path="formsindia" element={<FormsIndia/>} /> 
+      {/* <Route path="forms" element={<FormsIndiaorBooks/>} />  */}
+      {/* <Route path="formsindia" element={<FormsIndia/>} /> 
       <Route path="formsbooks" element={<FormsBooks/>} /> 
       <Route path="pendingformsindia" element={<PendingIndia/>} /> 
       <Route path="completedformsindia" element={<CompletedIndia/>} /> 
       <Route path="completedformsbooks" element={<CompletedBooks/>} /> 
-      <Route path="pendingformsbooks" element={<PendingBooks/>} /> 
+      <Route path="pendingformsbooks" element={<PendingBooks/>} />  */}
 
 
 
@@ -263,6 +273,11 @@ const router=createBrowserRouter(
 
 
 
+      <Route path="employeedashboard" element={<EmployeeDashboard/>}/>
+      <Route path="employeeforms" element={<EmployeeForms/>}/>
+      <Route path="employeepartnership" element={<EmployeePartnership/>}/>
+      <Route path="employeeprivateltd" element={<EmployeePrivateLtd/>}/>
+      <Route path="employeeproprietor" element={<EmployeeProprietor/>}/>
       
     </Route>
     </>
@@ -286,7 +301,7 @@ function DashboardOrUserLeadGeneration() {
   }
 
   console.log('Regular user logged in');
-  return <LeadFormNew />;
+  return <EmployeeDashboard />;
 }
 
 

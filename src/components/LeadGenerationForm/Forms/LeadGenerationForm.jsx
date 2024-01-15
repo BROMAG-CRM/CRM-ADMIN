@@ -673,7 +673,7 @@ function UserLeadGeneration() {
   const items = [
     {
       key: "1",
-      label: <div className="font-extrabold text-lg">Lead Generation</div>,
+      label: <div className="font-extrabold text-lg ml-20 md:ml-0">Lead Generation</div>,
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
           {/* <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1> */}
@@ -1781,7 +1781,7 @@ function UserLeadGeneration() {
     },
     {
       key: "5",
-      label: <div className="font-extrabold text-lg ">Location</div>,
+      label: <div className="font-extrabold text-lg">Location</div>,
       children: (
         <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
           {/* <h1 className="text-center text-2xl hidden md:block">Location</h1> */}
@@ -1866,7 +1866,7 @@ function UserLeadGeneration() {
 
   return (
     <>
-      <div>
+      <div className="ml-16 md:ml-72">
           {" "}
           <Button
             className="text-white bg-black ml-5 mt-20"
@@ -1875,8 +1875,8 @@ function UserLeadGeneration() {
             Go Back
           </Button>
         </div>{" "}
-      <div className="lg:w-[100vw]">
-        <div className="lg:flex lg:items-center lg:justify-center bg-white shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
+      <div className="lg:w-[100vw] ">
+        <div className="lg:flex lg:items-center lg:justify-center shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
           <Spin spinning={loading}>
             <Tabs
               defaultActiveKey="1"
