@@ -1,6 +1,6 @@
 import { Menu } from 'antd'
 import { useEffect } from 'react'
-import { adminItems,marketingItems,salesItems,bdmItems,legalItems,accountsItems } from '../helper/menu'
+import { adminItems,marketingItems,salesItems,bdmItems,legalItems,accountsItems,fieldSalesItems } from '../helper/menu'
 import {get} from "lodash"
 import axios from 'axios'
 const url = import.meta.env.VITE_REACT_APP_URL;
@@ -10,6 +10,9 @@ import { changeUserValues } from '../redux/userSlice'
 
 function SideNavbar() {
   const user=useSelector((state)=>state.user.user)
+  // console.log(user.role);
+  // console.log('user');
+
   const dispatch=useDispatch()
 
 
@@ -39,13 +42,11 @@ useEffect(()=>{
 
 
   return (
-<div className="h-[100vh] fixed top-[7.5vh] bg-black flex flex-col justify-between lg:border-r">
+<div className="h-[100vh] fixed top-[7.5vh] bg-black flex flex-col justify-between lg:border-r z-50">
 <div
-  className={`w-[19vw] h-[92vh] overflow-y-scroll ${
-    user && user.role === "field sales executive" ? "hidden" : "block"
-  }`}
+  className={`w-[19vw] h-[92vh] overflow-y-scroll`}
 >
-  {user && user.role !== "field sales executive" && (
+  {user && user?.role && (
     <Menu
       defaultSelectedKeys={get(location, "pathname", "/")}
       mode="inline"
@@ -62,6 +63,8 @@ useEffect(()=>{
           ? legalItems
           : user.role === "accounts management executive"
           ? accountsItems
+          : user.role === "field sales executive"
+          ? fieldSalesItems
           : [] // Set a default value or an empty array for unknown roles
       }
     />

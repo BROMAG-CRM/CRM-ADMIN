@@ -1,78 +1,52 @@
-import { Button, Image, Table,Modal,Input,Form} from "antd";
+import { Button, Image, Table, Input, Select } from "antd";
 import axios from "axios";
-import { get} from "lodash";
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { debounce, get } from "lodash";
+import { useEffect, useState, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import ImageModal from "../../Modals/ImageModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import toast from "react-hot-toast";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
+const { Option } = Select;
 
-
-
-
-function Pending() {
+function LeadFormNew() {
+  const token = localStorage.getItem("token");
+  const { Search } = Input;
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const navigate = useNavigate()
-  const [selectedImage,setSelectedImage] = useState('')
-  const [isImageModalOpen,setImageModalOpen] = useState(false)
-  const [form] = Form.useForm();
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editModalData, setEditModalData] = useState(null);
-  const [updated,setUpdated] = useState(false)
+  const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState("");
+  const [isImageModalOpen, setImageModalOpen] = useState(false);
+  const [searchPartner, setsearchPartner] = useState("");
+  const [updated, setUpdated] = useState(false);
 
 
-const fetchData = async () => {
+
+  const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getpendingform/india`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-})
+        const response = await axios.get(`${url}/getform/Proprietorship`, {
+            headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      setData(get(response, "data.data", []));
+      const sortedData = get(response, "data.data", []).sort(
+        (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+      );
+
+      setData(sortedData);
     } catch (err) {
       console.log(err);
     }
   };
 
   console.log(data);
+  console.log('data');
 
   useEffect(() => {
     fetchData();
   }, [updated]);
 
-
-    //edit function
-    const handleEdit = (id) => {
-        const userData = data.filter((data)=>data._id === id)
-        setEditModalData(userData);
-        setEditModalVisible(true);
-      };
-
-
-    //delete function
-  const handleDelete = async (id) => {
-    try {
-      const response = await axios.delete(`${url}/deleteuser/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      if (response.status === 200) {
-        toast.success('User deleted successfully');
-        setUpdated(!updated);
-      } else {
-        console.log("Unexpected response status:", response.status);
-      }
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-  };
 
 
 
@@ -82,7 +56,11 @@ const response = await axios.get(`${url}/getpendingform/india`, {
     
         const res = await axios.post(
           `${url}/businessstatus`,
-          { userId: id, newBusinessStatus: "completed" ,leadStatus:"new-lead" },
+          {
+            userId: id,
+            newBusinessStatus: "telemarketing",
+            leadStatus: "new-lead",
+          },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -92,7 +70,41 @@ const response = await axios.get(`${url}/getpendingform/india`, {
         console.log(res);
         setUpdated(!updated);
       };
-  
+
+
+
+  //status function
+  const handleStatusChange = async (value, record) => {
+    console.log(value);
+    console.log(record);
+
+    await axios.post(
+      `${url}/updatestatus`,
+      { value: value, id: record._id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setUpdated(!updated);
+  };
+
+
+
+
+  //search function
+  const handleSearchPartnership = (value) => {
+    const filteredData = data.filter((item) => {
+      console.log(value, item.city, "wehgjhv");
+      return (
+        item.brandName.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+    setsearchPartner(filteredData);
+  };
+  const debouncedSearch = debounce(handleSearchPartnership, 300);
 
 
 
@@ -105,6 +117,33 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       render: (text, record, index) => {
         const pageSize = tableRef.current?.props?.pagination?.pageSize || 5;
         return (currentPage - 1) * pageSize + index + 1;
+      },
+    },
+    {
+      title: <h1>Created At</h1>,
+      dataIndex: "createdDate",
+      key: "createdDate",
+      align: "center",
+      render: (data) => {
+        const formattedDate = new Date(data).toLocaleString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+          hour12: true,
+        });
+        return formattedDate;
+      },
+    },
+    {
+      title: <h1>Employee Name</h1>,
+      dataIndex: "EmployeeName",
+      key: "EmployeeName",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
       },
     },
     {
@@ -141,30 +180,33 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       align: "center",
       render: (data) => {
         if (!data) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-      
+
         const handleViewImage = (imageUrl) => {
           console.log(imageUrl);
           console.log("View Image");
-      
+
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-      
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-      
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Image</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
-
       },
     },
     {
@@ -174,63 +216,69 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       align: "center",
       render: (data) => {
         if (!data) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-      
+
         const handleViewImage = (imageUrl) => {
           console.log(imageUrl);
           console.log("View Image");
-      
+
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-      
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-      
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Image</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
-
       },
     },
     {
-      title: <h1>FSSAI</h1>,
+      title: <h1>FSS</h1>,
       dataIndex: "fss",
       key: "fss",
       align: "center",
       render: (data) => {
         if (!data) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-      
+
         const handleViewImage = (imageUrl) => {
           console.log(imageUrl);
           console.log("View Image");
-      
+
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-      
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-      
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Image</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
-
       },
     },
     {
@@ -240,30 +288,33 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       align: "center",
       render: (data) => {
         if (!data) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-      
+
         const handleViewImage = (imageUrl) => {
           console.log(imageUrl);
           console.log("View Image");
-      
+
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-      
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-      
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Image</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
-
       },
     },
     {
@@ -293,24 +344,61 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       align: "center",
       render: (data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-    
+
         const handleViewImage = (imageUrl) => {
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-    
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-    
+
         return (
-              <div style={{ maxWidth: '300px', overflow: 'hidden'}}>
-                <Button onClick={() => handleViewImage(data)}>View Images</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
+            <Button onClick={() => handleViewImage(data)}>View Images</Button>
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      title: <h1>Menu</h1>,
+      dataIndex: "menuPhotos",
+      key: "menuPhotos",
+      align: "center",
+      render: (data) => {
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          console.error("Invalid or empty data:", data);
+          return null;
+        }
+
+        const handleViewImage = (imageUrl) => {
+          setSelectedImage(imageUrl);
+          setImageModalOpen(true);
+        };
+
+        const handleCloseImageModal = () => {
+          setImageModalOpen(false);
+          setSelectedImage(null);
+        };
+
+        return (
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
+            <Button onClick={() => handleViewImage(data)}>View Images</Button>
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
       },
@@ -409,6 +497,36 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       },
     },
     {
+      title: <h1>Social Media</h1>,
+      dataIndex: "socialMedia",
+      key: "socialMedia",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>Social Media Links</h1>,
+      dataIndex: "socialMediaLinks",
+      key: "socialMediaLinks",
+      align: "center",
+      render: (data) => {
+        return (
+          <>
+            {data.length > 0 ? (
+              data.map((res, i) => (
+                <div className="flex gap-2 items-center justify-center" key={i}>
+                  <p>{res.link}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-center">No links</p>
+            )}
+          </>
+        );
+      },
+    },
+    {
       title: <h1>Contact Person Name</h1>,
       dataIndex: "contactPersonname",
       key: "contactPersonname",
@@ -469,26 +587,30 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       align: "center",
       render: (data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-    
+
         const handleViewImage = (imageUrl) => {
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-    
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-    
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden'}}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Images</Button>
-        <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
-      </div>
-    );
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
+          </div>
+        );
       },
     },
     {
@@ -528,6 +650,26 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       },
     },
     {
+      title: <h1>Update Status</h1>,
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      render: (data, record) => (
+        <>
+          <Select
+            placeholder="Select Status"
+            value={data}
+            onChange={(value) => handleStatusChange(value, record)}
+            style={{ width: 100 }}
+          >
+            <Option value="Hot">Hot</Option>
+            <Option value="Warm">Warm</Option>
+            <Option value="Cold">Cold</Option>
+          </Select>
+        </>
+      ),
+    },
+    {
       title: <h1>Address</h1>,
       dataIndex: "address",
       key: "address",
@@ -558,10 +700,10 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       align: "center",
       render: (data) => {
         return (
-            <div className="w-[14vw] ml-12 text-center">
+          <div className="w-[14vw] ml-12 text-center">
             {data && data.length > 0 ? (
               data.map((res, i) => (
-                <div key={i} >
+                <div key={i}>
                   <p> Longitude:{res.latitude}</p>
                   <p> Latitude:{res.longitude}</p>
                   <p> Location Name:{res.locationName}</p>
@@ -575,49 +717,64 @@ const response = await axios.get(`${url}/getpendingform/india`, {
       },
     },
     {
-        title: <h1>Created At</h1>,
-        dataIndex: "createdDate",
-        key: "createdDate",
-        align: "center",
-        render: (data) => {
-          const formattedDate = new Date(data).toLocaleString('en-GB', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            hour12: true,
-          });
-          return formattedDate;
-        },
-      }, 
-      {
-        title: <h1>Actions</h1>,
-        align: "center",
-        render: (data) => {
-          return (
-            <div>
+      title: <h1>Actions</h1>,
+      align: "center",
+      render: (data) => {
+        const urlId = data._id; // Assuming data._id is the value you want to check
+    
+        return (
+          <>
+            <Link
+              to={{
+                pathname: '/editleadform',
+              }}
+              state={{urlId}}
+            >
               <EditOutlined
                 key={`edit-${data._id}`}
-                style={{ fontSize: '18px', marginRight: '20px', fontWeight: 'bold', cursor: 'pointer',}}
-                onClick={() => handleEdit(data._id)}
-              />
-              <DeleteOutlined
-                key={`delete-${data._id}`}
                 style={{ fontSize: '18px', fontWeight: 'bold', cursor: 'pointer' }}
-                onClick={() => handleDelete(data._id)}
+                // onClick={()=>handleEdit(data._id)}
               />
-            </div>
-          );
-        },
+            </Link>
+          </>
+        );
       },
-      {
-        title: <h1>Move to Completed</h1>,
-        dataIndex: "businessStatus",
-        key: "businessStatus",
-        align: "center",
-        render: (data, record) => (
+    },
+    {
+      title: <h1>Move to Admin</h1>,
+      dataIndex: "businessStatus",
+      key: "businessStatus",
+      align: "center",
+      render: (data, record) =>
+      data &&
+      record &&
+      record.brandName &&
+      record.firmName &&
+      record.firmOption &&
+      record.tablePhotos &&
+      record.menuPhotos &&
+      record.billingSoftware &&
+      record.onlineAggregator &&
+      record.billingSoftware &&
+      record.restaurantMobileNumber &&
+      record.email &&
+      record.socialMedia &&
+      record.contactPersonname &&
+      record.contactPersonNumber &&
+      record.designation &&
+      record.domain &&
+      record.tradeMark &&
+      record.dld &&
+      record.status &&
+      record.address &&
+      record.address.length > 0 && 
+      record.address[0].doorNo &&
+      record.address[0].areaName &&
+      record.address[0].landMark &&
+      record.address[0].locationCity &&
+      record.address[0].pinCode &&
+      record.address[0].state ? 
+         (
           <Button
             type="primary"
             style={{ backgroundColor: "green" }}
@@ -625,162 +782,9 @@ const response = await axios.get(`${url}/getpendingform/india`, {
           >
             Okay
           </Button>
-        ),
-      }, 
-    
+        ) : null,
+    },
   ];
-
-
-  const handleCancelEditModal = () => {
-    setEditModalVisible(false);
-  };
-
-
-  function UserModal({ visible, onCancel, userData }) {
-    const [form] = Form.useForm();
-  
-    React.useEffect(() => {
-      if (visible) {
-        form.setFieldsValue(userData[0]);
-      }
-    }, [visible, userData, form]);
-
-  
-    const submitModal = async () => {
-      const updatedData = form.getFieldsValue();
-      const userId = userData[0]._id;
-
-      console.log("userrrdata");
-      console.log(updatedData);
-    
-      try {
-        const response = await axios.post(`${url}/updateform/${userId}`, updatedData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        
-        if (response.status === 200) {
-          toast.success('Userdata updated successfully')
-        } else {
-          console.log("Unexpected response status:", response.status);
-        }
-        setUpdated(!updated)
-        onCancel();
-      } catch (error) {
-        console.error("Error updating user:", error);
-      }
-    };
-
-    return (
-      <Modal
-        title="Edit User"
-        open={visible}
-        onCancel={onCancel}
-        footer={[
-          <Button key="cancel" onClick={onCancel}>
-            Cancel
-          </Button>,
-          <Button key="update" onClick={submitModal}>
-            Update Changes
-          </Button>,
-        ]}
-      >
-        {userData && (
-          <Form form={form}>
-            <Form.Item label="PanCard" name="panCard">
-            <img
-                      src={"panCard"}
-                      alt="avatar"
-                      style={{ width: "100%" }}
-                    />
-              <Input />
-            </Form.Item>
-            <Form.Item label="GST Copy" name="gstCopy">
-              <Input />
-            </Form.Item>
-            <Form.Item label="FSSAI" name="fss">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Cancel Check" name="cancelCheck">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Table Count" name="tableCount">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Table Photos" name="tablePhotos">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Billing Software" name="billingSoftware">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Online Aggregator" name="onlineAggregator">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Aggregator List" name="onlineAggregatersList">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Two Wheeler Parking" name="twoWheelerparking">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Two Wheeler Slots" name="twoWheelerSlot">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Four Wheeler Parking" name="fourWheelerparking">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Four Wheeler Slots" name="fourWheelerSlot">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Restaurant Mobile Number" name="restaurantMobileNumber">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Email" name="email">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Contact Person Name" name="contactPersonname">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Contact Person Number" name="contactPersonNumber">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Designation" name="designation">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Domain" name="domain">
-              <Input />
-            </Form.Item>
-            <Form.Item label="tradeMark" name="tradeMark">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Trade Photos" name="tradePhotos">
-              <Input />
-            </Form.Item>
-            <Form.Item label="DLT Email" name="dldEmail">
-              <Input />
-            </Form.Item>
-            <Form.Item label="DLT Password" name="dldPassword">
-              <Input />
-            </Form.Item>
-            <Form.Item label="DLT" name="dld">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Status" name="status">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Address" name="address">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Auto Location" name="location">
-              <Input />
-            </Form.Item>
-          </Form>
-        )}
-      </Modal>
-    );
-  }
-
-
 
   const handleTableChange = (pagination) => {
     setCurrentPage(pagination.current);
@@ -788,33 +792,41 @@ const response = await axios.get(`${url}/getpendingform/india`, {
 
   return (
     <>
-
-<div className="pt-28 w-screen ml-2">
-      <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
-      <div className="w-[100vw]">
-      <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
-        <div className="pt-3">
-          <Table
-            columns={Partnershipcolumns}
-            dataSource={data}
-            scroll={{ x: 7000 }}
-            ref={tableRef}
-            pagination={{ pageSize: 5 }}
-            onChange={handleTableChange}
-            className="w-full"
-            bordered
-            style={{  background: 'white' }}
+           <div className="pl-[18vw]  pt-14 w-screen">
+        <div className="p-5 w pt-4 bg-white-70 shadow-md flex justify-between">
+          <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
+          <Button
+            onClick={() => navigate("/createnewlead")}
+            className="bg-amber-600 text-white rounded-2xl h-[6vh] text-lg"
+          >
+            Add New Lead
+          </Button>
+        </div>
+        <div className="p-5">
+          <Search
+            placeholder="Search by Brand Name..."
+            onChange={(e) => debouncedSearch(e.target.value)}
+            enterButton
+            className="mt-4 w-[60%] mb-5 ml-5"
+            size="large"
           />
+          <div className="pt-7">
+            <Table
+              columns={Partnershipcolumns}
+              dataSource={searchPartner.length > 0 ? searchPartner : data}
+              scroll={{ x: 8000 }}
+              ref={tableRef}
+              pagination={{ pageSize: 5 }}
+              onChange={handleTableChange}
+              className="w-full"
+              bordered
+              style={{ background: "white" }}
+            />
+          </div>
         </div>
       </div>
-      <UserModal
-        visible={editModalVisible}
-        onCancel={handleCancelEditModal}
-        userData={editModalData}
-      />
-    </div>
     </>
   );
 }
 
-export default Pending;
+export default LeadFormNew;

@@ -70,6 +70,7 @@ function UserLeadGeneration() {
   const [statusUpdateButton,setStatusUpdateButton] = useState(false)
   const [locationUpdateButton,setLocationUpdateButton] = useState(false)
   const [leadId,setLeadId] = useState(null)
+  const [socialMedia,setSocialMedia] = useState('')
 
   const id = localStorage.getItem("id");
   console.log(id);
@@ -335,6 +336,7 @@ function UserLeadGeneration() {
         panCard: imageUrls?.panCard,
         gstCopy: imageUrls?.gstCopy,
         cancelCheck: imageUrls?.cancelCheck,
+        location: location,
         EmployeeName: get(user, "name", ""),
         state: get(user, "state", ""),
         adminId: get(user, "adminId", ""),
@@ -359,6 +361,7 @@ function UserLeadGeneration() {
         // leadForm.resetFields();
         setImageUrls({});
         setLoading(false);
+        setLocation(null)
 
       }else{
         const response = await axios.post(`${url}/createform`, formData, {
@@ -375,6 +378,8 @@ function UserLeadGeneration() {
         // leadForm.resetFields();
         setImageUrls({});
         setLoading(false);
+        setLocation(null)
+
       }
 
       
@@ -418,6 +423,7 @@ function UserLeadGeneration() {
         fourWheelerparking: values.fourWheelerparking,
         twoWheelerSlot: values.twoWheelerSlot,
         fourWheelerSlot: values.fourWheelerSlot,
+        location: location,
       };
 
       console.log("soooopp");
@@ -437,6 +443,8 @@ function UserLeadGeneration() {
         restaurantForm.resetFields();
         setTableImages([]);
         setMenuImages([])
+        setLocation(null)
+
       }else{
         await axios.put(`${url}/updateform/${id}`, formData, {
           headers: {
@@ -451,6 +459,8 @@ function UserLeadGeneration() {
         // restaurantForm.resetFields();
         setTableImages([]);
         setMenuImages([])
+        setLocation(null)
+
       }
 
 
@@ -517,6 +527,8 @@ function UserLeadGeneration() {
         status: val.status,
         tradeMark: val.tradeMark,
         tradePhotos: tradeImages,
+        location: location,
+
       };
 
       console.log("goooppp");
@@ -536,6 +548,8 @@ function UserLeadGeneration() {
         // statusForm.resetFields();
         setTradeImages([]);
         setLoading(false);
+        setLocation(null)
+
       }else{
         await axios.put(`${url}/updateform/${id}`, formData, {
           headers: {
@@ -551,6 +565,8 @@ function UserLeadGeneration() {
         setStatusUpdateButton(true)
         setTradeImages([]);
         setLoading(false);
+        setLocation(null)
+
       }
 
     } catch (err) {
@@ -629,7 +645,7 @@ function UserLeadGeneration() {
                 notification.success({
                   message: "Location data updated successfully",
                 });
-  
+                setLocation(null)
                 // locationForm.resetFields();
               }else{
                 await axios.put(`${url}/updateform/${id}`, formData, {
@@ -640,6 +656,7 @@ function UserLeadGeneration() {
                 notification.success({
                   message: "Location data submitted successfully",
                 });
+                setLocation(null)
                 setLocationUpdateButton(true)
                 // locationForm.resetFields();
               }
@@ -673,7 +690,7 @@ function UserLeadGeneration() {
   const items = [
     {
       key: "1",
-      label: <div className="font-extrabold text-lg">Lead Generation</div>,
+      label: <div className="font-extrabold text-lg ml-20 md:ml-0">Lead Generation</div>,
       children: (
         <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
           {/* <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1> */}
@@ -1043,6 +1060,24 @@ function UserLeadGeneration() {
                 </Upload>
               </Form.Item>
             </div>
+
+            <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <h1>{location?.locationName}</h1>
+            </Form.Item>
+
             <Form.Item className="flex items-end justify-end">
               <Button
                 // type="primary"
@@ -1235,6 +1270,7 @@ function UserLeadGeneration() {
                 <Select.Option value={"no"}>No</Select.Option>
               </Select>
             </Form.Item>
+
             <Form.Item
               name="onlineAggregater"
               label={<p>Online Aggregator</p>}
@@ -1293,6 +1329,8 @@ function UserLeadGeneration() {
                 </>
               )}
             </Form.List>
+
+
             <Form.Item
               name="twoWheelerparking"
               label={<p>Select Two Wheeler Parking</p>}
@@ -1389,6 +1427,24 @@ function UserLeadGeneration() {
                 <Select.Option value="20 Slots">20 Slots</Select.Option>
               </Select>
             </Form.Item>
+
+            <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <h1>{location?.locationName}</h1>
+            </Form.Item>
+
             <Form.Item className="flex items-end justify-end">
               <Button
                 htmlType="submit"
@@ -1413,7 +1469,6 @@ function UserLeadGeneration() {
             onFinish={handleFinishContact}
             form={contactForm}
           >
-            <Form.Item>
               <Form.Item
                 name="restaurantMobileNumber"
                 rules={[
@@ -1518,41 +1573,52 @@ function UserLeadGeneration() {
 
                <Form.Item
                 name="email"
-                // rules={[{ required: true, message: "Email is required" }]}
+                rules={[{ required: true, message: "Email is required" }]}
                 label={<p>Email</p>}
               >
                 <Input type="email" size="large" placeholder="Enter email..." />
             </Form.Item>
-            
+
+
+            <Form.Item
+              name="socialMedia"
+              label={<p>Social Media links</p>}
+              rules={[
+                { required: true, message: "social media is required" },
+              ]}
+            >
+              <Select
+                onChange={(e) => {
+                  setSocialMedia(e);
+                }}
+                placeholder={"Select social media..."}
+                size="large"
+              >
+                <Select.Option value={"yes"}>Yes</Select.Option>
+                <Select.Option value={"no"}>No</Select.Option>
+              </Select>
             </Form.Item>
-            <p className="pb-2 ">Add Social Media links</p>
-            <Form.List name="socialMedia">
+
+            <Form.List name="socialMediaLinks">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, ...restField }) => (
                     <Space
                       key={key}
-                      className="flex flex-col md:flex-row items-center "
+                      style={{
+                        display: "flex",
+                        marginBottom: 8,
+                      }}
                       align="baseline"
                     >
-                      
-                      <Form.Item
-                        {...restField}
-                        name={[name, "socialMedia"]}
-                        // rules={[
-                        //   {
-                        //     required: true,
-                        //     message: "Table count is required",
-                        //   },
-                        // ]}
-                        label={<p>Social Media Link</p>}
-                        className="w-[100%] lg:w-[20vw]"
-                      >
+                      <Form.Item {...restField} name={[name, "link"]}>
                         <Input
-                          placeholder={`Link count ${name + 1}...`}
+                          placeholder="Link..."
                           size="large"
+                          className="md:!w-[16vw] lg:!w-[40vw]"
                         />
                       </Form.Item>
+
                       <MinusCircleOutlined onClick={() => remove(name)} />
                     </Space>
                   ))}
@@ -1562,13 +1628,37 @@ function UserLeadGeneration() {
                       onClick={() => add()}
                       block
                       icon={<PlusOutlined />}
+                      className={`${
+                        socialMedia === "yes" ? "!block" : "!hidden"
+                      }`}
                     >
-                      Add More
+                      Add field
                     </Button>
                   </Form.Item>
                 </>
               )}
             </Form.List>
+
+
+
+            <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <h1>{location?.locationName}</h1>
+            </Form.Item>
+
+
 
             <Form.Item className="flex items-end justify-end">
               <Button
@@ -1586,6 +1676,90 @@ function UserLeadGeneration() {
     },
     {
       key: "4",
+      label: <div className="font-extrabold text-lg">Location</div>,
+      children: (
+        <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
+          {/* <h1 className="text-center text-2xl hidden md:block">Location</h1> */}
+          <Form
+            layout="vertical"
+            className=" xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
+            form={locationForm}
+            onFinish={handleFinishLocation}
+          >
+            <Form.Item
+              label={<p>Door No</p>}
+              name="doorNo"
+              rules={[{ required: true, message: "Door no is required" }]}
+            >
+              <Input type="text" placeholder="Door no..." size="large" />
+            </Form.Item>
+
+            <Form.Item
+              label={<p>Area Name</p>}
+              name="areaName"
+              rules={[{ required: true, message: "Area name is required" }]}
+            >
+              <Input type="text" placeholder="Area name..." size="large" />
+            </Form.Item>
+            <Form.Item
+              label={<p>Land Mark</p>}
+              name="landMark"
+              rules={[{ required: true, message: "Landmark is required" }]}
+            >
+              <Input type="text" placeholder="Landmark..." size="large" />
+            </Form.Item>
+            <Form.Item
+              label={<p>City</p>}
+              name="locationCity"
+              rules={[{ required: true, message: "City is required" }]}
+            >
+              <Input type="text" placeholder="city..." size="large" />
+            </Form.Item>
+            <Form.Item
+              label={<p>Pincode</p>}
+              name="pinCode"
+              rules={[{ required: true, message: "Pincode is required" }]}
+            >
+              <Input type="text" placeholder="Pincode..." size="large" />
+            </Form.Item>
+            <Form.Item
+              label={<p>State</p>}
+              name="state"
+              rules={[{ required: true, message: "State is required" }]}
+            >
+              <Input type="text" placeholder="State..." size="large" />
+            </Form.Item>
+
+            <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <h1>{location?.locationName}</h1>
+            </Form.Item>
+            <Form.Item className="flex items-end justify-end">
+              <Button
+                htmlType="submit"
+                className="bg-green-500 w-[170px] !text-white font-semibol"
+              >
+               {locationUpdateButton?'Update':'Submit'}
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      ),
+    },
+    {
+      key: "5",
       label: <div className="font-extrabold text-lg ">Status</div>,
       children: (
         <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
@@ -1767,73 +1941,7 @@ function UserLeadGeneration() {
                 <Select.Option value="Warm">Warm</Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item className="flex items-end justify-end">
-              <Button
-                htmlType="submit"
-                className="bg-green-500 w-[100px] !text-white font-semibol"
-              >
-               {statusUpdateButton?'Update':'Submit'}
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      ),
-    },
-    {
-      key: "5",
-      label: <div className="font-extrabold text-lg ">Location</div>,
-      children: (
-        <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
-          {/* <h1 className="text-center text-2xl hidden md:block">Location</h1> */}
-          <Form
-            layout="vertical"
-            className=" xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
-            form={locationForm}
-            onFinish={handleFinishLocation}
-          >
-            <Form.Item
-              label={<p>Door No</p>}
-              name="doorNo"
-              rules={[{ required: true, message: "Door no is required" }]}
-            >
-              <Input type="text" placeholder="Door no..." size="large" />
-            </Form.Item>
 
-            <Form.Item
-              label={<p>Area Name</p>}
-              name="areaName"
-              rules={[{ required: true, message: "Area name is required" }]}
-            >
-              <Input type="text" placeholder="Area name..." size="large" />
-            </Form.Item>
-            <Form.Item
-              label={<p>Land Mark</p>}
-              name="landMark"
-              rules={[{ required: true, message: "Landmark is required" }]}
-            >
-              <Input type="text" placeholder="Landmark..." size="large" />
-            </Form.Item>
-            <Form.Item
-              label={<p>City</p>}
-              name="locationCity"
-              rules={[{ required: true, message: "City is required" }]}
-            >
-              <Input type="text" placeholder="city..." size="large" />
-            </Form.Item>
-            <Form.Item
-              label={<p>Pincode</p>}
-              name="pinCode"
-              rules={[{ required: true, message: "Pincode is required" }]}
-            >
-              <Input type="text" placeholder="Pincode..." size="large" />
-            </Form.Item>
-            <Form.Item
-              label={<p>State</p>}
-              name="state"
-              rules={[{ required: true, message: "State is required" }]}
-            >
-              <Input type="text" placeholder="State..." size="large" />
-            </Form.Item>
             <Form.Item 
             label="Fetch Current Location"
             rules={[{ required: true, message: "Current Location is required" }]}
@@ -1850,12 +1958,13 @@ function UserLeadGeneration() {
             <Form.Item>
               <h1>{location?.locationName}</h1>
             </Form.Item>
+
             <Form.Item className="flex items-end justify-end">
               <Button
                 htmlType="submit"
-                className="bg-green-500 w-[170px] !text-white font-semibol"
+                className="bg-green-500 w-[100px] !text-white font-semibol"
               >
-               {locationUpdateButton?'Update':'Submit'}
+               {statusUpdateButton?'Update':'Submit'}
               </Button>
             </Form.Item>
           </Form>
@@ -1866,7 +1975,7 @@ function UserLeadGeneration() {
 
   return (
     <>
-      <div>
+      <div className="ml-16 md:ml-72">
           {" "}
           <Button
             className="text-white bg-black ml-5 mt-20"
@@ -1875,8 +1984,8 @@ function UserLeadGeneration() {
             Go Back
           </Button>
         </div>{" "}
-      <div className="lg:w-[100vw]">
-        <div className="lg:flex lg:items-center lg:justify-center bg-white shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
+      <div className="lg:w-[100vw] ">
+        <div className="lg:flex lg:items-center lg:justify-center shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
           <Spin spinning={loading}>
             <Tabs
               defaultActiveKey="1"

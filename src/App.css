@@ -63,8 +63,10 @@
 .ant-tabs-nav .ant-tabs-nav-wrap{
     /* position: fixed !important; */
     width: 100vw !important;
-    /* z-index: 100 !important; */
-    background:white !important;
+    /* z-index: 0 !important; */
+    /* background:chartreuse !important; */
+    border-bottom: none;
+    
 }
 
 .ant-tabs .ant-tabs-top{
