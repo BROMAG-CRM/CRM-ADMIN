@@ -1,52 +1,65 @@
-import { Button, Image, Table} from "antd";
+import { Button, Image, Table, Input, Select } from "antd";
 import axios from "axios";
-import { get} from "lodash";
+import { debounce, get } from "lodash";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ImageModal from "../../Modals/ImageModal";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 const url = import.meta.env.VITE_REACT_APP_URL;
-const token = localStorage.getItem("token");
+const { Option } = Select;
 
-
-
-
-function Completed() {
+function LeadFormNew() {
+  const token = localStorage.getItem("token");
+  const { Search } = Input;
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const navigate = useNavigate()
-  const [selectedImage,setSelectedImage] = useState('')
-  const [isImageModalOpen,setImageModalOpen] = useState(false)
-  const [update,setUpdate]=useState(false)
-   
+  const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState("");
+  const [isImageModalOpen, setImageModalOpen] = useState(false);
+  const [searchPartner, setsearchPartner] = useState("");
+  const [updated, setUpdated] = useState(false);
 
-const fetchData = async () => {
+
+
+  const fetchData = async () => {
     try {
-const response = await axios.get(`${url}/getcompletedform/books`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-})
+      const response = await axios.get(`${url}/getform/Partnership`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      setData(get(response, "data.data", []));
+      const sortedData = get(response, "data.data", []).sort(
+        (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+      );
+
+      setData(sortedData);
     } catch (err) {
       console.log(err);
     }
   };
 
   console.log(data);
+  console.log('data');
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [updated]);
+
+
 
     //business status
     const handleBusinessStatus = async (record) => {
       const id = record._id;
   
       const res = await axios.post(
-        `${url}/booksbusinessstatus`,
-        { userId: id, newBusinessStatus: "telemarketing" ,leadStatus:"new-lead" },
+        `${url}/businessstatus`,
+        {
+          userId: id,
+          newBusinessStatus: "telemarketing",
+          leadStatus: "new-lead",
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,8 +67,44 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
         }
       );
       console.log(res);
-      setUpdate(!update);
+      setUpdated(!updated);
     };
+
+
+
+
+  //status function
+  const handleStatusChange = async (value, record) => {
+    console.log(value);
+    console.log(record);
+
+    await axios.post(
+      `${url}/updatestatus`,
+      { value: value, id: record._id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setUpdated(!updated);
+  };
+
+
+
+
+  //search function
+  const handleSearchPartnership = (value) => {
+    const filteredData = data.filter((item) => {
+      console.log(value, item.city, "wehgjhv");
+      return (
+        item.brandName.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+    setsearchPartner(filteredData);
+  };
+  const debouncedSearch = debounce(handleSearchPartnership, 300);
 
 
 
@@ -71,18 +120,27 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       },
     },
     {
-      title: <h1>Employee Name</h1>,
-      dataIndex: "EmployeeName",
-      key: "EmployeeName",
+      title: <h1>Created At</h1>,
+      dataIndex: "createdDate",
+      key: "createdDate",
       align: "center",
       render: (data) => {
-        return <p>{data}</p>;
+        const formattedDate = new Date(data).toLocaleString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+          hour12: true,
+        });
+        return formattedDate;
       },
     },
     {
-      title: <h1>Employee City</h1>,
-      dataIndex: "city",
-      key: "city",
+      title: <h1>Employee Name</h1>,
+      dataIndex: "EmployeeName",
+      key: "EmployeeName",
       align: "center",
       render: (data) => {
         return <p>{data}</p>;
@@ -122,30 +180,33 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       align: "center",
       render: (data) => {
         if (!data) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-      
+
         const handleViewImage = (imageUrl) => {
           console.log(imageUrl);
           console.log("View Image");
-      
+
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-      
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-      
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Image</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
-
       },
     },
     {
@@ -155,30 +216,33 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       align: "center",
       render: (data) => {
         if (!data) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-      
+
         const handleViewImage = (imageUrl) => {
           console.log(imageUrl);
           console.log("View Image");
-      
+
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-      
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-      
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Image</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
-
       },
     },
     {
@@ -188,30 +252,33 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       align: "center",
       render: (data) => {
         if (!data) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-      
+
         const handleViewImage = (imageUrl) => {
           console.log(imageUrl);
           console.log("View Image");
-      
+
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-      
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-      
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Image</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
-
       },
     },
     {
@@ -221,30 +288,33 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       align: "center",
       render: (data) => {
         if (!data) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-      
+
         const handleViewImage = (imageUrl) => {
           console.log(imageUrl);
           console.log("View Image");
-      
+
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-      
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-      
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Image</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
-
       },
     },
     {
@@ -274,24 +344,61 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       align: "center",
       render: (data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-    
+
         const handleViewImage = (imageUrl) => {
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-    
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-    
+
         return (
-              <div style={{ maxWidth: '300px', overflow: 'hidden'}}>
-                <Button onClick={() => handleViewImage(data)}>View Images</Button>
-            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
+            <Button onClick={() => handleViewImage(data)}>View Images</Button>
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
+          </div>
+        );
+      },
+    },
+    {
+      title: <h1>Menu</h1>,
+      dataIndex: "menuPhotos",
+      key: "menuPhotos",
+      align: "center",
+      render: (data) => {
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          console.error("Invalid or empty data:", data);
+          return null;
+        }
+
+        const handleViewImage = (imageUrl) => {
+          setSelectedImage(imageUrl);
+          setImageModalOpen(true);
+        };
+
+        const handleCloseImageModal = () => {
+          setImageModalOpen(false);
+          setSelectedImage(null);
+        };
+
+        return (
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
+            <Button onClick={() => handleViewImage(data)}>View Images</Button>
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
           </div>
         );
       },
@@ -390,6 +497,36 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       },
     },
     {
+      title: <h1>Social Media</h1>,
+      dataIndex: "socialMedia",
+      key: "socialMedia",
+      align: "center",
+      render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>Social Media Links</h1>,
+      dataIndex: "socialMediaLinks",
+      key: "socialMediaLinks",
+      align: "center",
+      render: (data) => {
+        return (
+          <>
+            {data.length > 0 ? (
+              data.map((res, i) => (
+                <div className="flex gap-2 items-center justify-center" key={i}>
+                  <p>{res.link}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-center">No links</p>
+            )}
+          </>
+        );
+      },
+    },
+    {
       title: <h1>Contact Person Name</h1>,
       dataIndex: "contactPersonname",
       key: "contactPersonname",
@@ -450,26 +587,30 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       align: "center",
       render: (data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {
-          console.error('Invalid or empty data:', data);
+          console.error("Invalid or empty data:", data);
           return null;
         }
-    
+
         const handleViewImage = (imageUrl) => {
           setSelectedImage(imageUrl);
           setImageModalOpen(true);
         };
-    
+
         const handleCloseImageModal = () => {
           setImageModalOpen(false);
           setSelectedImage(null);
         };
-    
+
         return (
-          <div style={{ maxWidth: '300px', overflow: 'hidden'}}>
+          <div style={{ maxWidth: "300px", overflow: "hidden" }}>
             <Button onClick={() => handleViewImage(data)}>View Images</Button>
-        <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
-      </div>
-    );
+            <ImageModal
+              isOpen={isImageModalOpen}
+              onClose={handleCloseImageModal}
+              imageUrl={selectedImage}
+            />
+          </div>
+        );
       },
     },
     {
@@ -507,6 +648,26 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       render: (data) => {
         return <p>{data}</p>;
       },
+    },
+    {
+      title: <h1>Update Status</h1>,
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      render: (data, record) => (
+        <>
+          <Select
+            placeholder="Select Status"
+            value={data}
+            onChange={(value) => handleStatusChange(value, record)}
+            style={{ width: 100 }}
+          >
+            <Option value="Hot">Hot</Option>
+            <Option value="Warm">Warm</Option>
+            <Option value="Cold">Cold</Option>
+          </Select>
+        </>
+      ),
     },
     {
       title: <h1>Address</h1>,
@@ -556,39 +717,72 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
       },
     },
     {
-      title: <h1>Created At</h1>,
-      dataIndex: "createdDate",
-      key: "createdDate",
+      title: <h1>Actions</h1>,
       align: "center",
       render: (data) => {
-        const formattedDate = new Date(data).toLocaleString('en-GB', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          hour12: true,
-        });
-        return formattedDate;
+        const urlId = data._id; // Assuming data._id is the value you want to check
+    
+        return (
+          <>
+            <Link
+              to={{
+                pathname: '/editleadform',
+              }}
+              state={{urlId}}
+            >
+              <EditOutlined
+                key={`edit-${data._id}`}
+                style={{ fontSize: '18px', fontWeight: 'bold', cursor: 'pointer' }}
+                // onClick={()=>handleEdit(data._id)}
+              />
+            </Link>
+          </>
+        );
       },
-    },  
+    },
     {
-      title: <h1>Move to Tele Marketing</h1>,
+      title: <h1>Move to Admin</h1>,
       dataIndex: "businessStatus",
       key: "businessStatus",
       align: "center",
-      render: (data, record) => (
-        <Button
-          type="primary"
-          style={{ backgroundColor: "green" }}
-          onClick={() => handleBusinessStatus(record)}
-        >
-          Okay
-        </Button>
-      ),
+      render: (data, record) =>
+      data &&
+      record &&
+      record.brandName &&
+      record.firmName &&
+      record.firmOption &&
+      record.tablePhotos &&
+      record.menuPhotos &&
+      record.billingSoftware &&
+      record.onlineAggregator &&
+      record.billingSoftware &&
+      record.restaurantMobileNumber &&
+      record.email &&
+      record.socialMedia &&
+      record.contactPersonname &&
+      record.contactPersonNumber &&
+      record.designation &&
+      record.domain &&
+      record.tradeMark &&
+      record.dld &&
+      record.status &&
+      record.address &&
+      record.address.length > 0 && 
+      record.address[0].doorNo &&
+      record.address[0].areaName &&
+      record.address[0].landMark &&
+      record.address[0].locationCity &&
+      record.address[0].pinCode &&
+      record.address[0].state ?  (
+          <Button
+            type="primary"
+            style={{ backgroundColor: "green" }}
+            onClick={() => handleBusinessStatus(record)}
+          >
+            Okay
+          </Button>
+        ) : null,
     },
-    
   ];
 
   const handleTableChange = (pagination) => {
@@ -597,28 +791,41 @@ const response = await axios.get(`${url}/getcompletedform/books`, {
 
   return (
     <>
-
-<div className="pt-28 w-screen ml-2">
-      <div className="w-[80vw] pl-20 pt-4 bg-white-70 shadow-md"></div>
-      <div className="w-[100vw]">
-      <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
-        <div className="pt-3">
-          <Table
-            columns={Partnershipcolumns}
-            dataSource={data}
-            scroll={{ x: 7000 }}
-            ref={tableRef}
-            pagination={{ pageSize: 5 }}
-            onChange={handleTableChange}
-            className="w-full"
-            bordered
-            style={{  background: 'white' }}
+      <div className="pl-[18vw]  pt-14 w-screen">
+        <div className="p-5 w pt-4 bg-white-70 shadow-md flex justify-between">
+          <Button className="text-white bg-black mt-4" onClick={() => navigate(-1)}>Go Back</Button>
+          <Button
+            onClick={() => navigate("/createnewlead")}
+            className="bg-amber-600 text-white rounded-2xl h-[6vh] text-lg"
+          >
+            Add New Lead
+          </Button>
+        </div>
+        <div className="p-5">
+          <Search
+            placeholder="Search by Brand Name..."
+            onChange={(e) => debouncedSearch(e.target.value)}
+            enterButton
+            className="mt-4 w-[60%] mb-5 ml-5"
+            size="large"
           />
+          <div className="pt-7">
+            <Table
+              columns={Partnershipcolumns}
+              dataSource={searchPartner.length > 0 ? searchPartner : data}
+              scroll={{ x: 8000 }}
+              ref={tableRef}
+              pagination={{ pageSize: 5 }}
+              onChange={handleTableChange}
+              className="w-full"
+              bordered
+              style={{ background: "white" }}
+            />
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
 
-export default Completed;
+export default LeadFormNew;

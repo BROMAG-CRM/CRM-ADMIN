@@ -31,7 +31,7 @@ import {
   const url = import.meta.env.VITE_REACT_APP_URL;
   import { get } from "lodash";
   import { EnvironmentOutlined } from "@ant-design/icons";
-  import { useNavigate } from "react-router-dom";
+  import { useLocation, useNavigate } from "react-router-dom";
   
   function EditLeadForm() {
     const user = useSelector((state) => state.user.user);
@@ -62,7 +62,7 @@ import {
     const [tradeImages, setTradeImages] = useState([]);
     const [loading, setLoading] = useState(false);
     const token = localStorage.getItem("token");
-    const [location, setLocation] = useState(null);
+    const [locationn, setLocation] = useState(null);
     const navigate = useNavigate();
     const [updateButton,setUpdateButton] = useState(false)
     const [restaurantUpdateButton,setRestaurantUpdateButton] = useState(false)
@@ -71,6 +71,8 @@ import {
     const [locationUpdateButton,setLocationUpdateButton] = useState(false)
     const [leadId,setLeadId] = useState(null)
     const [data,setData] = useState()
+    const [socialMedia,setSocialMedia] = useState('')
+
   
     const id = localStorage.getItem("id");
     console.log(id);
@@ -78,17 +80,11 @@ import {
     console.log("dddddd");
   
   
-    // Assuming this code is within the 'createnewlead' route or component
-  
-  const queryParams = new URLSearchParams(window.location.search);
-  
-  // Retrieving the values of 'param1' and 'id' from the query string
-  const param1 = queryParams.get('param1');
-  const urlId = queryParams.get('id');
-  
-  console.log(param1); // Output: editwholeform
-  console.log(urlId);
-  console.log("urldata");
+  const location = useLocation();
+  const urlId = location.state?.urlId ;
+
+    console.log(urlId);
+    console.log("urlId");
   
   
   const fetchData = async () => {
@@ -374,6 +370,7 @@ import {
           panCard: imageUrls?.panCard,
           gstCopy: imageUrls?.gstCopy,
           cancelCheck: imageUrls?.cancelCheck,
+          location: locationn,
           EmployeeName: get(user, "name", ""),
           state: get(user, "state", ""),
           adminId: get(user, "adminId", ""),
@@ -398,6 +395,7 @@ import {
           // leadForm.resetFields();
           setImageUrls({});
           setLoading(false);
+          setLocation(null)
   
         }else{
           const response = await axios.put(`${url}/updateform/${urlId}`, formData, {
@@ -414,6 +412,8 @@ import {
           // leadForm.resetFields();
           setImageUrls({});
           setLoading(false);
+          setLocation(null)
+
         }
   
         
@@ -457,6 +457,7 @@ import {
           fourWheelerparking: values.fourWheelerparking,
           twoWheelerSlot: values.twoWheelerSlot,
           fourWheelerSlot: values.fourWheelerSlot,
+          location: locationn
         };
   
         console.log("soooopp");
@@ -476,6 +477,8 @@ import {
           restaurantForm.resetFields();
           setTableImages([]);
           setMenuImages([])
+          setLocation(null)
+
         }else{
           await axios.put(`${url}/updateform/${urlId}`, formData, {
             headers: {
@@ -490,6 +493,8 @@ import {
           // restaurantForm.resetFields();
           setTableImages([]);
           setMenuImages([])
+          setLocation(null)
+
         }
   
   
@@ -518,7 +523,8 @@ import {
         notification.success({
           message: "Contact details updated successfully",
         });
-  
+        setLocation(null)
+
         // contactForm.resetFields();
       }else{
         
@@ -531,6 +537,8 @@ import {
         notification.success({
           message: "Contact details submitted successfully",
         });
+
+        setLocation(null)
         setContactUpdateButton(true)
         // contactForm.resetFields();
       }
@@ -556,6 +564,7 @@ import {
           status: val.status,
           tradeMark: val.tradeMark,
           tradePhotos: tradeImages,
+          location: locationn
         };
   
         console.log("goooppp");
@@ -575,6 +584,8 @@ import {
           // statusForm.resetFields();
           setTradeImages([]);
           setLoading(false);
+          setLocation(null)
+
         }else{
           await axios.put(`${url}/updateform/${urlId}`, formData, {
             headers: {
@@ -590,6 +601,8 @@ import {
           setStatusUpdateButton(true)
           setTradeImages([]);
           setLoading(false);
+          setLocation(null)
+
         }
   
       } catch (err) {
@@ -656,7 +669,7 @@ import {
                 const id = localStorage.getItem("id");
                 const formData = {
                   address: val,
-                  location: location,
+                  location: locationn,
                 };
   
                 if(locationUpdateButton){
@@ -668,7 +681,8 @@ import {
                   notification.success({
                     message: "Location data updated successfully",
                   });
-    
+                  setLocation(null)
+
                   // locationForm.resetFields();
                 }else{
                   await axios.put(`${url}/updateform/${urlId}`, formData, {
@@ -679,6 +693,7 @@ import {
                   notification.success({
                     message: "Location data submitted successfully",
                   });
+                  setLocation(null)
                   setLocationUpdateButton(true)
                   // locationForm.resetFields();
                 }
@@ -705,23 +720,13 @@ import {
     //   }
     // };
   
-    const defaultValues = {
-      brandName: "Default Brand Name",
-      firmName: "Default Firm Name",
-      firmOption: "Partnership", // Default firm option
-      // Add default values for other form fields here
-    };
-  
-  
-    console.log(defaultValues);
-    console.log(data);
-    console.log("data");
+
   
   
     const items = [
       {
         key: "1",
-        label: <div className="font-extrabold text-lg">Lead Generation</div>,
+        label: <div className="font-extrabold text-lg ml-20 md:ml-0">Lead Generation</div>,
         children: (
           <div className="w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
             {/* <h1 className="text-2xl text-center hidden md:block">Lead Generation</h1> */}
@@ -1095,6 +1100,25 @@ import {
                   </Upload>
                 </Form.Item>
               </div>
+
+            <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+            <h1>{locationn?.locationName}</h1>
+            </Form.Item>
+
+
               <Form.Item className="flex items-end justify-end">
                 <Button
                   // type="primary"
@@ -1457,6 +1481,24 @@ import {
                   <Select.Option value="20 Slots">20 Slots</Select.Option>
                 </Select>
               </Form.Item>
+
+              <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+            <h1>{locationn?.locationName}</h1>
+            </Form.Item>
+
               <Form.Item className="flex items-end justify-end">
                 <Button
                   htmlType="submit"
@@ -1493,7 +1535,7 @@ import {
               onFinish={handleFinishContact}
               form={contactForm}
             >
-              <Form.Item>
+              {/* <Form.Item> */}
                 <Form.Item
                   name="restaurantMobileNumber"
                   initialValue={data?.restaurantMobileNumber}
@@ -1536,59 +1578,8 @@ import {
                 </Form.Item>
 
                 
-                <Form.Item
-                  name="email"
-                  // rules={[{ required: true, message: "Email is required" }]}
-                  label={<p>Email</p>}
-                  initialValue={data?.email}
-                >
-                  <Input type="email" size="large" placeholder="Enter email..." />
-                </Form.Item>
-              </Form.Item>
 
-              <p className="pb-2">Add Social Media links</p>
-            <Form.List name="socialMedia">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map(({ key, name, ...restField }) => (
-                    <Space
-                      key={key}
-                      className="flex flex-col md:flex-row items-center "
-                      align="baseline"
-                    >
-                      <Form.Item
-                        {...restField}
-                        name={[name, "socialMedia"]}
-                        // rules={[
-                        //   {
-                        //     required: true,
-                        //     message: "Table count is required",
-                        //   },
-                        // ]}
-                        label={<p>Social Media Link</p>}
-                        className="w-[100%] lg:w-[20vw]"
-                      >
-                        <Input
-                          placeholder={`Link count ${name + 1}...`}
-                          size="large"
-                        />
-                      </Form.Item>
-                      <MinusCircleOutlined onClick={() => remove(name)} />
-                    </Space>
-                  ))}
-                  <Form.Item>
-                    <Button
-                      type="dashed"
-                      onClick={() => add()}
-                      block
-                      icon={<PlusOutlined />}
-                    >
-                      Add More
-                    </Button>
-                  </Form.Item>
-                </>
-              )}
-            </Form.List>
+              {/* </Form.Item> */}
 
 
               <Form.Item
@@ -1653,12 +1644,208 @@ import {
                   placeholder="Enter designation..."
                 />
               </Form.Item>
-              <Form.Item className="flex items-end justify-end">
+
+
+              <Form.Item
+                  name="email"
+                  rules={[{ required: true, message: "Email is required" }]}
+                  label={<p>Email</p>}
+                  initialValue={data?.email}
+                >
+                  <Input type="email" size="large" placeholder="Enter email..." />
+                </Form.Item>
+
+
+                
+                <Form.Item
+              name="socialMedia"
+              label={<p>Social Media links</p>}
+              rules={[
+                { required: true, message: "social media is required" },
+              ]}
+            >
+              <Select
+                onChange={(e) => {
+                  setSocialMedia(e);
+                }}
+                placeholder={"Select social media..."}
+                size="large"
+              >
+                <Select.Option value={"yes"}>Yes</Select.Option>
+                <Select.Option value={"no"}>No</Select.Option>
+              </Select>
+            </Form.Item>
+
+            <Form.List name="socialMediaLinks">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ key, name, ...restField }) => (
+                    <Space
+                      key={key}
+                      style={{
+                        display: "flex",
+                        marginBottom: 8,
+                      }}
+                      align="baseline"
+                    >
+                      <Form.Item {...restField} name={[name, "link"]}>
+                        <Input
+                          placeholder="Link..."
+                          size="large"
+                          className="md:!w-[16vw] lg:!w-[40vw]"
+                        />
+                      </Form.Item>
+
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Space>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      block
+                      icon={<PlusOutlined />}
+                      className={`${
+                        socialMedia === "yes" ? "!block" : "!hidden"
+                      }`}
+                    >
+                      Add field
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+
+
+            <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+            <h1>{locationn?.locationName}</h1>
+            </Form.Item>
+
+                <Form.Item className="flex items-end justify-end">
                 <Button
                   htmlType="submit"
                   className="bg-green-500 w-[100px] !text-white font-semibol"
                 >
                  {contactUpdateButton?'Update':'Submit'}
+                </Button>
+              </Form.Item>
+
+
+
+
+
+            </Form>
+             ) : (
+  
+  
+              
+                <p>Loading...</p> 
+    
+    
+    
+    
+              )
+               } 
+          </div>
+        ),
+      },
+      {
+        key: "4",
+        label: <div className="font-extrabold text-lg ">Location</div>,
+        children: (
+          <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
+            {/* <h1 className="text-center text-2xl hidden md:block">Location</h1> */}
+            {data ? ( 
+            <Form
+              layout="vertical"
+              className=" xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
+              form={locationForm}
+              onFinish={handleFinishLocation}
+            >
+              <Form.Item
+                label={<p>Door No</p>}
+                name="doorNo"
+                rules={[{ required: true, message: "Door no is required" }]}
+                initialValue={data?.address[0]?.doorNo}
+              >
+                <Input type="text" placeholder="Door no..." size="large" />
+              </Form.Item>
+  
+              <Form.Item
+                label={<p>Area Name</p>}
+                name="areaName"
+                rules={[{ required: true, message: "Area name is required" }]}
+                initialValue={data?.address[0]?.areaName}
+              >
+                <Input type="text" placeholder="Area name..." size="large" />
+              </Form.Item>
+              <Form.Item
+                label={<p>Land Mark</p>}
+                name="landMark"
+                rules={[{ required: true, message: "Landmark is required" }]}
+                initialValue={data?.address[0]?.landMark}
+              >
+                <Input type="text" placeholder="Landmark..." size="large" />
+              </Form.Item>
+              <Form.Item
+                label={<p>City</p>}
+                name="locationCity"
+                rules={[{ required: true, message: "City is required" }]}
+                initialValue={data?.address[0]?.locationCity}
+              >
+                <Input type="text" placeholder="city..." size="large" />
+              </Form.Item>
+              <Form.Item
+                label={<p>Pincode</p>}
+                name="pinCode"
+                rules={[{ required: true, message: "Pincode is required" }]}
+                initialValue={data?.address[0]?.pinCode}
+              >
+                <Input type="text" placeholder="Pincode..." size="large" />
+              </Form.Item>
+              <Form.Item
+                label={<p>State</p>}
+                name="state"
+                rules={[{ required: true, message: "State is required" }]}
+                initialValue={data?.state}
+              >
+                <Input type="text" placeholder="State..." size="large" />
+              </Form.Item>
+              <Form.Item 
+              label="Fetch Current Location"
+              rules={[{ required: true, message: "Current Location is required" }]}
+              >
+                <Button
+                  type="primary"
+                  icon={<EnvironmentOutlined />}
+                  onClick={locationAutoFetch}
+                  className="bg-sky-500"
+                >
+                  Fetch Location
+                </Button>
+              </Form.Item>
+              <Form.Item>
+              <h1>{locationn?.locationName}</h1>
+              </Form.Item>
+              <Form.Item className="flex items-end justify-end">
+                <Button
+                  htmlType="submit"
+                  className="bg-green-500 w-[170px] !text-white font-semibol"
+                >
+                 {locationUpdateButton?'Update':'Submit'}
                 </Button>
               </Form.Item>
             </Form>
@@ -1677,7 +1864,7 @@ import {
         ),
       },
       {
-        key: "4",
+        key: "5",
         label: <div className="font-extrabold text-lg ">Status</div>,
         children: (
           <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
@@ -1865,6 +2052,23 @@ import {
                   <Select.Option value="Warm">Warm</Select.Option>
                 </Select>
               </Form.Item>
+              <Form.Item 
+            label="Fetch Current Location"
+            rules={[{ required: true, message: "Current Location is required" }]}
+            >
+              <Button
+                type="primary"
+                icon={<EnvironmentOutlined />}
+                onClick={locationAutoFetch}
+                className="bg-sky-500"
+              >
+                Fetch Location
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <h1>{locationn?.locationName}</h1>
+            </Form.Item>
+
               <Form.Item className="flex items-end justify-end">
                 <Button
                   htmlType="submit"
@@ -1888,131 +2092,30 @@ import {
           </div>
         ),
       },
-      {
-        key: "5",
-        label: <div className="font-extrabold text-lg ">Location</div>,
-        children: (
-          <div className="mt-5 w-[100vw] flex flex-col items-center min-h-[84vh]  border-b md:border-b-0 md:border-r rounded-md px-5 py-5">
-            {/* <h1 className="text-center text-2xl hidden md:block">Location</h1> */}
-            {data ? ( 
-            <Form
-              layout="vertical"
-              className=" xsm:w-[90vw] md:w-[65vw] lg:w-[50vw]"
-              form={locationForm}
-              onFinish={handleFinishLocation}
-            >
-              <Form.Item
-                label={<p>Door No</p>}
-                name="doorNo"
-                rules={[{ required: true, message: "Door no is required" }]}
-                initialValue={data?.address[0]?.doorNo}
-              >
-                <Input type="text" placeholder="Door no..." size="large" />
-              </Form.Item>
-  
-              <Form.Item
-                label={<p>Area Name</p>}
-                name="areaName"
-                rules={[{ required: true, message: "Area name is required" }]}
-                initialValue={data?.address[0]?.areaName}
-              >
-                <Input type="text" placeholder="Area name..." size="large" />
-              </Form.Item>
-              <Form.Item
-                label={<p>Land Mark</p>}
-                name="landMark"
-                rules={[{ required: true, message: "Landmark is required" }]}
-                initialValue={data?.address[0]?.landMark}
-              >
-                <Input type="text" placeholder="Landmark..." size="large" />
-              </Form.Item>
-              <Form.Item
-                label={<p>City</p>}
-                name="locationCity"
-                rules={[{ required: true, message: "City is required" }]}
-                initialValue={data?.address[0]?.locationCity}
-              >
-                <Input type="text" placeholder="city..." size="large" />
-              </Form.Item>
-              <Form.Item
-                label={<p>Pincode</p>}
-                name="pinCode"
-                rules={[{ required: true, message: "Pincode is required" }]}
-                initialValue={data?.address[0]?.pinCode}
-              >
-                <Input type="text" placeholder="Pincode..." size="large" />
-              </Form.Item>
-              <Form.Item
-                label={<p>State</p>}
-                name="state"
-                rules={[{ required: true, message: "State is required" }]}
-                initialValue={data?.state}
-              >
-                <Input type="text" placeholder="State..." size="large" />
-              </Form.Item>
-              <Form.Item 
-              label="Fetch Current Location"
-              rules={[{ required: true, message: "Current Location is required" }]}
-              >
-                <Button
-                  type="primary"
-                  icon={<EnvironmentOutlined />}
-                  onClick={locationAutoFetch}
-                  className="bg-sky-500"
-                >
-                  Fetch Location
-                </Button>
-              </Form.Item>
-              <Form.Item>
-                <h1>{location?.locationName}</h1>
-              </Form.Item>
-              <Form.Item className="flex items-end justify-end">
-                <Button
-                  htmlType="submit"
-                  className="bg-green-500 w-[170px] !text-white font-semibol"
-                >
-                 {locationUpdateButton?'Update':'Submit'}
-                </Button>
-              </Form.Item>
-            </Form>
-             ) : (
-  
-  
-              
-                <p>Loading...</p> 
-    
-    
-    
-    
-              )
-               } 
-          </div>
-        ),
-      },
     ];
   
     return (
       <>
-        <div>
-            {" "}
-            <Button
-              className="text-white bg-black ml-5 mt-20"
-              onClick={() => navigate(-1)}
-            >
-              Go Back
-            </Button>
-          </div>{" "}
-        <div className="lg:w-[100vw]">
-          <div className="lg:flex lg:items-center lg:justify-center bg-white shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
-            <Spin spinning={loading}>
-              <Tabs
-                defaultActiveKey="1"
-                items={items}
-                className="mt-[3vh] md:mt-[3vh]"
-              />
-            </Spin>
-          </div>
+      <div className=" ml-16 md:ml-72">
+          {" "}
+          <Button
+            className="text-white bg-black ml-5 mt-20"
+            onClick={() => navigate(-1)}
+          >
+            Go Back
+          </Button>
+        </div>{" "}
+      <div className="lg:w-[100vw]">
+        <div className="lg:flex lg:items-center lg:justify-center shadow-2xl pl-2 rounded-lg lg:!w-[100vw] ">
+          <Spin spinning={loading}>
+            <Tabs
+              defaultActiveKey="1"
+              items={items}
+              className="mt-[3vh] md:mt-[3vh]"
+            />
+          </Spin>
         </div>
+      </div>
       </>
     );
   }
