@@ -86,15 +86,30 @@ function LeadFormNew() {
 
 
 
-  //edit function
+  // //edit function
+  // const handleEdit = (id) => {
+  //   // const userData = data.filter((data)=>data._id === id)
+  //   const url = `/editleadform?param1=editwholeform&id=${encodeURIComponent(id)}`;
+
+  //   // Navigating to the new URL
+  //   navigate(url)
+  //   };
+
+
+
   const handleEdit = (id) => {
-    // const userData = data.filter((data)=>data._id === id)
-    const url = `/editleadform?param1=editwholeform&id=${encodeURIComponent(id)}`;
 
-    // Navigating to the new URL
-    navigate(url)
-    };
-
+    return (
+      <Link
+        to={{
+          pathname: '/editleadform',
+          state: { id }
+        }}
+      >
+        Edit
+      </Link>
+    );
+  };
 
 
 
@@ -711,11 +726,6 @@ function LeadFormNew() {
               style={{ fontSize: '18px', fontWeight: 'bold', cursor: 'pointer' }}
               onClick={() => handleEdit(data._id)}
             />
-            {/* <DeleteOutlined
-              key={`delete-${data._id}`}
-              style={{ fontSize: '18px', fontWeight: 'bold', cursor: 'pointer' }}
-              onClick={() => handleDelete(data._id)}
-            /> */}
           </>
         );
       },
