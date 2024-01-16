@@ -289,19 +289,22 @@ const router=createBrowserRouter(
 
 
 function DashboardOrUserLeadGeneration() {
+
+
   const user = useSelector((state) => state.user.user);
+   
 
-  if (!user) {
-    return <Loader />;
-  }
-
-  if (user.role && user.role !== "field sales executive") {
+  if (user?.role && user?.role === "admin" ) {
     console.log('Admin logged in');
     return <Dashboard />;
   }
+  if(user?.role && user?.role === "field sales executive"){
+    console.log('employee logged in');
+    return <EmployeeDashboard />;
+  }
 
-  console.log('Regular user logged in');
-  return <EmployeeDashboard />;
+  return <Login />;
+
 }
 
 

@@ -10,8 +10,8 @@ import { changeUserValues } from '../redux/userSlice'
 
 function SideNavbar() {
   const user=useSelector((state)=>state.user.user)
-  console.log(user.role);
-  console.log('user');
+  // console.log(user.role);
+  // console.log('user');
 
   const dispatch=useDispatch()
 
@@ -46,7 +46,7 @@ useEffect(()=>{
 <div
   className={`w-[19vw] h-[92vh] overflow-y-scroll`}
 >
-  {user && user.role && (
+  {user && user?.role && (
     <Menu
       defaultSelectedKeys={get(location, "pathname", "/")}
       mode="inline"

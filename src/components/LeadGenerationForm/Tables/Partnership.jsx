@@ -2,7 +2,7 @@ import { Button, Image, Table, Input, Select } from "antd";
 import axios from "axios";
 import { debounce, get } from "lodash";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ImageModal from "../../Modals/ImageModal";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 const url = import.meta.env.VITE_REACT_APP_URL;
@@ -49,6 +49,29 @@ function LeadFormNew() {
 
 
 
+    //business status
+    const handleBusinessStatus = async (record) => {
+      const id = record._id;
+  
+      const res = await axios.post(
+        `${url}/businessstatus`,
+        {
+          userId: id,
+          newBusinessStatus: "telemarketing",
+          leadStatus: "new-lead",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res);
+      setUpdated(!updated);
+    };
+
+
+
 
   //status function
   const handleStatusChange = async (value, record) => {
@@ -82,35 +105,6 @@ function LeadFormNew() {
     setsearchPartner(filteredData);
   };
   const debouncedSearch = debounce(handleSearchPartnership, 300);
-
-
-
-
-  // //edit function
-  const handleEdit = (id) => {
-    const url = `/editleadform?param1=editwholeform&id=${encodeURIComponent(id)}`;
-
-    console.log(id);
-    console.log("asfsdfgdgdg123456Y");
-
-    navigate(url)
-    };
-
-
-
-  // const handleEdit = (id) => {
-
-  //   return (
-  //     <Link
-  //       to={{
-  //         pathname: '/editleadform',
-  //         state: { id }
-  //       }}
-  //     >
-  //       Edit
-  //     </Link>
-  //   );
-  // };
 
 
 
@@ -503,25 +497,31 @@ function LeadFormNew() {
       },
     },
     {
-      title: <h1>Social Media Links</h1>,
+      title: <h1>Social Media</h1>,
       dataIndex: "socialMedia",
       key: "socialMedia",
       align: "center",
       render: (data) => {
+        return <p>{data}</p>;
+      },
+    },
+    {
+      title: <h1>Social Media Links</h1>,
+      dataIndex: "socialMediaLinks",
+      key: "socialMediaLinks",
+      align: "center",
+      render: (data) => {
         return (
           <>
-            {data.map((link, i) => (
-              <div className="flex gap-2" key={i}>
-                <a
-                  href={link.socialMedia}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="truncate-link"
-                >
-                  Link-{link.socialMedia}
-                </a>
-              </div>
-            ))}
+            {data.length > 0 ? (
+              data.map((res, i) => (
+                <div className="flex gap-2 items-center justify-center" key={i}>
+                  <p>{res.link}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-center">No links</p>
+            )}
           </>
         );
       },
@@ -720,16 +720,68 @@ function LeadFormNew() {
       title: <h1>Actions</h1>,
       align: "center",
       render: (data) => {
+        const urlId = data._id; // Assuming data._id is the value you want to check
+    
         return (
           <>
-            <EditOutlined
-              key={`edit-${data._id}`}
-              style={{ fontSize: '18px', fontWeight: 'bold', cursor: 'pointer' }}
-              onClick={() => handleEdit(data._id)}
-            />
+            <Link
+              to={{
+                pathname: '/editleadform',
+              }}
+              state={{urlId}}
+            >
+              <EditOutlined
+                key={`edit-${data._id}`}
+                style={{ fontSize: '18px', fontWeight: 'bold', cursor: 'pointer' }}
+                // onClick={()=>handleEdit(data._id)}
+              />
+            </Link>
           </>
         );
       },
+    },
+    {
+      title: <h1>Move to Admin</h1>,
+      dataIndex: "businessStatus",
+      key: "businessStatus",
+      align: "center",
+      render: (data, record) =>
+      data &&
+      record &&
+      record.brandName &&
+      record.firmName &&
+      record.firmOption &&
+      record.tablePhotos &&
+      record.menuPhotos &&
+      record.billingSoftware &&
+      record.onlineAggregator &&
+      record.billingSoftware &&
+      record.restaurantMobileNumber &&
+      record.email &&
+      record.socialMedia &&
+      record.contactPersonname &&
+      record.contactPersonNumber &&
+      record.designation &&
+      record.domain &&
+      record.tradeMark &&
+      record.dld &&
+      record.status &&
+      record.address &&
+      record.address.length > 0 && 
+      record.address[0].doorNo &&
+      record.address[0].areaName &&
+      record.address[0].landMark &&
+      record.address[0].locationCity &&
+      record.address[0].pinCode &&
+      record.address[0].state ?  (
+          <Button
+            type="primary"
+            style={{ backgroundColor: "green" }}
+            onClick={() => handleBusinessStatus(record)}
+          >
+            Okay
+          </Button>
+        ) : null,
     },
   ];
 

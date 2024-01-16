@@ -2,14 +2,43 @@ import { Link } from "react-router-dom";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
+import { useEffect, useState } from "react";
+import { get } from "lodash";
+import axios from "axios";
 
 function EmployeeForms() {
+  const token = localStorage.getItem("token");
+  const url = import.meta.env.VITE_REACT_APP_URL;
+  const [data, setData] = useState([]);
   const names = [
     "Partnership",
-    "Private Ltd",
-    "Proprietor",
+    "Private limited",
+    "Proprietorship",
   ];
   const links = ["/employeepartnership", "/employeeprivateltd", "/employeeproprietor"];
+
+
+  
+  const fetchData = async () => {
+    try {
+  const response = await axios.get(`${url}/getformscount`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  })
+  
+  setData(get(response, "data.data", []));
+  
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
 
   return (
     <div className="pl-[18vw] pt-7 w-screen">
@@ -35,6 +64,13 @@ function EmployeeForms() {
                       {names[index]}
                     </h2>
                     <Icon className="text-white cursor-pointer" style={{ fontSize: '4rem' }} />
+                    <p className="text-white text-lg font-semibold">
+                    {
+                        data.filter((data) =>
+                            data.firmOption === names[index]
+                        ).length
+                      }
+                    </p>
                   </div>
                 </Link>
               ))}
