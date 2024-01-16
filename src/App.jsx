@@ -303,7 +303,7 @@ function DashboardOrUserLeadGeneration() {
     return <EmployeeDashboard />;
   }
 
-  return <Login />;
+  return <Dashboard />;
 
 }
 
