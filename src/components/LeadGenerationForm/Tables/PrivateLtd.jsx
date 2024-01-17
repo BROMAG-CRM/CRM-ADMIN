@@ -175,6 +175,72 @@ function LeadFormNew() {
       },
     },
     {
+      title: <h1>CIN NO</h1>,
+      dataIndex: "cinNo",
+      key: "cinNo",
+      align: "center",
+      render: (data) => {
+        if (!data) {
+          console.error('Invalid or empty data:', data);
+          return null;
+        }
+      
+        const handleViewImage = (imageUrl) => {
+          console.log(imageUrl);
+          console.log("View Image");
+      
+          setSelectedImage(imageUrl);
+          setImageModalOpen(true);
+        };
+      
+        const handleCloseImageModal = () => {
+          setImageModalOpen(false);
+          setSelectedImage(null);
+        };
+      
+        return (
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewImage(data)}>View Image</Button>
+            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+          </div>
+        );
+
+      },
+    },
+    {
+      title: <h1>Director</h1>,
+      dataIndex: "director",
+      key: "director",
+      align: "center",
+      render: (data) => {
+        if (!data) {
+          console.error('Invalid or empty data:', data);
+          return null;
+        }
+      
+        const handleViewImage = (imageUrl) => {
+          console.log(imageUrl);
+          console.log("View Image");
+      
+          setSelectedImage(imageUrl);
+          setImageModalOpen(true);
+        };
+      
+        const handleCloseImageModal = () => {
+          setImageModalOpen(false);
+          setSelectedImage(null);
+        };
+      
+        return (
+          <div style={{ maxWidth: '300px', overflow: 'hidden' }}>
+            <Button onClick={() => handleViewImage(data)}>View Image</Button>
+            <ImageModal isOpen={isImageModalOpen} onClose={handleCloseImageModal} imageUrl={selectedImage} />
+          </div>
+        );
+
+      },
+    },
+    {
       title: <h1>Pan Card</h1>,
       dataIndex: "panCard",
       key: "panCard",
